@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# show all databases in postgres installation
+# [$1] username of postgres installation (postgres otherwise)
+show_dbs() {
+    sudo -u ${1-postgres} psql -c "\l"
+}
+
+# show all tables in given database
+# $1 database
+# [$2] username of postgres installation (postgres otherwise)
+show_tables() {
+    sudo -u ${2-postgres} psql -d $1 -c "\dt"
+}

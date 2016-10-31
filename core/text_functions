@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+# Substitute all variables (marked as %prefixVariable%) in file to corresponding $prefixVariable
+# It works in the following way:
+# 1. generate all variable completion for given as argument prefix (compgen -v)
+# 2. transform them to sed substitute arguments (-e)
+# 3. build the full sed command as string
+# 4. eval command
+# In order to get rid of eval command: find a way to expand variables returned from awk command ($prefixVariable)
+# because they are not expanded strings: -e s/%prefixVariable%/$prefixVariable/g instead of -e s/%prefixVariable%/concreteValue/g
+# $1 variable prefix
+# $2 file path
+substenv_file() {
+    OUT=$(compgen -v $1 | awk '{ print "-e \"s;%" $1 "%;$" $1 ";g\"" }' | tr '\n' ' ')
+    # | xargs sed $2 it won't expand variables
+    eval "sed $OUT $2"
+}

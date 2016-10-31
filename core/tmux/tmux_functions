@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# start parallel ssh session
+# must be run withing tmux session
+# $1 list of hosts (IPs|hostnames)
+parallel_ssh() {
+    if [ -z "$1" ]; then
+       echo -n "Please provide list of hosts separated by spaces"
+    else
+        local hosts=( $* )
+        echo "HOstS: $hosts"
+        tmux new-window "ssh ${hosts[0]}"
+        #todo check if this escaping is needed for zsh only?
+        unset hosts\[0\];
+        for i in "${hosts[@]}"; do
+            tmux split-window -h  "ssh $i"
+            tmux select-layout tiled > /dev/null
+        done
+        tmux select-pane -t 0
+        tmux set-window-option synchronize-panes on > /dev/null
+    fi
+}

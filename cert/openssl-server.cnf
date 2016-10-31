@@ -1,0 +1,44 @@
+HOME            = .
+RANDFILE        = $ENV::HOME/.rnd
+
+####################################################################
+[ req ]
+default_bits        = 2048
+default_keyfile     = $ENV::SERVER_KEY_FILE
+distinguished_name  = server_distinguished_name
+req_extensions      = server_req_extensions
+string_mask         = utf8only
+
+####################################################################
+[ server_distinguished_name ]
+countryName         = Country Name (2 letter code)
+countryName_default     = PL
+
+stateOrProvinceName     = State or Province Name (full name)
+stateOrProvinceName_default = PL
+
+localityName            = Locality Name (eg, city)
+localityName_default        = Krakow
+
+organizationName            = Organization Name (eg, company)
+organizationName_default    = NA
+
+commonName          = Common Name (e.g. server FQDN or YOUR name)
+commonName_default      = $ENV::SERVER_FQDN
+
+#emailAddress            = Email Address
+#emailAddress_default        = address@example.com
+
+####################################################################
+[ server_req_extensions ]
+
+subjectKeyIdentifier        = hash
+basicConstraints        = CA:FALSE
+keyUsage            = digitalSignature, keyEncipherment
+subjectAltName          = @alternate_names
+nsComment           = "OpenSSL Generated Certificate"
+
+####################################################################
+[ alternate_names ]
+
+DNS.1       = $ENV::SERVER_FQDN

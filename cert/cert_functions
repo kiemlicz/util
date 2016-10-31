@@ -1,0 +1,193 @@
+#!/bin/bash
+
+#todo
+# parametrize -config arg
+
+# merges x509 certificate and key file into pkcs12 file
+# $1 keyfile
+# $2 x509 cert files
+# $3 output file name
+# $4 friendly name for further output file imports
+merge_key_with_x509_certificate() {
+    openssl pkcs12 -export -inkey $1 -in $2 -out $3 -name $4
+}
+
+# merges x509 certificate and key file into pkcs12 file (using CA without chain)
+# $1 keyfile
+# $2 x509 cert files
+# $3 output file name
+# $4 friendly name for further output file imports
+# $5 ca certificate file
+# $6 friendly name for ca certificate
+merge_key_with_x509_certificate_with_ca() {
+    openssl pkcs12 -export -inkey $1 -in $2 -out $3 -name $4 -CAfile $5 -caname $6
+}
+
+# imports pkcs12 key with cert file into keystore
+# $1 keystore file name
+# $2 keystore password
+# $3 pkcs12 formatted input file
+# $4 imported file alias
+# [$5] keypass if destination keypass is different than this specified in pkcs12 formatted input file
+import_to_keystore() {
+    if [ -z $5 ]; then
+        keytool -importkeystore -destkeystore $1 -deststorepass $2 -srckeystore $3 -srcstoretype PKCS12 -alias $4
+    else
+        keytool -importkeystore -destkeystore $1 -deststorepass $2 -srckeystore $3 -srcstoretype PKCS12 -alias $4 -destkeypass $5
+    fi
+}
+
+# imports pkcs12 key with cert into truststore (keystore holding root certificates)
+# $1 truststore file name
+# $2 truststore password
+# $3 input certificate file
+# $4 imported certificate alias
+import_to_truststore() {
+    keytool -importcert -keystore $1 -storepass $2 -file $3 -alias $4
+}
+
+# change existing keystore's password
+# $1 keystore file name
+change_keystore_password() {
+    keytool -storepasswd -keystore $1
+}
+
+# change existing keystore's password along with private keys' password
+# $1 keystore file name
+# might not work for pkcs keystores
+change_keystore_password_with_all_keys() {
+    change_keystore_password $1
+
+    for alias in $(keytool -list -keystore $1 | grep "PrivateKeyEntry" | cut -d, -f1); do
+        keytool -keypasswd  -alias ${alias} -keystore $1
+    done
+}
+
+# import entries to new pkcs12 keystore, assuming storepass is equal to keypass
+# $1 source keystore
+# $2 destination keystore
+# $3 source keystore password
+# $4 destination keystore password (also used for key protection)
+copy_keystore() {
+    keytool -importkeystore -srckeystore $1 -srcstoretype PKCS12 -srcstorepass $3 -deststoretype PKCS12 -deststoretype PKCS12 -deststorepass $4 -destkeypass $4 -keystore $2
+}
+
+####################
+# generation operations
+####################
+
+# generate private key using elliptic curves
+# openssl ecparam -list_curves shows all implemented EC parameters names
+# $1 output file name
+gen_ec_key() {
+    openssl ecparam -name prime256v1 -genkey -out $1 && chmod 400 $1
+}
+
+# generate private key using elliptic curves
+# openssl ecparam -list_curves shows all implemented EC parameters names
+# $1 output file name
+# $2 key encryption method (eg. -aes256)
+gen_rsa_key() {
+    if [ -z $2 ]; then
+        openssl genrsa -out $1 4096
+    else
+        openssl genrsa $2 -out $1 4096
+    fi
+}
+
+# generate x509 self-signed certificate (e.g. CA certificate)
+# $1 input private key
+# $2 output file name
+# $3 config file
+gen_x509_cert_self_signed() {
+    # -x509 states that this is self-signed (when req)
+    # -batch states that this is non-interactive generation
+    # -config openssl-ca.cnf use config file
+    openssl req -x509 -config $3 -batch -new -key $1 -sha256 -out $2
+}
+
+# generate (actually sign the csr) x509 certificate using CA
+# $1 csr file
+# $2 output file name
+# $3 config file for signing
+gen_csr_sign() {
+    # todo verify
+    #openssl ca -extensions server_cert -days 375 -notext -md sha256 -in $1 -out $2 -cert $3 -keyfile $4
+    # todo create method accepting ca files as arg
+    # check if this aids -CAcreateserial for those stupid files creation
+    openssl ca -config $3 -policy signing_policy -extensions signing_req -out $2 -infiles $1
+}
+
+# generate certificate revocation list
+# $1 private key file (ca key)
+# $2 certificate
+# $3 output crl file
+# $4 config file (same as for signing)
+gen_crl_std() {
+    openssl ca -gencrl -keyfile $1 -cert $2 -out "$3.nonstd" -config $4
+    openssl crl -inform PEM -in "$3.nonstd" -outform DER -out $3 && rm -f "$3.nonstd"
+}
+
+# generate certificate revocation list without recommendations from
+# http://www.ietf.org/rfc/rfc5280.txt
+# $1 private key file (ca key)
+# $2 certificate
+# $3 output crl file
+# $4 config file (same as for signing)
+gen_crl_nonstd() {
+    openssl ca -gencrl -keyfile $1 -cert $2 -out $3 -config $4
+}
+
+# generate certificate signing request from private key
+# $1 input private key
+# $2 output file name
+# $3 requesting site config file (cert/openssl-server.cnf)
+gen_csr() {
+    openssl req -batch -config $3 -new -key $1 -sha256 -out $2
+}
+
+####################
+# display operations
+####################
+
+# display csr in human-readable format
+# $1 certificate signing request
+show_csr_as_text() {
+    openssl req -text -noout -verify -in $1
+}
+
+# display certificate in human-readable format
+# $1 certificate
+show_crt_as_text() {
+    openssl x509 -in $1 -text -noout
+}
+
+# display pkcs12 formatted file in human-readable format
+# $1 p12 file
+show_pkcs12_as_text() {
+    openssl pkcs12 -info -in $1
+}
+
+# display keystore contents
+# $1 keystore file name
+show_keystore() {
+    keytool -list -v -keystore $1
+}
+
+####################
+# verification operations
+####################
+
+# compares EC (only) public key extracted from certificate and public key extracted from private key
+# $1 private key
+# $2 certificate
+verify_ec_priv_and_cert() {
+    diff <(openssl ec -in $1 -pubout) <(openssl x509 -in $2 -noout -pubkey)
+}
+
+# compares RSA (only) public key extracted from certificate and public key extracted from private key
+# $1 private key
+# $2 certificate
+verify_rsa_priv_and_cert() {
+    diff <(openssl rsa -noout -modulus -in $1 | openssl md5) <(openssl x509 -noout -modulus -in $2 | openssl md5)
+}

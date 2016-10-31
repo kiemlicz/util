@@ -1,0 +1,44 @@
+#!/bin/bash
+
+# use host you are connecting to to forward the traffic to given destination
+# in other words: listen locally and forward to remote
+# TCP only
+# $1 ssh host (traffic goes via him)
+# $2 ssh host username
+# $3 destination ip
+# $4 destination port
+# $5 local port that will accept traffic and route it via $1 to $3:$4
+ssh_tcp_local_port_forward() {
+    ssh $2@$1 -L $5:$3:$4
+}
+
+# forward traffic coming to remote host to other host (often localhost)
+# in other words: listen on remote and forward to local
+# TCP only
+# $1 ssh host (traffic goes via him)
+# $2 ssh host username
+# $3 forwarded to ip
+# $4 forwarded to port
+# $5 remote port that will accept traffic and route it via $1 to $3:$4
+ssh_tcp_remote_port_forward() {
+    ssh $2@$1 -R $5:$3:$4
+}
+
+# use host you are connecting to to forward the traffic to given destination
+# in other words: listen locally and forward to remote
+# UDP only
+# in general works in the following way:
+# on host you ssh to: tcp -> udp
+# locally: tcp -> udp -> ssh tunnel
+# based on: zarb.org/~gc/html/udp-in-ssh-tunneling.html
+# $1 ssh host (traffic goes via him)
+# $2 ssh host username
+# $3 destination ip
+# $4 destination port
+# $5 local port that will accept traffic and route it via $1 to $3:$4
+ssh_udp_local_port_forward() {
+    # UDP -> TCP
+    socat -T15 udp4-recvfrom:$5,reuseaddr,fork tcp:localhost:$5 &
+    # TCP -> UDP on remote
+    ssh -t $2@$1 -L $5:localhost:$4 socat tcp4-listen:$4,reuseaddr,fork udp:$3:$4
+}

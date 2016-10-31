@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+
+
+# completely purge container
+# $1 container name
+purge_container() {
+    lxc-stop -n $1
+    lxc-wait -n $1 -s STOPPED
+    lxc-destroy -n $1
+}
+
+#start container and wait for it
+# $1 already created container name
+start_container() {
+    lxc-start -n $1 -d
+    lxc-wait -n $1 -s RUNNING
+}
+
+#starts container and waits not only for RUNNING state but also for IP
+# $1 already created container name
+start_container_waiting_for_network() {
+    lxc-start -n $1 -d
+    lxc-wait -n $1 -s RUNNING
+    TIMEOUT_SEC=60
+    CMD="until lxc-info -n $1 | grep -m 1 \"IP:\"; do sleep 1 ; done"
+    timeout $TIMEOUT_SEC bash -c -- "$CMD"
+}
+
+#stops container and waits for STOPPED state
+# $1 container name
+stop_container() {
+    lxc-stop -n $1
+    lxc-wait -n $1 -s STOPPED
+}
+
+####################
+# display operations
+####################
+
+show_lxc_running() {
+    lxc-ls --active
+}
+
+show_lxc_all() {
+    lxc-ls --fancy
+}
+
+show_detailed_info() {
+    lxc-info -n $1
+}

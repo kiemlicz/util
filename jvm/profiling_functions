@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+
+find_top_java_pid() {
+    top -n1 | grep -m1 java | perl -pe 's/\e\[?.*?[\@-~] ?//g' | cut -f1 -d' '
+}
+
+find_top_java_thread_id() {
+    top -n1 -H | grep -m1 java | perl -pe 's/\e\[?.*?[\@-~] ?//g' | cut -f1 -d' '
+}
+
+# $1 PID
+find_top_java_thread_id_in_pid() {
+    top -n1 -H -p $1 | grep -m1 java | perl -pe 's/\e\[?.*?[\@-~] ?//g' | cut -f1 -d' '
+}
+
+# returns thread ids starting from most CPU-intense
+# $1 PID
+# $2 number of threads to find
+find_top_n_java_thread_ids_in_pid() {
+    top -n1 -H -p $1 | grep -m $2 java | perl -pe 's/\e\[?.*?[\@-~] ?//g' | cut -f1 -d' '
+}
+
+# [$1] PID (otherwise top java PID will be taken)
+find_top_stack() {
+    PID=${1-$(find_top_java_pid)}
+    NID=$(printf '%x' $(find_top_java_thread_id_in_pid $PID))
+
+    jstack $PID | grep -A500 $NID | grep -m1 '^$' -B 500
+}
+
+# [$1] PID (otherwise top java PID will be taken)
+# [$2] number of stacktraces to print (3 otherwise)
+find_top_n_stacks() {
+    PID=${1-$(find_top_java_pid)}
+    readonly THRES=${2-3}
+    NIDS=($(find_top_n_java_thread_ids_in_pid $PID $THRES)) #array of NID
+    STACK=$(jstack $PID)
+    for NID in $NIDS; do
+        echo $STACK | grep -A500 $(printf '%x' $NID) | grep -m1 '^$' -B 500
+    done
+}
+
+# $1 PID
+show_mem_details() {
+    jmap -histo:live $1
+}
+
+# $1 PID
+show_object_trace() {
+    obj_map="jmap -histo:live $1"
+    watch -d -n1 $obj_map
+}

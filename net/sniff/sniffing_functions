@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+# dump dhcp traffic
+# [$1] interface (any otherwise)
+# [$2] output file (/tmp/dhcp.pcap otherwise)
+sniff_dhcp() {
+    readonly IFC=${1-any}
+    readonly LOCATION=${2:-/tmp/dhcp.pcap}
+    tcpdump -i $IFC -w $LOCATION port 67 or port 68 -e -n
+}

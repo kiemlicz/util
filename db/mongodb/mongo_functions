@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+
+# login to mongo with credentials
+# $1 username
+# $2 password
+# $3 authentication database
+# [$4] host
+# [$5] port
+mongo_login() {
+    mongo --host ${4-localhost} --port ${5-27107} -u "$1" -p "$2" --authenticationDatabase "$3"
+}
+
+#export and import db.collection
+transfer_db() {
+    if [ -z $4 ]; then
+        echo "usage: $0 db collection source_host source_port [dest host] [dest port]"
+    else
+        source_host=${3}
+        source_port=${4}
+
+        dest_host=${5-localhost}
+        dest_port=${6-27017}
+
+        mongoexport --host ${source_host} --port ${source_port} --db $1 --collection $2 | mongoimport --host ${dest_host} --port ${dest_port} --db $1 --collection $2
+    fi
+}
+
+# read bson file and output to json
+# $1 bson file
+bson_to_json() {
+    bsondump --quiet --type=json $1
+}
+
+# read bson and output to json (pretty printing)
+# $1 bson file
+bson_to_json_pretty() {
+    bsondump --quiet --type=json --pretty $1
+}
+
+# todo: rethink if this is useful in any kind
+# given bson file, import it to mongo
+# $1 db name
+# $2 collection name
+# $3 bson file name
+# $4 host
+# $5 port
+#import_db_from_bson() {
+#    bson_to_json $3 | mongoimport --host $4 --port $5 --db $1 --collection $2
+#}
+
+# scan directory containing mongo dbs and import them to given mongo instance
+# $1 directory name
+# $2 collection name
+#import_collection_from_dbs_from_bson() {
+#    find $1 -maxdepth 1 -type d -exec import_db_from_bson {} \;
+#}
+
+# restore dumped dbs using directory names as db names
+# $1 directory name
+# [$2] dest host (localhost otherwise)
+# [$3] dest port (27017 otherwise)
+restore_dbs() {
+    find $1 -maxdepth 1 -type d -exec mongorestore --host ${2-localhost} --port ${3-27017} {} \;
+}
+
+# drops all dbs that match given prefix
+# $1 prefix
+# [$2] iterating script
+# [$3] host (otherwise localhost)
+# [$4] port (otherwise 27017)
+drop_dbs_matching_prefix() {
+    mongo --host ${3-localhost} --port ${4-27017} --eval "var prefix='$1'" ${2-db/mongodb/drop_by_prefix.js}
+}

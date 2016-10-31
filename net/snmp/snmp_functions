@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# performs snmp "walk"
+# $1 remote agent ip
+# $2 start OID
+# $3 v3 username
+# $4 auth passphrase
+# $5 priv passphrase
+snmpv3_walk() {
+    snmpwalk -v3 -u $3 -l authPriv -a md5 -A $4 -x DES -X $5 $1 $2
+}

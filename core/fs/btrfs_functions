@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+# show information about allocated space
+show_btrfs_fs() {
+    btrfs filesystem show
+}

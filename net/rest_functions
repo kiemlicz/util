@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+# Performs post onto specified URL with content formatted as json
+#$1 uri
+#$2 json file
+#$3 user in case of https
+#$4 password in case of https
+rest_json_post() {
+    if [ -z $3 ]; then
+        curl -H "Accept:application/json" -H "Content-Type:application/json" -X POST -k -d @$2 $1
+    else
+        curl -H "Accept:application/json" -H "Content-Type:application/json" -X POST -u "$3":"$4" -k -d @$2 $1
+    fi
+}

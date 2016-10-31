@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+show_udp_queue() {
+    cat /proc/net/udp
+}
+
+show_udp6_queue() {
+    cat /proc/net/udp6
+}
+
+show_full_routing() {
+    ip route show table all
+}
+
+# change auto negotiated link (L2) speed, may require sudo
+# $1 interface
+# $2 desired speed in Mb/s
+renegotiate_link_speed() {
+    readonly CURRENT_SETTINGS=$(ethtool $1)
+    if [[ $CURRENT_SETTINGS != *"Speed: $2Mb/s"* ]]; then
+        logger "Renegotiating eth1 for $2Mb/s"
+        ethtool -s $1 speed $2 duplex full autoneg on
+    else
+        logger "Link already set for $2Mb/s"
+    fi
+}

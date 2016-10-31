@@ -1,0 +1,91 @@
+#!/bin/bash
+
+if [ -z $1 ]
+then
+  echo "Provide mib dir"
+  exit 1
+fi
+echo "This script will modify $1 directory, continue?"
+# read
+echo "Checking $1"
+
+for file in $1/*
+do
+# extract capture group as mib name
+  Mibnames=($(sed -n 's/\(.*\) DEFINITIONS \:\:= BEGIN$/\1/p' $file))
+  
+  if [ ${#Mibnames[@]} -gt 1 ]
+  then
+    echo "File $file contains multiple MIB definitions, splitting..."   
+    csplit -s -f $file $file /.*DEFINITIONS/ "{*}"
+    rm -f $file
+  fi
+done
+
+declare -A files # mibname -> filename
+declare -A allFiles
+
+for file in $1/*
+do
+  filename=$(basename $file)
+  echo "Processing $(basename $file)"
+  #Now we know that there is only one
+  Mibname=($(sed -n 's/\(.*\) DEFINITIONS\s*\:\:= BEGIN$/\1/p' $file))
+  
+  if [ "$Mibname" == "" ]
+  then
+    echo "No mib definition in file $filename removing"
+    rm -f $file
+  elif [ "$Mibname" != "$filename" ]
+  then
+    echo "Mismatch: $Mibname != $filename, renaming"
+    
+    if [ -x ${files[$Mibname]} ]
+    then
+      files[$Mibname]=$file
+      allFiles[$Mibname]=$filename
+    else
+      echo "File with $Mibname mib definition already exists: ${files[$Mibname]}, "
+      diff -a -q $file "$(dirname $file)/$Mibname.mib"
+      if [ $? -ne 0 ]
+      then
+	allFiles[$Mibname]+=",$filename"
+# 	echo "Files $file and ${files[$Mibname]} differ in $Mibname definition, removing $filename"
+	echo "Files $file and ${files[$Mibname]} differ in $Mibname definition, merge into leftmost, rightmost will be deleted"
+	kdiff3 -o "$(dirname $file)/$Mibname.mib" -m -b "$(dirname $file)/$Mibname.mib" $file
+ 	rm -f $file
+	continue
+      else
+	echo "Files $file and ${files[$Mibname]} are equal in $Mibname definition"
+      fi
+    fi
+    
+    mv $file "$(dirname $file)/$Mibname.mib"
+  else
+    echo "Match $Mibname, no change, adding extension"
+    mv $file "$file.mib"
+  fi
+done
+
+echo "Duplicated definitions (first file won):"
+for mibDef in "${!allFiles[@]}"
+do
+  if [[ ${allFiles[$mibDef]} == *,* ]]
+  then
+    echo "$mibDef: ${allFiles[$mibDef]}";
+  fi
+done
+
+#echo "Veryfing for common errors"
+#for file in $1/*
+#do
+#  sed -i 's/SYNTAX\s\+RowStatus\s\+{.\+}/SYNTAX RowStatus/g' $file
+#done
+
+
+echo "Veryfing using libsmi (find results in /tmp)"
+: > /tmp/normalization.result
+for file in $1/*
+do
+  smilint -s $file >> /tmp/normalization.result 2>&1
+done

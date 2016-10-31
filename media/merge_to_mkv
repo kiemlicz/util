@@ -1,0 +1,101 @@
+#!/bin/bash
+
+#some rather useless script embedding subtitles in movies, converting to mkv format...
+
+#mkvmerge -o movie.mkv --default-track 0 --language 0:eng movie.srt movie.mp4
+
+if [ -z "$1" ]
+then
+  echo "Catalog path missing"
+  exit 1
+fi
+
+cd "$1"
+
+#set delimeter for 'for' loops to NL only
+#otherwise spaces in filenames will break script
+
+IFS=$'\n'
+readonly SUBTITLES_PATTERN=".srt$|.txt$|.sub$"
+readonly MOVIES_PATTERN=".mp4$|.avi$" #TODO mkv needs output file name change
+
+#movies section
+MOVIES=( $(ls "$1" | egrep $MOVIES_PATTERN) )
+
+if [ ${#MOVIES[@]} -eq 0 ]
+then
+  echo "No movies found, exiting"
+  exit 0
+fi
+
+multiple_movies=false
+if [ ${#MOVIES[@]} -gt 1 ]
+then
+  multiple_movies=true
+  echo "Select movie to embed subtitles (using index in braces)"
+  for ((i=0; i < ${#MOVIES[@]}; i++))
+  do
+    echo "[$i] :  ${MOVIES[$i]}"
+  done
+  echo "Choice:"
+  read choice
+  movie=${MOVIES[$choice]}
+else
+  movie=${MOVIES[0]}
+fi
+
+echo "Converting movie: $movie$"
+echo ""
+
+#subtitles section
+SUBTITLES=( $(ls "$1" | egrep $SUBTITLES_PATTERN) )
+
+if [ ${#SUBTITLES[@]} -eq 0 ]
+then
+  echo "No subtitles found exiting"
+  exit 0
+fi
+
+echo "Subtitles found:"
+for ((i=0; i < ${#SUBTITLES[@]}; i++))
+do
+  echo "[$i] : ${SUBTITLES[$i]}"
+done
+
+if [ $multiple_movies ]
+then
+  echo "Please enter subtitles (their indexes, separated with comma) you DO NOT want to use with movie: $movie"
+  read choice
+
+  for idx in ${choice//,/$'\n'} #cause IFS has changed
+  do
+    unset SUBTITLES[$idx]
+  done
+  
+fi
+
+if [ ${#SUBTITLES[@]} -eq 0 ]
+then
+  echo "Excluded all subtitles, exiting"
+  exit 0
+fi
+
+echo "Final subtitles:"
+for ((i=0; i < ${#SUBTITLES[@]}; i++))
+do
+  echo "[$i] : ${SUBTITLES[$i]}"
+done
+
+#inline - escape doesn't work
+output="${movie:0:(${#movie}-3)}mkv"
+
+cmd="mkvmerge -o \"$output\" --default-track 0"
+for ((i=0; i < ${#SUBTITLES[@]}; i++))
+do
+  cmd="$cmd --language $i:${SUBTITLES[$i]:0:3} \"${SUBTITLES[$i]}\""
+done
+cmd="$cmd \"$movie\""
+#exec
+echo "$cmd"
+echo ""
+eval "$cmd"

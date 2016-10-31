@@ -1,0 +1,80 @@
+#!/bin/bash
+
+# add user to
+# sudo usermod -a -G vboxusers $(whoami)
+
+# create vm with vrde enabled (default password same as vm name)
+# use e.g. KRDC to connect to remote desktop
+# $1 vm name
+# $2 ostype
+# $3 disk size in mb
+# $4 iso with os
+vbox_create() {
+    if [ -z $4 ]
+    then
+        echo "provide vm name, ostype, disk_size_mb, iso_for_initial_install"
+        return 1
+    fi
+    readonly RAM=${5-6144}
+    readonly NIC=${6-eth0}
+    readonly MACHINE_FOLDER=$(VBoxManage list systemproperties | grep "Default machine folder" | cut -d: -f2 | sed 's/[[:space:]]*//')
+    VBoxManage createvm --name $1 --ostype $2 --register
+    VBoxManage modifyvm $1 --cpus 3 --memory $RAM --acpi on --boot1 dvd --nic1 bridged --bridgeadapter1 $NIC
+    VBoxManage createhd --filename "$MACHINE_FOLDER/$1/$1.vdi" --size $3
+    VBoxManage storagectl $1 --name "IDE Controller" --add ide --controller PIIX4
+    VBoxManage storageattach $1 --storagectl "IDE Controller" --port 0 --device 0 --type hdd --medium "$MACHINE_FOLDER/$1/$1.vdi"
+    VBoxManage storageattach $1 --storagectl "IDE Controller" --port 0 --device 1 --type dvddrive --medium $4
+    VBoxManage modifyvm $1 --vrde on
+    #VBoxManage setproperty vrdeextpack VNC  # vbox 4
+    VBoxManage setproperty vrdeextpack "Oracle VM VirtualBox Extension Pack"  #vbox 5
+    VBoxManage modifyvm $1 --vrdeproperty VNCPassword=$1
+    #sudo modprobe vboxnetflt
+}
+
+# start vm
+# $1 vm name
+vbox_start() {
+    VBoxHeadless --startvm $1 &
+}
+
+# add guest additions to vm (default location of guest additions is /usr/share/virtualbox)
+# $1 vm name
+vbox_install_guest_additions() {
+    readonly GUESTADD_PATH=$(VBoxManage list systemproperties | grep "Default Guest" | cut -d: -f2 | sed 's/[[:space:]]*//')
+    VBoxManage storageattach $1 --storagectl "IDE Controller" --port 0 --device 1 --type dvddrive --medium $GUESTADD_PATH
+}
+
+# install extpack
+# $1 extpack location
+vbox_install_latest_extpack() {
+    readonly VERSION=$(curl http://download.virtualbox.org/virtualbox/LATEST.TXT)
+    readonly EXTPACK_FILENAME="Oracle_VM_VirtualBox_Extension_Pack-$VERSION.vbox-extpack"
+    readonly EXTPACK_URL="http://download.virtualbox.org/virtualbox/$VERSION/$EXTPACK_FILENAME"
+    wget $EXTPACK_URL -P /tmp
+    VBoxManage extpack install --replace /tmp/$EXTPACK_FILENAME
+}
+
+# clone vm
+# $1 vm name
+vbox_clone() {
+    VBoxManage clonevm $1 --register
+}
+
+# set folder where virtualbox stores vms
+# $1 folder path
+vbox_set_machinefolder() {
+    VBoxManage setproperty machinefolder $1
+}
+
+# display all virtualbox properties
+vbox_show_properties() {
+    VBoxManage list systemproperties
+}
+
+vbox_show_ostypes() {
+    VBoxManage list ostypes
+}
+
+vbox_show_vms() {
+    VBoxManage list vms
+}

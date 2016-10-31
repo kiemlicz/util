@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+show_init_system() {
+    cat /proc/1/comm
+}
+
+show_all_manually_configured_alternatives() {
+    for i in $(ls /etc/alternatives); do
+        LANG=C update-alternatives --display $i 2>/dev/null;
+    done | awk '/manual.mode/{print $1}'
+}
+
+# Manually update java alternatives
+# Don't use this method. Use dedicated ppa oracle repo instead.
+# $1 jinfo file name
+# $2 priority
+update_java_alternatives() {
+    cat /usr/lib/jvm/".$1.jinfo" | grep -E '^(jre|jdk|hl)' | awk -v prio=$2 '{print "/usr/bin/" $2 " " $2 " " $3 " " prio " \n"}' | xargs -t -n4 sudo update-alternatives --verbose --install
+    update-java-alternatives -s $1
+}
+
+# force group of created files in given directory
+# $1 directory
+# $2 desired group
+force_group_in_dir() {
+    chgrp -R $2 $1
+    chmod -R g+s $1
+}
