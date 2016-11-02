@@ -48,3 +48,13 @@ command output to be redirected into _stdin_ of another process).
 
 The process list is run with its input or output connected to a FIFO or some file in /dev/fd.
 The name of this file is passed as an argument to the current command as the result of the expansion.
+---
+#Table of contents
+Enclosed operations:
+1. [Certificate](cert/README.md)
+2. [Container](container/README.md)
+3. [OS](core/README.md)
+4. [DB](db/README.md)
+5. [JVM](jvm/README.md)
+6. [Networks](net/README.md)
+7. [VM](vm/README.md)
