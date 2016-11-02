@@ -1,9 +1,5 @@
 #!/usr/bin/env bash
 
-show_init_system() {
-    cat /proc/1/comm
-}
-
 show_all_manually_configured_alternatives() {
     for i in $(ls /etc/alternatives); do
         LANG=C update-alternatives --display $i 2>/dev/null;
@@ -17,6 +13,18 @@ show_all_manually_configured_alternatives() {
 update_java_alternatives() {
     cat /usr/lib/jvm/".$1.jinfo" | grep -E '^(jre|jdk|hl)' | awk -v prio=$2 '{print "/usr/bin/" $2 " " $2 " " $3 " " prio " \n"}' | xargs -t -n4 sudo update-alternatives --verbose --install
     update-java-alternatives -s $1
+}
+
+apt_show_installed_by_me() {
+    readonly USER=$(whoami)
+    cat /var/log/apt/history.log | awk -v USER=$USER 'BEGIN {
+        FS="\n"
+        RS=""
+    } $2 ~ /Requested-By: USER/ {print $3}'
+}
+
+show_init_system() {
+    cat /proc/1/comm
 }
 
 # force group of created files in given directory
