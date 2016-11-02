@@ -48,6 +48,7 @@ command output to be redirected into _stdin_ of another process).
 
 The process list is run with its input or output connected to a FIFO or some file in /dev/fd.
 The name of this file is passed as an argument to the current command as the result of the expansion.
+
 ---
 #Table of contents
 Enclosed operations:
