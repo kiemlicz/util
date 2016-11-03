@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # start parallel ssh session
-# must be run withing tmux session
+# must be run within tmux session
 # $1 list of hosts (IPs|hostnames)
 parallel_ssh() {
     if [ -z "$1" ]; then
