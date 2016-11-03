@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+# remove container (running instance of image)
+# $1 container id
+docker_remove_container() {
+    docker rm $1
+}
+
+docker_remove_all_containers() {
+    docker rm $(docker ps -a -q)
+}
+
+docker_show_running() {
+    docker ps
+}
+
+docker_show_all() {
+    docker ps -a
+}
+
+#todo add running with port forward
