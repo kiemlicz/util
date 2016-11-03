@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+##############
+# Alternatives
+##############
+
 show_all_manually_configured_alternatives() {
     for i in $(ls /etc/alternatives); do
         LANG=C update-alternatives --display $i 2>/dev/null;
@@ -15,13 +19,25 @@ update_java_alternatives() {
     update-java-alternatives -s $1
 }
 
-apt_show_installed_by_me() {
+####################
+# package management
+####################
+
+# list packages installed explicitly by current user (using apt/aptitude)
+# doesn't include upgraded packages
+show_packages_installed_by_current_user() {
     readonly USER=$(whoami)
-    cat /var/log/apt/history.log | awk -v USER=$USER 'BEGIN {
+    cat /var/log/apt/history.log | awk -v USER="$USER" 'BEGIN {
         FS="\n"
         RS=""
-    } $2 ~ /Requested-By: USER/ {print $3}'
+        user_pattern="Requested-By:.*" USER
+        install_pattern="Install:.*"
+    } $2 ~ user_pattern && NF > 3 && $3 ~ install_pattern {print $3 "\n"}' | sed 's/([^()]*)//g'
 }
+
+######
+# Misc
+######
 
 show_init_system() {
     cat /proc/1/comm
