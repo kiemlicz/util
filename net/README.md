@@ -33,6 +33,7 @@ unmanaged-devices=mac:aa:bb:cc:dd:ee:ff
 ```
 #References
  1. [Debian network configuration](https://wiki.debian.org/NetworkConfiguration)
+
 #Table of contents
 Further networking operations:
 
