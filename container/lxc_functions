@@ -21,9 +21,9 @@ start_container() {
 start_container_waiting_for_network() {
     lxc-start -n $1 -d
     lxc-wait -n $1 -s RUNNING
-    TIMEOUT_SEC=60
-    CMD="until lxc-info -n $1 | grep -m 1 \"IP:\"; do sleep 1 ; done"
-    timeout $TIMEOUT_SEC bash -c -- "$CMD"
+    local timeout_sec=60
+    local cmd="until lxc-info -n $1 | grep -m 1 \"IP:\"; do sleep 1 ; done"
+    timeout $timeout_sec bash -c -- "$cmd"
 }
 
 #stops container and waits for STOPPED state

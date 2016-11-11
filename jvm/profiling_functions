@@ -22,21 +22,21 @@ find_top_n_java_thread_ids_in_pid() {
 
 # [$1] PID (otherwise top java PID will be taken)
 find_top_stack() {
-    PID=${1-$(find_top_java_pid)}
-    NID=$(printf '%x' $(find_top_java_thread_id_in_pid $PID))
+    local pid=${1-$(find_top_java_pid)}
+    local nid=$(printf '%x' $(find_top_java_thread_id_in_pid $pid))
 
-    jstack $PID | grep -A500 $NID | grep -m1 '^$' -B 500
+    jstack $pid | grep -A500 $nid | grep -m1 '^$' -B 500
 }
 
 # [$1] PID (otherwise top java PID will be taken)
 # [$2] number of stacktraces to print (3 otherwise)
 find_top_n_stacks() {
-    PID=${1-$(find_top_java_pid)}
-    readonly THRES=${2-3}
-    NIDS=($(find_top_n_java_thread_ids_in_pid $PID $THRES)) #array of NID
-    STACK=$(jstack $PID)
-    for NID in $NIDS; do
-        echo $STACK | grep -A500 $(printf '%x' $NID) | grep -m1 '^$' -B 500
+    local pid=${1-$(find_top_java_pid)}
+    local thres=${2-3}
+    local nids=($(find_top_n_java_thread_ids_in_pid $pid $thres)) #array of nid
+    local stack=$(jstack $pid)
+    for nid in $nids; do
+        echo $stack | grep -A500 $(printf '%x' $nid) | grep -m1 '^$' -B 500
     done
 }
 
@@ -47,6 +47,6 @@ show_mem_details() {
 
 # $1 PID
 show_object_trace() {
-    obj_map="jmap -histo:live $1"
+    local obj_map="jmap -histo:live $1"
     watch -d -n1 $obj_map
 }

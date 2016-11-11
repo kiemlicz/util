@@ -11,7 +11,7 @@
 # $1 variable prefix
 # $2 file path
 substenv_file() {
-    OUT=$(compgen -v $1 | awk '{ print "-e \"s;%" $1 "%;$" $1 ";g\"" }' | tr '\n' ' ')
+    local out=$(compgen -v $1 | awk '{ print "-e \"s;%" $1 "%;$" $1 ";g\"" }' | tr '\n' ' ')
     # | xargs sed $2 it won't expand variables
-    eval "sed $OUT $2"
+    eval "sed $out $2"
 }

@@ -15,14 +15,14 @@ vbox_create() {
         echo "provide vm name, ostype, disk_size_mb, iso_for_initial_install"
         return 1
     fi
-    readonly RAM=${5-6144}
-    readonly NIC=${6-eth0}
-    readonly MACHINE_FOLDER=$(VBoxManage list systemproperties | grep "Default machine folder" | cut -d: -f2 | sed 's/[[:space:]]*//')
+    local ram=${5-6144}
+    local nic=${6-eth0}
+    local machine_folder=$(VBoxManage list systemproperties | grep "Default machine folder" | cut -d: -f2 | sed 's/[[:space:]]*//')
     VBoxManage createvm --name $1 --ostype $2 --register
-    VBoxManage modifyvm $1 --cpus 3 --memory $RAM --acpi on --boot1 dvd --nic1 bridged --bridgeadapter1 $NIC
-    VBoxManage createhd --filename "$MACHINE_FOLDER/$1/$1.vdi" --size $3
+    VBoxManage modifyvm $1 --cpus 3 --memory $ram --acpi on --boot1 dvd --nic1 bridged --bridgeadapter1 $nic
+    VBoxManage createhd --filename "$machine_folder/$1/$1.vdi" --size $3
     VBoxManage storagectl $1 --name "IDE Controller" --add ide --controller PIIX4
-    VBoxManage storageattach $1 --storagectl "IDE Controller" --port 0 --device 0 --type hdd --medium "$MACHINE_FOLDER/$1/$1.vdi"
+    VBoxManage storageattach $1 --storagectl "IDE Controller" --port 0 --device 0 --type hdd --medium "$machine_folder/$1/$1.vdi"
     VBoxManage storageattach $1 --storagectl "IDE Controller" --port 0 --device 1 --type dvddrive --medium $4
     VBoxManage modifyvm $1 --vrde on
     #VBoxManage setproperty vrdeextpack VNC  # vbox 4
@@ -40,18 +40,18 @@ vbox_start() {
 # add guest additions to vm (default location of guest additions is /usr/share/virtualbox)
 # $1 vm name
 vbox_install_guest_additions() {
-    readonly GUESTADD_PATH=$(VBoxManage list systemproperties | grep "Default Guest" | cut -d: -f2 | sed 's/[[:space:]]*//')
-    VBoxManage storageattach $1 --storagectl "IDE Controller" --port 0 --device 1 --type dvddrive --medium $GUESTADD_PATH
+    local guestadd_path=$(VBoxManage list systemproperties | grep "Default Guest" | cut -d: -f2 | sed 's/[[:space:]]*//')
+    VBoxManage storageattach $1 --storagectl "IDE Controller" --port 0 --device 1 --type dvddrive --medium $guestadd_path
 }
 
 # install extpack
 # $1 extpack location
 vbox_install_latest_extpack() {
-    readonly VERSION=$(curl http://download.virtualbox.org/virtualbox/LATEST.TXT)
-    readonly EXTPACK_FILENAME="Oracle_VM_VirtualBox_Extension_Pack-$VERSION.vbox-extpack"
-    readonly EXTPACK_URL="http://download.virtualbox.org/virtualbox/$VERSION/$EXTPACK_FILENAME"
-    wget $EXTPACK_URL -P /tmp
-    VBoxManage extpack install --replace /tmp/$EXTPACK_FILENAME
+    local version=$(curl http://download.virtualbox.org/virtualbox/LATEST.TXT)
+    local extpack_filename="Oracle_VM_VirtualBox_Extension_Pack-$version.vbox-extpack"
+    local extpack_url="http://download.virtualbox.org/virtualbox/$version/$extpack_filename"
+    wget $extpack_url -P /tmp
+    VBoxManage extpack install --replace /tmp/$extpack_filename
 }
 
 # clone vm

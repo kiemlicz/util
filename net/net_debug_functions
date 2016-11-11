@@ -16,8 +16,8 @@ show_full_routing() {
 # $1 interface
 # $2 desired speed in Mb/s
 renegotiate_link_speed() {
-    readonly CURRENT_SETTINGS=$(ethtool $1)
-    if [[ $CURRENT_SETTINGS != *"Speed: $2Mb/s"* ]]; then
+    readonly local current_settings=$(ethtool $1)
+    if [[ $current_settings != *"Speed: $2Mb/s"* ]]; then
         logger "Renegotiating eth1 for $2Mb/s"
         ethtool -s $1 speed $2 duplex full autoneg on
     else

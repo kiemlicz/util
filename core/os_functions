@@ -26,8 +26,8 @@ update_java_alternatives() {
 # list packages installed explicitly by current user (using apt/aptitude)
 # doesn't include upgraded packages
 show_packages_installed_by_current_user() {
-    readonly USER=$(whoami)
-    cat /var/log/apt/history.log | awk -v USER="$USER" 'BEGIN {
+    readonly local user=$(whoami)
+    cat /var/log/apt/history.log | awk -v USER="$user" 'BEGIN {
         FS="\n"
         RS=""
         user_pattern="Requested-By:.*" USER

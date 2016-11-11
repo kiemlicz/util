@@ -15,11 +15,11 @@ transfer_db() {
     if [ -z $4 ]; then
         echo "usage: $0 db collection source_host source_port [dest host] [dest port]"
     else
-        source_host=${3}
-        source_port=${4}
+        local source_host=${3}
+        local source_port=${4}
 
-        dest_host=${5-localhost}
-        dest_port=${6-27017}
+        local dest_host=${5-localhost}
+        local dest_port=${6-27017}
 
         mongoexport --host ${source_host} --port ${source_port} --db $1 --collection $2 | mongoimport --host ${dest_host} --port ${dest_port} --db $1 --collection $2
     fi
