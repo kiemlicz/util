@@ -49,6 +49,12 @@ command output to be redirected into _stdin_ of another process).
 The process list is run with its input or output connected to a FIFO or some file in /dev/fd.
 The name of this file is passed as an argument to the current command as the result of the expansion.
 
+####References
+ 1. https://google.github.io/styleguide/shell.xml
+ 2. https://github.com/robbyrussell/oh-my-zsh/wiki/Coding-style-guide
+ 3. http://tldp.org/HOWTO/Bash-Prog-Intro-HOWTO.html
+ 4. https://www.kernel.org/doc/Documentation/CodingStyle
+ 
 ---
 #Table of contents
 Enclosed operations:

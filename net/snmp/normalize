@@ -1,7 +1,6 @@
 #!/bin/bash
 
-if [ -z $1 ]
-then
+if [ -z $1 ]; then
   echo "Provide mib dir"
   exit 1
 fi
@@ -32,23 +31,19 @@ do
   #Now we know that there is only one
   Mibname=($(sed -n 's/\(.*\) DEFINITIONS\s*\:\:= BEGIN$/\1/p' $file))
   
-  if [ "$Mibname" == "" ]
-  then
+  if [ "$Mibname" == "" ]; then
     echo "No mib definition in file $filename removing"
     rm -f $file
-  elif [ "$Mibname" != "$filename" ]
-  then
+  elif [ "$Mibname" != "$filename" ]; then
     echo "Mismatch: $Mibname != $filename, renaming"
     
-    if [ -x ${files[$Mibname]} ]
-    then
+    if [ -x ${files[$Mibname]} ]; then
       files[$Mibname]=$file
       allFiles[$Mibname]=$filename
     else
       echo "File with $Mibname mib definition already exists: ${files[$Mibname]}, "
       diff -a -q $file "$(dirname $file)/$Mibname.mib"
-      if [ $? -ne 0 ]
-      then
+      if [ $? -ne 0 ]; then
 	allFiles[$Mibname]+=",$filename"
 # 	echo "Files $file and ${files[$Mibname]} differ in $Mibname definition, removing $filename"
 	echo "Files $file and ${files[$Mibname]} differ in $Mibname definition, merge into leftmost, rightmost will be deleted"

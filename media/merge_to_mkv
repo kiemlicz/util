@@ -4,8 +4,7 @@
 
 #mkvmerge -o movie.mkv --default-track 0 --language 0:eng movie.srt movie.mp4
 
-if [ -z "$1" ]
-then
+if [ -z "$1" ]; then
   echo "Catalog path missing"
   exit 1
 fi
@@ -22,15 +21,13 @@ readonly MOVIES_PATTERN=".mp4$|.avi$" #TODO mkv needs output file name change
 #movies section
 MOVIES=( $(ls "$1" | egrep $MOVIES_PATTERN) )
 
-if [ ${#MOVIES[@]} -eq 0 ]
-then
+if [ ${#MOVIES[@]} -eq 0 ]; then
   echo "No movies found, exiting"
   exit 0
 fi
 
 multiple_movies=false
-if [ ${#MOVIES[@]} -gt 1 ]
-then
+if [ ${#MOVIES[@]} -gt 1 ]; then
   multiple_movies=true
   echo "Select movie to embed subtitles (using index in braces)"
   for ((i=0; i < ${#MOVIES[@]}; i++))
@@ -50,8 +47,7 @@ echo ""
 #subtitles section
 SUBTITLES=( $(ls "$1" | egrep $SUBTITLES_PATTERN) )
 
-if [ ${#SUBTITLES[@]} -eq 0 ]
-then
+if [ ${#SUBTITLES[@]} -eq 0 ]; then
   echo "No subtitles found exiting"
   exit 0
 fi
@@ -62,8 +58,7 @@ do
   echo "[$i] : ${SUBTITLES[$i]}"
 done
 
-if [ $multiple_movies ]
-then
+if [ $multiple_movies ]; then
   echo "Please enter subtitles (their indexes, separated with comma) you DO NOT want to use with movie: $movie"
   read choice
 
@@ -74,8 +69,7 @@ then
   
 fi
 
-if [ ${#SUBTITLES[@]} -eq 0 ]
-then
+if [ ${#SUBTITLES[@]} -eq 0 ]; then
   echo "Excluded all subtitles, exiting"
   exit 0
 fi

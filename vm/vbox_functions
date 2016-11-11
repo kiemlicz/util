@@ -10,8 +10,7 @@
 # $3 disk size in mb
 # $4 iso with os
 vbox_create() {
-    if [ -z $4 ]
-    then
+    if [ -z $4 ]; then
         echo "provide vm name, ostype, disk_size_mb, iso_for_initial_install"
         return 1
     fi
@@ -29,6 +28,7 @@ vbox_create() {
     VBoxManage setproperty vrdeextpack "Oracle VM VirtualBox Extension Pack"  #vbox 5
     VBoxManage modifyvm $1 --vrdeproperty VNCPassword=$1
     #sudo modprobe vboxnetflt
+    return 0
 }
 
 # start vm
@@ -50,7 +50,7 @@ vbox_install_latest_extpack() {
     local version=$(curl http://download.virtualbox.org/virtualbox/LATEST.TXT)
     local extpack_filename="Oracle_VM_VirtualBox_Extension_Pack-$version.vbox-extpack"
     local extpack_url="http://download.virtualbox.org/virtualbox/$version/$extpack_filename"
-    wget $extpack_url -P /tmp
+    wget $extpack_url -P /tmp && \
     VBoxManage extpack install --replace /tmp/$extpack_filename
 }
 
