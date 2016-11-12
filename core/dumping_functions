@@ -1,8 +1,0 @@
-#!/bin/bash
-
-# hexdump file into one line
-# $1 file path
-dump_hex_one_line() {
-    hexdump -e '16/1 "%02x"' $1
-    #hexdump -e '16/1 "%02x " "\n"' $1
-}

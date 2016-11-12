@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+# list packages installed explicitly by current user (using apt/aptitude)
+# doesn't include upgraded packages
+show_packages_installed_by_current_user() {
+    readonly local user=$(whoami)
+    cat /var/log/apt/history.log | awk -v USER="$user" 'BEGIN {
+        FS="\n"
+        RS=""
+        user_pattern="Requested-By:.*" USER
+        install_pattern="Install:.*"
+    } $2 ~ user_pattern && NF > 3 && $3 ~ install_pattern {print $3 "\n"}' | sed 's/([^()]*)//g'
+}
+
+# list packages upgraded at given date
+# $1 date formatted like /var/log/dpkg.log
+# [$2] time pattern (otherwise not used) formatted HH:MM:SS
+show_packages_upgraded_at() {
+    if [ -z $2 ]; then
+        awk -v DATE="$1" '$1==DATE && $3=="upgrade"' /var/log/dpkg.log
+    else
+        awk -v DATE="$1" -v TIME="$2" '$1==DATE && $2 ~ TIME && $3=="upgrade"' /var/log/dpkg.log
+    fi
+}
+
+# check if previous versions of upgraded packages are still available in cache
+# $1 date formatted like /var/log/dpkg.log
+# [$2] time pattern (otherwise not used) formatted HH:MM:SS
+show_previous_packages_versions() {
+    if [ -z $2 ]; then
+        awk -v DATE="$1" '$1==DATE && $3=="upgrade" {gsub(/:/, "%3a", $5); split($4, f, ":"); print "/var/cache/apt/archives/" f[1] "_" $5 "_" f[2] ".deb"}' /var/log/dpkg.log | xargs -r ls -ld
+    else
+        awk -v DATE="$1" -v TIME="$2" '$1==DATE && $2 ~ TIME && $3=="upgrade" {gsub(/:/, "%3a", $5); split($4, f, ":"); print "/var/cache/apt/archives/" f[1] "_" $5 "_" f[2] ".deb"}' /var/log/dpkg.log | xargs -r ls -ld
+    fi
+}

@@ -1,14 +1,14 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # start parallel ssh session
 # must be run within tmux session
 # $1 list of hosts (IPs|hostnames)
-parallel_ssh() {
+tmux_parallel_ssh() {
     if [ -z "$1" ]; then
        echo -n "Please provide list of hosts separated by spaces"
     else
         local hosts=( $* )
-        echo "HOstS: $hosts"
+        echo "Hosts: $hosts"
         tmux new-window "ssh ${hosts[0]}"
         #todo check if this escaping is needed for zsh only?
         unset hosts\[0\];
