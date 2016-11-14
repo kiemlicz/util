@@ -1,21 +1,13 @@
 #!/usr/bin/env bash
 
-# remove container (running instance of image)
-# $1 container id
-docker_remove_container() {
-    docker rm $1
+# run image
+# $1 image
+# $2 host port
+# $3 container port
+# [$4] host ip (127.0.0.1 otherwise)
+docker_run_publish_ports() {
+    local host_port=${2}
+    local container_port=${3}
+    local host_ip=${4-127.0.0.1}
+    docker run -p $host_ip:$host_port:$container_port $1
 }
-
-docker_remove_all_containers() {
-    docker rm $(docker ps -a -q)
-}
-
-docker_show_running() {
-    docker ps
-}
-
-docker_show_all() {
-    docker ps -a
-}
-
-#todo add running with port forward

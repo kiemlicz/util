@@ -2,6 +2,8 @@
 The "project" aims to provide scripts/functions for various tasks in day-to-day work.
 Additional rationale of this "project" is following: to encourage writing actual executable hands-on scripts/functions
 instead of untested and lengthy wiki/confluence/blog posts/etc. pages containing various technical manuals.
+This project does **not** aim to duplicate the functionality of command-line completions. 
+Thus one-line functions for tools with decent completions should not be here.  
 
 Directory layout should be self-documenting about where to find which pieces.
 
@@ -54,6 +56,7 @@ The name of this file is passed as an argument to the current command as the res
  2. https://github.com/robbyrussell/oh-my-zsh/wiki/Coding-style-guide
  3. http://tldp.org/HOWTO/Bash-Prog-Intro-HOWTO.html
  4. https://www.kernel.org/doc/Documentation/CodingStyle
+ 5. https://github.com/zsh-users/zsh-completions/blob/master/zsh-completions-howto.org
  
 ---
 #Table of contents
