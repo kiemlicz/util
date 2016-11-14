@@ -23,6 +23,7 @@ This will add function `util` with auto-complete for `_function` e.g.
 ```shell
 > util <press tab>
 ```
+`util` just sources given `_functions` file so that its content is available in current shell.
 
 ##General information
 Some quick shell shortcuts&information you most likely know.
