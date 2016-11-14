@@ -12,8 +12,16 @@ Any changes are more than welcome.
 ##Usage
 Most common usage:
 ```shell
-. jvm/profiling_functions
+> . jvm/profiling_functions
 find_top_n_stacks 1234 5
+```
+For [oh-my-zsh](https://github.com/robbyrussell/oh-my-zsh) users. Add symlink to this project:
+
+`ln -s $UTIL_LOCATION $ZSH_CUSTOM/plugins/util`. 
+
+This will add function `util` with auto-complete for `_function` e.g.
+```shell
+> util <press tab>
 ```
 
 ##General information
