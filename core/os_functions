@@ -35,6 +35,18 @@ force_group_in_dir() {
     chmod -R g+s $1
 }
 
+# convert string to its ASCII codes in hexadecimal, removing all spaces from the output hexstring
+# $1 string
+string_to_hex_trimmed() {
+    echo -n "$1" | od -A n -t x1 | sed -e 's/^ *//' -e 's/ //g'
+}
+
+# convert string to its ASCII codes in hexadecimal
+# $1 string
+string_to_hex() {
+    echo -n "$1" | od -A n -t x1 | sed 's/^ *//'
+}
+
 # hexdump file into one line
 # $1 file path
 dump_hex_one_line() {
