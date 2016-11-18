@@ -38,7 +38,8 @@ force_group_in_dir() {
 # convert string to its ASCII codes in hexadecimal, removing all spaces from the output hexstring
 # $1 string
 string_to_hex_trimmed() {
-    echo -n "$1" | od -A n -t x1 | sed -e 's/^ *//' -e 's/ //g'
+    # -e ':a;N;$!ba;s/\n//g' removes nl from input string
+    echo -n "$1" | od -A n -t x1 | sed -e ':a;N;$!ba;s/\n//g' -e 's/^ *//' -e 's/ //g'
 }
 
 # convert string to its ASCII codes in hexadecimal
