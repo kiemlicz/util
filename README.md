@@ -27,7 +27,7 @@ This will add function `util` with auto-complete for `_function` e.g.
 
 ---
 #Table of contents
-[Introduction&beyond](tutorial/README.md)
+[Introduction&beyond](https://github.com/kiemlicz/util/wiki)
 
 Enclosed operations:
  1. [Certificate](cert/README.md)
