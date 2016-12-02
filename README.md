@@ -10,12 +10,12 @@ Directory layout should be self-documenting about where to find which pieces.
 Any changes are more than welcome.
 
 ##Usage
-Most common usage:
+ - Most common usage:
 ```shell
 > . jvm/profiling_functions
 find_top_n_stacks 1234 5
 ```
-For [oh-my-zsh](https://github.com/robbyrussell/oh-my-zsh) users. Add symlink to this project:
+ - For [oh-my-zsh](https://github.com/robbyrussell/oh-my-zsh) users. Add symlink to this project:
 
 `ln -s $UTIL_LOCATION $ZSH_CUSTOM/plugins/util`. 
 
