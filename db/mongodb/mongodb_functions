@@ -37,6 +37,18 @@ bson_to_json_pretty() {
     bsondump --quiet --type=json --pretty $1
 }
 
+# binary export the database limiting the output
+# $1 database
+# $2 collection
+# $3 output path
+# $4 starting from day (format: YYYY-MM-DD)
+# $5 document field with date
+# [$5] host (localhost otherwise)
+# [$6] port (27017 otherwise)
+dump_db_collection_from() {
+    mongodump --host ${6-localhost} --port ${7-27107} --db "$1" --collection "$2" globalProperties --query "{\"$5\":{\"\$gt\":{\"\$date\": $(date -d $4 +%s)000}}}" --out "$3"
+}
+
 # todo: rethink if this is useful in any kind
 # given bson file, import it to mongo
 # $1 db name
