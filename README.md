@@ -26,15 +26,6 @@ This will add function `util` with auto-complete for `_function` e.g.
 `util` just sources given `_functions` file so that its content is available in current shell.
 
 ---
-#Table of contents
+#Read more
 [Introduction&beyond](https://github.com/kiemlicz/util/wiki)
 
-Enclosed operations:
- 1. [Certificate](cert/README.md)
- 2. [Configuration management](cfg_management/README.md)
- 3. [Container](container/README.md)
- 4. [OS](core/README.md)
- 5. [DB](db/README.md)
- 6. [JVM](jvm/README.md)
- 7. [Networks](net/README.md)
- 8. [VM](vm/README.md)
