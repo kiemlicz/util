@@ -46,7 +46,7 @@ bson_to_json_pretty() {
 # [$5] host (localhost otherwise)
 # [$6] port (27017 otherwise)
 dump_db_collection_from() {
-    mongodump --host ${6-localhost} --port ${7-27107} --db "$1" --collection "$2" globalProperties --query "{\"$5\":{\"\$gt\":{\"\$date\": $(date -d $4 +%s)000}}}" --out "$3"
+    mongodump --host ${6-localhost} --port ${7-27107} --db "$1" --collection "$2" --query "{\"$5\":{\"\$gt\":{\"\$date\": $(date -d $4 +%s)000}}}" --out "$3"
 }
 
 # todo: rethink if this is useful in any kind
