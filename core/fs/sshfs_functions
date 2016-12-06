@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+# mount remote at /mnt
+# $1 host
+# [$2] remote username (root otherwise)
+# [$3] directory where to mount (/mnt/$1 otherwise)
+mount() {
+    if [ -z $3 ]; then
+        mkdir -p /mnt/"$1"
+    fi
+    sshfs -o allow_other ${2-root}@$1:/ ${3-/mnt/"$1"}
+}
