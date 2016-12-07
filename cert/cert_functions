@@ -83,7 +83,7 @@ gen_ec_key() {
     openssl ecparam -name prime256v1 -genkey -out $1 && chmod 400 $1
 }
 
-# generate private key using elliptic curves
+# generate private key using RSA
 # openssl ecparam -list_curves shows all implemented EC parameters names
 # $1 output file name
 # $2 key encryption method (eg. -aes256)
