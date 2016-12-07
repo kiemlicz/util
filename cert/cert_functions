@@ -3,6 +3,10 @@
 #todo
 # parametrize -config arg
 
+####################
+# transform/convert operations
+####################
+
 # merges x509 certificate and key file into pkcs12 file
 # $1 keyfile
 # $2 x509 cert files
@@ -22,6 +26,35 @@ merge_key_with_x509_certificate() {
 merge_key_with_x509_certificate_with_ca() {
     openssl pkcs12 -export -inkey $1 -in $2 -out $3 -name $4 -CAfile $5 -caname $6
 }
+
+# converts pkcs12 formatted certificate into pem (ASCII cert)
+# WARN: as pkcs12 contains public AND private key the converted pem file
+# will contain clear text private key
+# $1 pkcs12 cert file
+convert_cert_pkcs12_to_pem() {
+    openssl pkcs12 -in $1 -out $1.pem -nodes
+}
+
+# converts x509 certificate into der (binary form of ASCII PEM)
+# $1 pem certificate
+convert_cert_pem_to_der() {
+    openssl x509 -outform der -in $1 -out $1.der
+}
+
+# converts elliptic curves-based key into der format (binary form of ASCII PEM)
+# key must contain two sections:
+#-----BEGIN EC PARAMETERS-----
+#-----END EC PARAMETERS-----
+#-----BEGIN EC PRIVATE KEY-----
+#-----END EC PRIVATE KEY-----
+# $1 pem private key
+convert_ec_key_pem_to_der() {
+    openssl ecparam -outform der -in $1 -out $1.der
+}
+
+####################
+# import/export operations
+####################
 
 # imports pkcs12 key with cert file into keystore
 # $1 keystore file name
@@ -44,6 +77,33 @@ import_to_keystore() {
 # $4 imported certificate alias
 import_to_truststore() {
     keytool -importcert -keystore $1 -storepass $2 -file $3 -alias $4
+}
+
+# export certificate from jks into der format
+# $1 keystore file name
+# $2 keystore password
+# $3 cert alias
+# $4 output file name
+export_cert_from_keystore_to_der() {
+    keytool -exportcert -alias $3 -keystore $1 -storepass $2 -file $4
+}
+
+# export certificate from jks into pem format
+# $1 keystore file name
+# $2 keystore password
+# $3 cert alias
+# $4 output file name
+export_cert_from_keystore_to_pem() {
+    keytool -exportcert -rfc -alias $3 -keystore $1 -storepass $2 -file $4
+}
+
+# export private key from jks into der format
+# $1 keystore file name
+# $2 keystore password
+# $3 key alias
+# $4 output file name
+export_key_from_keystore_to_der() {
+    keytool -importkeystore -srckeystore $1 -srcstorepass $2 -destkeystore $1.der -deststoretype DER -srcalias $3
 }
 
 # change existing keystore's password
