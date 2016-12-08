@@ -70,6 +70,14 @@ import_to_keystore() {
     fi
 }
 
+# removes alias-identified entry from keystore
+# $1 keystore file name
+# $2 keystore password
+# $3 imported file alias
+remove_from_keystore() {
+    keytool -delete -noprompt -alias $3 -keystore $1 -storepass $2
+}
+
 # imports pkcs12 key with cert into truststore (keystore holding root certificates)
 # $1 truststore file name
 # $2 truststore password
