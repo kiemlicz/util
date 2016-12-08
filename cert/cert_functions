@@ -49,7 +49,7 @@ convert_cert_pem_to_der() {
 #-----END EC PRIVATE KEY-----
 # $1 pem private key
 convert_ec_key_pem_to_der() {
-    openssl ecparam -outform der -in $1 -out $1.der
+    openssl ec -outform der -in $1 -out $1.der
 }
 
 ####################
