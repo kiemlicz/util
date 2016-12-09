@@ -4,7 +4,7 @@
 # $1 host
 # [$2] remote username (root otherwise)
 # [$3] directory where to mount (/mnt/$1 otherwise)
-mount() {
+sshfs_mount() {
     if [ -z $3 ]; then
         mkdir -p /mnt/"$1"
     fi
