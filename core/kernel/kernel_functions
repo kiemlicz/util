@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+prepare_to_configure() {
+    pushd /usr/src/linux
+    make clean && make mrproper
+    popd
+}
+
+use_current_config() {
+    cp /boot/config-$(uname -r) /usr/src/linux/.config
+}
+
+# $1 version info to append e.g. -myversion
+compile_kernel() {
+    make-kpkg clean
+    fakeroot make-kpkg --initrd --append-to-version=$1 kernel_image kernel_headers
+}
