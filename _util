@@ -1,13 +1,8 @@
 #compdef util
 
 _util() {
-    # complete by looking in plugins path only for _functions files
+    # complete by looking (in plugins path only) for _functions files
    _files -W "$ZSH_CUSTOM/plugins/util/" -g "*_functions"
-}
-
-# $1 functions type
-util() {
-    source $ZSH_CUSTOM/plugins/util/$1
 }
 
 _util "$@"
