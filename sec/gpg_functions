@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+# Generate keypair, creates homedir if not exists
+# [$1] key homedir (~/.gnupg otherwise)
+gpg_gen_key() {
+    if [ -z $1 ]; then
+        gpg --gen-key
+    else
+        mkdir -p $1
+        chmod 0700 $1
+        gpg --gen-key --homedir $1
+    fi
+}
+
+# $1 key homedir
+# $2 keyname
+gpg_export_key() {
+    gpg --homedir ${1-~/.gnupg} --armor --export $2 > $2.gpg
+}
+
+# $1 key filename
+# [$2] homedir (~/.gnupg otherwise)
+gpg_import_key() {
+    gpg --homedir ${2-~/.gnupg} --import $1
+}
+
+# Encrypt given plain text
+# $1 string to encrypt
+# $2 key name (not filename)
+# [$3] homedir (~/.gnupg otherwise)
+gpg_encrypt_string() {
+    echo -n "$1" | gpg --homedir ${3-~/.gnupg} --armor --batch --trust-model always --encrypt -r $2
+}
