@@ -15,3 +15,10 @@ substenv_file() {
     # | xargs sed $2 it won't expand variables
     eval "sed $out $2"
 }
+
+# remove line from file
+# $1 line no
+# $2 file name
+rem_line() {
+    sed -i -e "$1d" $2
+}
