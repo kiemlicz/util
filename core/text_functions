@@ -17,8 +17,8 @@ substenv_file() {
 }
 
 # remove line from file
-# $1 line no
-# $2 file name
+# $1 file name
+# $2 line no
 rem_line() {
-    sed -i -e "$1d" $2
+    sed -i -e "$2d" $1
 }
