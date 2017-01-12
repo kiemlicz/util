@@ -2,7 +2,7 @@
 
 # Performs post onto specified URL with content formatted as json
 #$1 uri
-#$2 json file
+#$2 json file (if input is to be read from stdin use: -)
 #$3 user in case of https
 #$4 password in case of https
 rest_json_post() {
