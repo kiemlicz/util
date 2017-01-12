@@ -7,8 +7,15 @@
 #$4 password in case of https
 rest_json_post() {
     if [ -z $3 ]; then
-        curl -H "Accept:application/json" -H "Content-Type:application/json" -X POST -k -d @$2 $1
+        #without -s curl could display some debug info
+        curl -s -H "Accept:application/json" -H "Content-Type:application/json" -X POST -k -d @$2 $1
     else
-        curl -H "Accept:application/json" -H "Content-Type:application/json" -X POST -u "$3":"$4" -k -d @$2 $1
+        curl -s -H "Accept:application/json" -H "Content-Type:application/json" -X POST -u "$3":"$4" -k -d @$2 $1
     fi
+}
+
+# parse simple json loaded from standard input
+# $1 json field
+json_parse() {
+    python -c "import sys, json; print json.load(sys.stdin)[\"$1\"]"
 }
