@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Performs post onto specified URL with content formatted as json
+# Performs POST onto specified URL with content formatted as json
 #$1 uri
 #$2 json file (if input is to be read from stdin use: -)
 #$3 user in case of https
@@ -11,6 +11,18 @@ rest_json_post() {
         curl -s -H "Accept:application/json" -H "Content-Type:application/json" -X POST -k -d @$2 $1
     else
         curl -s -H "Accept:application/json" -H "Content-Type:application/json" -X POST -u "$3":"$4" -k -d @$2 $1
+    fi
+}
+
+# Performs GET
+#$1 uri
+#$2 user in case of https
+#$3 password in case of https
+rest_json_get() {
+    if [ -z $2 ]; then
+        curl -k -i -H "Accept: application/json" $1
+    else
+        curl -k -i -H "Accept: application/json" -u "$2":"$3" $1
     fi
 }
 
