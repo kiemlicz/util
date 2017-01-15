@@ -33,3 +33,13 @@ show_previous_packages_versions() {
         awk -v DATE="$1" -v TIME="$2" '$1==DATE && $2 ~ TIME && $3=="upgrade" {gsub(/:/, "%3a", $5); split($4, f, ":"); print "/var/cache/apt/archives/" f[1] "_" $5 "_" f[2] ".deb"}' /var/log/dpkg.log | xargs -r ls -ld
     fi
 }
+
+# download and extract deb package in the current directory
+#
+# $1 package name (as listed in repo)
+preview_deb_content() {
+    # because apt-get -d install $1 won't download if package is already installed
+    aptitude download $1
+    ar vx ${1}*.deb
+    #this will result in three files: data.tar.xz, control.tar.gz and debian-binary
+}

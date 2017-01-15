@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
 
-# show information about allocated space
+# show information about total space available (pool of raw storage)
 show_btrfs_fs() {
     btrfs filesystem show
+}
+
+# show detailed information about allocated space (from pool)
+# $1 mountpoint of btrfs fs
+show_btrfs_fs_detailed() {
+    btrfs filesystem df $1
 }
