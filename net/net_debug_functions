@@ -12,6 +12,11 @@ show_full_routing() {
     ip route show table all
 }
 
+# print the domain of host
+show_local_domain() {
+    cat /etc/resolv.conf | awk '/^domain/ {print $2}'
+}
+
 # change auto negotiated link (L2) speed, may require sudo
 # $1 interface
 # $2 desired speed in Mb/s
