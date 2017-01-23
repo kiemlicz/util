@@ -1,2 +1,7 @@
 #!/usr/bin/env bash
 
+# remove master key from minion in case of master upgrade
+# [$1] key location (otherwise: /etc/salt/pki/minion/minion_master.pub)
+salt_remove_master_key() {
+    rm ${1-/etc/salt/pki/minion/minion_master.pub}
+}

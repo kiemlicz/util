@@ -33,6 +33,12 @@ stop_container() {
     lxc-wait -n $1 -s STOPPED
 }
 
+# Copy container to standard location
+# $1 container name
+copy_container() {
+    lxc-copy -n $1 -N $1_bak
+}
+
 ####################
 # display operations
 ####################
