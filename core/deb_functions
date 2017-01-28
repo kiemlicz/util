@@ -23,8 +23,8 @@ show_packages_upgraded_at() {
     fi
 }
 
-# check if previous versions of upgraded packages are still available in cache
-# $1 date formatted like /var/log/dpkg.log
+# check if previous version of packages upgraded at specified date are still available in packager cache
+# $1 date formatted like in /var/log/dpkg.log
 # [$2] time pattern (otherwise not used) formatted HH:MM:SS
 show_previous_packages_versions() {
     if [ -z $2 ]; then
@@ -35,7 +35,6 @@ show_previous_packages_versions() {
 }
 
 # download and extract deb package in the current directory
-#
 # $1 package name (as listed in repo)
 preview_deb_content() {
     # because apt-get -d install $1 won't download if package is already installed
