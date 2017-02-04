@@ -17,3 +17,10 @@ salt_remove_master_key() {
 salt_running_jobs() {
     salt-run jobs.active
 }
+
+# list files on master file server
+# useful to debug per env file locations
+# $1 saltenv
+salt_show_fileserver() {
+    salt-run fileserver.file_list saltenv=${1-base}
+}
