@@ -20,6 +20,31 @@ update_java_alternatives() {
 }
 
 ######
+# Systemd
+######
+
+# By default systemd log messages are not retained between boots
+# Default journald setting is Storage=auto which means that persistent
+# log store won't be created but will be used if exists
+ensure_persistent_journal() {
+    local log_location=/var/log/journal
+    local systemd_conf_location=/etc/systemd/journald.conf
+
+    if [ -d $log_location ] && grep -q "Storage=auto" $systemd_conf_location; then
+        #doesn't matter if Storage=auto is commented out because this is the default either way
+        echo "journald is already persistent"
+        return 0;
+    fi
+
+    if grep -q "Storage=auto" $systemd_conf_location; then
+        mkdir -p /var/log/journal
+        systemd-tmpfiles --create --prefix $log_location
+        echo "enabled persistent journald"
+        return 0;
+    fi
+}
+
+######
 # Misc
 ######
 
