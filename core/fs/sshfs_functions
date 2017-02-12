@@ -5,6 +5,10 @@
 # [$2] remote username (root otherwise)
 # [$3] directory where to mount (/mnt/$1 otherwise)
 sshfs_mount() {
+    if [ -z $1 ]; then
+        echo "Usage: $0 hostname [username]"
+        return 1
+    fi
     if [ -z $3 ]; then
         mkdir -p /mnt/"$1"
     fi
