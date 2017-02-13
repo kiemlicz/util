@@ -64,13 +64,13 @@ force_group_in_dir() {
 # $1 string
 string_to_hex_trimmed() {
     # -e ':a;N;$!ba;s/\n//g' removes nl from input string
-    echo -n "$1" | od -A n -t x1 | sed -e 's/^ *//' -e ':a;N;$!ba;s/\n//g' -e 's/ //g' -e 's/\*//g'
+    echo -n "$1" | od -A n -t x1 -v | sed -e ':a;N;$!ba;s/\n//g' -e 's/ //g'
 }
 
 # convert string to its ASCII codes in hexadecimal
 # $1 string
 string_to_hex() {
-    echo -n "$1" | od -A n -t x1 | sed 's/^ *//'
+    echo -n "$1" | od -A n -t x1
 }
 
 # hexdump file into one line
