@@ -24,3 +24,14 @@ salt_running_jobs() {
 salt_show_fileserver() {
     salt-run fileserver.file_list saltenv=${1-base}
 }
+
+# show complete state that will be applied (rendered state)
+# $1 state to display
+# [$2] saltenv (base otherwise)
+salt_show_sls() {
+    if [ -z $1 ]; then
+        echo "usage: $0 <state> [saltenv]"
+        return 1
+    fi
+    salt '*' state.show_sls $1 saltenv=${2-base}
+}
