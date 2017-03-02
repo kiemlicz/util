@@ -8,36 +8,24 @@ find_top_java_thread_id() {
     top -n1 -H | grep -m1 java | perl -pe 's/\e\[?.*?[\@-~] ?//g' | cut -f1 -d' '
 }
 
-# $1 PID
-find_top_java_thread_id_in_pid() {
-    top -n1 -H -p $1 | grep -m1 java | perl -pe 's/\e\[?.*?[\@-~] ?//g' | cut -f1 -d' '
-}
-
 # returns thread ids starting from most CPU-intense
 # $1 PID
 # $2 number of threads to find
-find_top_n_java_thread_ids_in_pid() {
+find_top_java_thread_ids_in_pid() {
     top -n1 -H -p $1 | grep -m $2 java | perl -pe 's/\e\[?.*?[\@-~] ?//g' | cut -f1 -d' '
 }
 
 # [$1] PID (otherwise top java PID will be taken)
-find_top_stack() {
-    local pid=${1-$(find_top_java_pid)}
-    local nid=$(printf '%x' $(find_top_java_thread_id_in_pid $pid))
-
-    jstack $pid | grep -A500 $nid | grep -m1 '^$' -B 500
-}
-
-# [$1] PID (otherwise top java PID will be taken)
 # [$2] number of stacktraces to print (3 otherwise)
-find_top_n_stacks() {
+find_top_stacks() {
     local pid=${1-$(find_top_java_pid)}
     local thres=${2-3}
     local nids=($(find_top_n_java_thread_ids_in_pid $pid $thres)) #array of nid
     local stack=$(jstack $pid)
     for nid in $nids; do
-        echo $stack | grep -A500 $(printf '%x' $nid) | grep -m1 '^$' -B 500
+        echo "$stack" | grep -A500 $(printf '%x' $nid) | grep -m1 '^$' -B 500
     done
+    echo "Native ThreadIDs searched: ${nids[@]}"
 }
 
 # $1 PID
