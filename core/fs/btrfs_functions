@@ -10,3 +10,12 @@ show_btrfs_fs() {
 show_btrfs_fs_detailed() {
     btrfs filesystem df $1
 }
+
+# $1 directory containing btrfs subvolume
+create_subvol() {
+    if [ -z $1 ]; then
+        echo "Usage: $0: <path for subvolume>"
+        return 1
+    fi
+    btrfs subvolume create $1
+}
