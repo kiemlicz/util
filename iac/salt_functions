@@ -35,3 +35,11 @@ salt_show_sls() {
     fi
     salt '*' state.show_sls $1 saltenv=${2-base}
 }
+
+salt_refresh_pillar() {
+    salt '*' saltutil.refresh_pillar
+}
+
+salt_sync() {
+    salt '*' saltutil.sync_all
+}
