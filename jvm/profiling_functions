@@ -20,7 +20,7 @@ find_top_java_thread_ids_in_pid() {
 find_top_stacks() {
     local pid=${1-$(find_top_java_pid)}
     local thres=${2-3}
-    local nids=($(find_top_n_java_thread_ids_in_pid $pid $thres)) #array of nid
+    local nids=($(find_top_java_thread_ids_in_pid $pid $thres)) #array of nid
     local stack=$(jstack $pid)
     for nid in $nids; do
         echo "$stack" | grep -A500 $(printf '%x' $nid) | grep -m1 '^$' -B 500
