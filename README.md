@@ -1,4 +1,4 @@
-#Basics
+# Basics
 The "project" aims to provide scripts/functions for various tasks in day-to-day work.
 Additional rationale of this "project" is following: to encourage writing actual executable hands-on scripts/functions
 instead of untested and lengthy wiki/confluence/blog posts/etc. pages containing various technical manuals.
@@ -10,7 +10,7 @@ Directory layout should be self-documenting about where to find which pieces.
 
 Any changes are more than welcome.
 
-##Usage
+## Usage
  - Most common usage:
 ```shell
 > . jvm/profiling_functions
@@ -27,5 +27,5 @@ This will add function `util` with auto-complete for any file ending with: `_fun
 `util` just sources given `_functions` file so that its content is available in current shell.
 
 ---
-#Read more
+# Read more
 [Introduction&beyond](https://github.com/kiemlicz/util/wiki)
