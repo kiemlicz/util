@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# convert key to pem format without encrypting
+# $1 key path
+pkcs8_der_to_pem() {
+    openssl pkcs8 -topk8 -inform DER -outform PEM -in ${1} -out ${1}.pem -nocrypt
+}
