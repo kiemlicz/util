@@ -5,3 +5,16 @@
 pkcs8_der_to_pem() {
     openssl pkcs8 -topk8 -inform DER -outform PEM -in ${1} -out ${1}.pem -nocrypt
 }
+
+# convert key to der format without encrypting
+# $1 key path
+pkcs8_pem_to_der() {
+    openssl pkcs8 -topk8 -inform PEM -outform DER -in ${1} -out ${1}.der -nocrypt
+}
+
+# extract public key part from private key
+# $1 key path
+# $2 in/out key format
+pkcs8_pubkey() {
+    openssl rsa -inform $2 -outform $2 -in $1 -pubout -out ${1}.pub
+}
