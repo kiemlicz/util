@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+# fetch setting directly from foreman db
+# $1 setting name
+# [$2] username to use for psql command, postgres otherwise
+get_foreman_setting() {
+    sudo -u ${2-postgres} psql -d foreman -c "select value from settings where name = '$1'" -A -E
+}
