@@ -78,7 +78,7 @@ remove_from_keystore() {
     keytool -delete -noprompt -alias $3 -keystore $1 -storepass $2
 }
 
-# imports pkcs12 key with cert into truststore (keystore holding root certificates)
+# imports pem cert into truststore (keystore holding root certificates)
 # $1 truststore file name
 # $2 truststore password
 # $3 input certificate file
@@ -172,6 +172,12 @@ gen_x509_cert_self_signed() {
     # -batch states that this is non-interactive generation
     # -config openssl-ca.cnf use config file
     openssl req -x509 -config $3 -batch -new -key $1 -sha256 -out $2
+}
+
+# generate x509 self-signed certificate along with ec private key
+# $1 private key output file
+gen_x509_cert_and_ec_key_self_signed() {
+    openssl req -x509 -newkey ec:<(openssl ecparam -name prime256v1) -keyout $1 -nodes -out $1.pem -days 365
 }
 
 # generate (actually sign the csr) x509 certificate using CA
