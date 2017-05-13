@@ -59,7 +59,7 @@ This will add function `util` with auto-complete for any file ending with: `_fun
 5. Infrastructure as a code
    * [Foreman](https://github.com/kiemlicz/util/wiki/Foreman)
    * [SaltStack](https://github.com/kiemlicz/util/wiki/saltstack)
-6. Other
+6. Desktop environments
    * [KDE](https://github.com/kiemlicz/util/wiki/kde)
    
 # Handy cheat sheet
