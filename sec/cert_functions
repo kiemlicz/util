@@ -3,6 +3,9 @@
 #todo
 # parametrize -config arg
 
+# references
+# https://jamielinux.com/docs/openssl-certificate-authority/index.html
+
 ####################
 # transform/convert operations
 ####################
@@ -167,11 +170,13 @@ gen_rsa_key() {
 # $1 input private key
 # $2 output file name
 # $3 config file
+# $4 base ssl dir (containing private and certs dirs)
+# $5 days validity (10000 otherwise)
 gen_x509_cert_self_signed() {
     # -x509 states that this is self-signed (when req)
     # -batch states that this is non-interactive generation
     # -config openssl-ca.cnf use config file
-    openssl req -x509 -config $3 -batch -new -key $1 -sha256 -out $2
+    BASE_DIR=$4 openssl req -config $3 -batch -key $1 -new -x509 -days ${5-10000} -sha256 -extensions v3_ca -out $2
 }
 
 # generate x509 self-signed certificate along with ec private key
@@ -184,12 +189,14 @@ gen_x509_cert_and_ec_key_self_signed() {
 # $1 csr file
 # $2 output file name
 # $3 config file for signing
+# $4 base ssl dir
+# [$5] validity days (10000 otherwise)
 gen_csr_sign() {
     # todo verify
     #openssl ca -extensions server_cert -days 375 -notext -md sha256 -in $1 -out $2 -cert $3 -keyfile $4
     # todo create method accepting ca files as arg
     # check if this aids -CAcreateserial for those stupid files creation
-    openssl ca -config $3 -policy signing_policy -extensions signing_req -out $2 -infiles $1
+    BASE_DIR=$4 openssl ca -config $3 -batch -extensions v3_intermediate_ca -days ${5-10000} -notext -md sha256 -in $1 -out $2
 }
 
 # generate certificate revocation list
@@ -197,8 +204,9 @@ gen_csr_sign() {
 # $2 certificate
 # $3 output crl file
 # $4 config file (same as for signing)
+# $5 base ssl dir
 gen_crl_std() {
-    openssl ca -gencrl -keyfile $1 -cert $2 -out "$3.nonstd" -config $4
+    BASE_DIR=$5 openssl ca -gencrl -keyfile $1 -cert $2 -out "$3.nonstd" -config $4
     openssl crl -inform PEM -in "$3.nonstd" -outform DER -out $3 && rm -f "$3.nonstd"
 }
 
@@ -208,16 +216,18 @@ gen_crl_std() {
 # $2 certificate
 # $3 output crl file
 # $4 config file (same as for signing)
+# $5 base ssl dir
 gen_crl_nonstd() {
-    openssl ca -gencrl -keyfile $1 -cert $2 -out $3 -config $4
+    BASE_DIR=$5 openssl ca -gencrl -keyfile $1 -cert $2 -out $3 -config $4
 }
 
 # generate certificate signing request from private key
 # $1 input private key
 # $2 output file name
 # $3 requesting site config file (cert/openssl-server.cnf)
+# $4 base ssl directory (containing certs and private directories)
 gen_csr() {
-    openssl req -batch -config $3 -new -key $1 -sha256 -out $2
+    BASE_DIR_SERVER=$4 openssl req -config $3 -new -batch -sha256 -key $1 -out $2
 }
 
 ####################
