@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+# remove all keys matching prefix
+# $1 prefix
+del_by_prefix() {
+    local IFS=$'\n'
+    for line in $(redis-cli --raw keys $1\*); do
+        redis-cli --raw del $line
+    done
+}
