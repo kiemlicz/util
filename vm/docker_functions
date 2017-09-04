@@ -12,3 +12,9 @@ docker_run_publish_ports() {
     local host_ip=${5-127.0.0.1}
     docker run -p $host_ip:$host_port:$container_port --name $4 $1
 }
+
+# attach to running container and allocate shell
+# $1 container ID or name
+docker_attach_shell() {
+    docker exec -i -t $1 /bin/bash
+}
