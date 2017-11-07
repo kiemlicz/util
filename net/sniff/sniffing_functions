@@ -8,3 +8,13 @@ sniff_dhcp() {
     local location=${2:-/tmp/dhcp.pcap}
     tcpdump -i $ifc -w $location port 67 or port 68 -e -n
 }
+
+# display remotely run tcpdump in local wireshark
+# remote user must have permissions to run tcpdump
+# https://peternixon.net/news/2012/01/28/configure-tcpdump-work-non-root-user-opensuse-using-file-system-capabilities/
+# $1 user@ip
+# $2 interface
+# $3 tcpdump filter
+grab_remote_tcpdump() {
+    ssh -C $1 "tcpdump -i $2 -s0 -U -w - $3" | wireshark -k -i -
+}
