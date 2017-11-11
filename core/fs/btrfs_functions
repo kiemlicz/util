@@ -11,6 +11,16 @@ show_btrfs_fs_detailed() {
     btrfs filesystem df $1
 }
 
+# $1 mount point
+show_subvolumes() {
+    btrfs subvolume list $1
+}
+
+# $1 mount points
+show_errors() {
+    btrfs dev stats $1
+}
+
 # $1 directory containing btrfs subvolume
 create_subvol() {
     if [ -z $1 ]; then

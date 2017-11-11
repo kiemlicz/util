@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+show_networks() {
+    virsh -c qemu:///system net-list --all
+}
+
+show_storage_pools() {
+    virsh -c qemu:///system pool-list --all
+}
+
+# $1 network name
+show_network() {
+    virsh -c qemu:///system net-dumpxml $1
+}
+
+# $1 network name
+start_network() {
+    virsh -c qemu:///system net-start $1
+}
