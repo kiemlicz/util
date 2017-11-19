@@ -281,3 +281,11 @@ verify_ec_priv_and_cert() {
 verify_rsa_priv_and_cert() {
     diff <(openssl rsa -noout -modulus -in $1 | openssl md5) <(openssl x509 -noout -modulus -in $2 | openssl md5)
 }
+
+# checks whether the certificate is revoked
+# $1 CA PEM certificate file
+# $2 PEM certificate to check
+# $3 CRL certificate
+verify_cert_crl() {
+    openssl verify -CAfile $1 -crl_check -CRLfile $3 $2
+}
