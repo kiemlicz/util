@@ -246,6 +246,12 @@ show_crt_as_text() {
     openssl x509 -in $1 -text -noout
 }
 
+# display pem crl formatted file details
+# $1 crl pem file
+show_crl_as_text() {
+    openssl crl -in $1 -text
+}
+
 # display pkcs12 formatted file in human-readable format
 # $1 p12 file
 show_pkcs12_as_text() {
