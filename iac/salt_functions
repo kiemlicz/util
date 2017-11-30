@@ -5,7 +5,7 @@
 #
 
 # remove master key from minion in case of master upgrade/change
-# [$1] key location (otherwise: /etc/salt/pki/minion/minion_master.pub)
+# [$1] key location (otherwise: /etc/salt/pki/minion/minion_master.pub, for windows: C:\salt\conf\pki\minion\minion_master.pub)
 salt_remove_master_key() {
     rm ${1-/etc/salt/pki/minion/minion_master.pub}
 }
@@ -16,9 +16,16 @@ salt_remove_master_key() {
 
 # remotely remove master's key from minion
 # $1 minion id
-# [$2] minion_master key location on minion (otherwise: /etc/salt/pki/minion/minion_master.pub)
+# [$2] minion_master key location on minion (otherwise: /etc/salt/pki/minion/minion_master.pub for linux, C:\salt\conf\pki\minion\minion_master.pub for windows)
 salt_rekey_minion() {
-    salt "$1" cmd.run "rm -rf ${2-/etc/salt/pki/minion/minion_master.pub}"
+    local os=$(salt "$1" grains.get os)
+    if [[ $os == *"Windows"* ]]; then
+        # doesn't work - key is recreated immediately
+        salt "$1" cmd.run "del ${2-C:\salt\conf\pki\minion\minion_master.pub}"
+    else
+        salt "$1" cmd.run "rm -rf ${2-/etc/salt/pki/minion/minion_master.pub}"
+    fi
+
     salt-key -d "$1"
 }
 
