@@ -18,3 +18,14 @@ docker_run_publish_ports() {
 docker_attach_shell() {
     docker exec -i -t $1 /bin/bash
 }
+
+
+# API functions
+
+# remove image (directory) from registry
+# $1 repo url (full path e.g. IP:PORT/PATH)
+# $2 image name
+# $3 repo username
+docker_remove_image() {
+    curl -u $3 -X DELETE $1/$2
+}
