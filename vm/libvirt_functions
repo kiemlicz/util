@@ -8,8 +8,12 @@ show_storage_pools() {
     virsh -c qemu:///system pool-list --all
 }
 
+show_storage_pools_xml() {
+    virsh -c qemu:///system pool-dumpxml $1
+}
+
 # $1 network name
-show_network() {
+show_network_xml() {
     virsh -c qemu:///system net-dumpxml $1
 }
 
