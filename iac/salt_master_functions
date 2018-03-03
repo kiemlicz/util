@@ -1,14 +1,5 @@
 #!/usr/bin/env bash
 
-#
-# Maintenance
-#
-
-# remove master key from minion in case of master upgrade/change
-# [$1] key location (otherwise: /etc/salt/pki/minion/minion_master.pub, for windows: C:\salt\conf\pki\minion\minion_master.pub)
-salt_remove_master_key() {
-    rm ${1-/etc/salt/pki/minion/minion_master.pub}
-}
 
 #
 # salt-master utils
