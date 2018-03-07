@@ -1,6 +1,16 @@
 #!/usr/bin/env bash
 
 
+# create container
+# $1 config file
+# $2 name
+# $3 OS (debian otherwise)
+# $4 OS major (stretch otherwise)
+# $5 arch (amd64 otherwise)
+create_container() {
+    lxc-create -f $1 -t ${3-debian} -n $2 -- -r ${4-stretch} -a ${5-amd64}
+}
+
 # completely purge container
 # $1 container name
 purge_container() {
