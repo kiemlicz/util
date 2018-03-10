@@ -13,8 +13,12 @@ create_container() {
 }
 _create_container() {
     _arguments \
-      "1: config file :_files" \
-      "2: container name :_describe 'container name'"
+      '1:config file:_files' \
+      '2:enter container name' \
+      '3:OS template:(debian ubuntu)' \
+      '4:distro' \
+      '5:arch:(amd64)' \
+      '6:backing store:(dir best btrfs)'
 }
 compdef _create_container create_container
 

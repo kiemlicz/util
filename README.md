@@ -8,7 +8,7 @@ Thus one-line functions for tools with decent completions should not be here.
 
 Directory layout should be self-documenting about where to find which pieces.
 
-Any changes are more than welcome.
+Contributions are welcome.
 
 ## Usage
  - Most common usage:
@@ -27,9 +27,8 @@ This will add function `util` with auto-complete for any file ending with: `_fun
 `util` just sources given `_functions` files so that its content is available in current shell.
 
 ---
+In order to see full descriptions of functions adding:  
+`zstyle ":completion:*:descriptions" format "%B%d%b"` to `.zshrc` may be needed
+
 ## Documentation
 Please visit [wiki](https://github.com/kiemlicz/util/wiki) if you want to find out more
-
-# Handy cheat sheet
-
-![](http://brendangregg.com/Perf/linux_perf_tools_full.png)
