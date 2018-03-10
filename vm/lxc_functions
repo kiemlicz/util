@@ -4,12 +4,19 @@
 # create container
 # $1 config file
 # $2 name
-# $3 OS (debian otherwise)
-# $4 OS major (stretch otherwise)
-# $5 arch (amd64 otherwise)
+# [$3] OS (debian otherwise)
+# [$4] OS major (stretch otherwise)
+# [$5] arch (amd64 otherwise)
+# [$6] backing store (best otherwise)
 create_container() {
-    lxc-create -f $1 -t ${3-debian} -n $2 -- -r ${4-stretch} -a ${5-amd64}
+    lxc-create -B ${6-best} -f $1 -t ${3-debian} -n $2 -- -r ${4-stretch} -a ${5-amd64}
 }
+_create_container() {
+    _arguments \
+      "1: config file :_files" \
+      "2: container name :_describe 'container name'"
+}
+compdef _create_container create_container
 
 # completely purge container
 # $1 container name
