@@ -24,6 +24,16 @@ salt_running_jobs() {
     salt-run jobs.active
 }
 
+salt_job_details() {
+    salt-run jobs.list_job $1
+}
+_salt_job_details() {
+    _arguments \
+     "1:jid"
+     # todo jid completions
+}
+compdef _salt_job_details salt_job_details
+
 # list files on master file server
 # useful to debug per env file locations
 # $1 saltenv
