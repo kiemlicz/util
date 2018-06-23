@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+# display current directory's file system
+current_fs() {
+    stat -f -c %T .
+}
