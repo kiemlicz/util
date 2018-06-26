@@ -100,3 +100,15 @@ compdef _drop_dbs_matching_prefix drop_dbs_matching_prefix
 mongo_show_collection_indexes() {
     mongo --host ${3-localhost} --port ${4-27017} $1 --eval "var collection='$2'" db/mongodb/show_indexes.js
 }
+
+#show all dbs stats in kb
+mongo_show_all_dbs_stats() {
+    mongo --host ${3-localhost} --port ${4-27017} ${1-db/mongodb/show_stats.js}
+}
+_mongo_show_all_dbs_stats() {
+    _arguments \
+        "1:[stat script] db/mongodb/show_stats.js by default" \
+        "2:[host] localhost otherwise" \
+        "3:[port] 27017 otherwise"
+}
+compdef _mongo_show_all_dbs_stats mongo_show_all_dbs_stats
