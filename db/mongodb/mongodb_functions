@@ -90,6 +90,7 @@ _drop_dbs_matching_prefix() {
         "3:[host] localhost otherwise" \
         "4:[port] 27017 otherwise"
 }
+compdef _drop_dbs_matching_prefix drop_dbs_matching_prefix
 
 # shows indexes for collection
 # $1 db
