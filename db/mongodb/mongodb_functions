@@ -80,12 +80,15 @@ restore_dbs() {
 }
 
 # drops all dbs that match given prefix
-# $1 prefix
-# [$2] iterating script
-# [$3] host (otherwise localhost)
-# [$4] port (otherwise 27017)
 drop_dbs_matching_prefix() {
     mongo --host ${3-localhost} --port ${4-27017} --eval "var prefix='$1'" ${2-db/mongodb/drop_by_prefix.js}
+}
+_drop_dbs_matching_prefix() {
+    _arguments \
+        "1:collections prefix" \
+        "2:[drop script] db/mongodb/drop_by_prefix.js by default" \
+        "3:[host] localhost otherwise" \
+        "4:[port] 27017 otherwise"
 }
 
 # shows indexes for collection
