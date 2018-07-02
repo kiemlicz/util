@@ -81,7 +81,7 @@ restore_dbs() {
 
 # drops all dbs that match given prefix
 drop_dbs_matching_prefix() {
-    mongo --host ${3-localhost} --port ${4-27017} --eval "var prefix='$1'" ${2-db/mongodb/drop_by_prefix.js}
+    mongo --host ${3-localhost} --port ${4-27017} --eval "var prefix='$1'" ${2-$ZSH_CUSTOM/plugins/util/db/mongodb/drop_by_prefix.js}
 }
 _drop_dbs_matching_prefix() {
     _arguments \
@@ -98,12 +98,12 @@ compdef _drop_dbs_matching_prefix drop_dbs_matching_prefix
 # [$3] host
 # [$4] port
 mongo_show_collection_indexes() {
-    mongo --host ${3-localhost} --port ${4-27017} $1 --eval "var collection='$2'" db/mongodb/show_indexes.js
+    mongo --host ${3-localhost} --port ${4-27017} $1 --eval "var collection='$2'" $ZSH_CUSTOM/plugins/util/db/mongodb/show_indexes.js
 }
 
 #show all dbs stats in kb
 mongo_show_all_dbs_stats() {
-    mongo --host ${3-localhost} --port ${4-27017} ${1-db/mongodb/show_stats.js}
+    mongo --host ${3-localhost} --port ${4-27017} ${1-$ZSH_CUSTOM/plugins/util/db/mongodb/show_stats.js}
 }
 _mongo_show_all_dbs_stats() {
     _arguments \
