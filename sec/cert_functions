@@ -112,7 +112,6 @@ export_cert_from_keystore_to_pem() {
 # $1 keystore file name
 # $2 keystore password
 # $3 key alias
-# $4 output file name
 export_key_from_keystore_to_der() {
     keytool -importkeystore -srckeystore $1 -srcstorepass $2 -destkeystore $1.der -deststoretype DER -srcalias $3
 }
