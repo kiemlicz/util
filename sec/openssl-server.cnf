@@ -83,6 +83,7 @@ stateOrProvinceName_default     = England
 localityName_default            =
 0.organizationName_default      = Alice Ltd
 organizationalUnitName_default  =
+commonName_default              = $ENV::SERVER_FQDN
 emailAddress_default            =
 
 [ v3_ca ]
