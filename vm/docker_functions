@@ -16,6 +16,15 @@ _docker_run_publish_ports() {
 }
 compdef _docker_run_publish_ports docker_run_publish_ports
 
+docker_run_interactive() {
+    docker run -it --entrypoint=/bin/bash $1
+}
+
+_docker_run_interactive() {
+    _arguments \
+      "1:docker image"
+}
+
 # attach to running container and allocate shell
 docker_attach_shell() {
     docker exec -i -t $1 /bin/bash
