@@ -24,6 +24,7 @@ _docker_run_interactive() {
     _arguments \
       "1:docker image"
 }
+compdef _docker_run_interactive docker_run_interactive
 
 # attach to running container and allocate shell
 docker_attach_shell() {
