@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+
+capture_stdout() {
+    strace -p $1 -f -s9999 -e trace=write -e write=1,2 -o $2
+}
+_capture_stdout() {
+    _arguments \
+      "1:PID" \
+      "2:log to file"
+}
+compdef _capture_stdout capture_stdout
