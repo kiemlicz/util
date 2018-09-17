@@ -38,3 +38,13 @@ show_object_trace() {
     local obj_map="jmap -histo:live $1"
     watch -d -n1 $obj_map
 }
+
+# show IO call stats
+show_io() {
+    strace -fce trace=open,read,write -p $1
+}
+_show_io() {
+    _arguments \
+      "1:pid"
+}
+compdef _show_io show_io
