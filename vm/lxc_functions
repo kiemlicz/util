@@ -60,6 +60,24 @@ copy_container() {
     lxc-copy -n $1 -N $1_bak
 }
 
+lxc_ensure_ssh_key() {
+    #use tilde expansion to get arbitrary user home directory
+    local user_home=$(eval echo "~$1")
+    #remove previous association if any
+    ssh-keygen -f $user_home/.ssh/known_hosts -R $2
+    #ssh-keygen could change the ownership if run by superuser
+    chown $1.$1 $user_home/.ssh/known_hosts
+    cat $user_home/.ssh/${4-id_rsa.pub} >> $3/.ssh/authorized_keys
+}
+_lxc_ensure_ssh_key() {
+    _arguments \
+      "1:username" \
+      "2:remote hostname" \
+      "3:path to user directory in container" \
+      "4:[key name] id_rsa.pub by default"
+}
+compdef _lxc_ensure_ssh_key lxc_ensure_ssh_key
+
 ####################
 # display operations
 ####################
