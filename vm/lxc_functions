@@ -11,16 +11,6 @@
 create_container() {
     lxc-create -B ${6-best} -f $1 -t ${3-debian} -n $2 -- -r ${4-stretch} -a ${5-amd64}
 }
-_create_container() {
-    _arguments \
-      '1:config file:_files' \
-      '2:enter container name' \
-      '3:OS template:(debian ubuntu)' \
-      '4:distro' \
-      '5:arch:(amd64)' \
-      '6:backing store:(dir best btrfs)'
-}
-compdef _create_container create_container
 
 # completely purge container
 # $1 container name
@@ -69,14 +59,6 @@ lxc_ensure_ssh_key() {
     chown $1.$1 $user_home/.ssh/known_hosts
     cat $user_home/.ssh/${4-id_rsa.pub} >> $3/.ssh/authorized_keys
 }
-_lxc_ensure_ssh_key() {
-    _arguments \
-      "1:username" \
-      "2:remote hostname" \
-      "3:path to user directory in container" \
-      "4:[key name] id_rsa.pub by default"
-}
-compdef _lxc_ensure_ssh_key lxc_ensure_ssh_key
 
 ####################
 # display operations

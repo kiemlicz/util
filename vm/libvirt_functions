@@ -20,8 +20,3 @@ show_network_xml() {
 start_network() {
     virsh -c qemu:///system net-start $1
 }
-_start_network() {
-    _arguments \
-      "1:network name"
-}
-compdef _start_network start_network

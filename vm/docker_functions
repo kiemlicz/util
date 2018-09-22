@@ -6,35 +6,15 @@ docker_run_publish_ports() {
     local host_ip=${5-127.0.0.1}
     docker run -p $host_ip:$host_port:$container_port --name $4 $1
 }
-_docker_run_publish_ports() {
-    _arguments \
-      "1:docker image" \
-      "2:host port" \
-      "3:container port" \
-      "4:container name" \
-      "5:[host ip] 127.0.0.1 by default"
-}
-compdef _docker_run_publish_ports docker_run_publish_ports
 
 docker_run_interactive() {
     docker run -it --entrypoint=/bin/bash $1
 }
 
-_docker_run_interactive() {
-    _arguments \
-      "1:docker image"
-}
-compdef _docker_run_interactive docker_run_interactive
-
 # attach to running container and allocate shell
 docker_attach_shell() {
     docker exec -i -t $1 /bin/bash
 }
-_docker_attach_shell() {
-    _arguments \
-      "1:container ID/name"
-}
-compdef _docker_attach_shell docker_attach_shell
 
 # API functions
 

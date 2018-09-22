@@ -1,0 +1,5 @@
+_start_network() {
+    _arguments \
+      "1:network name"
+}
+compdef _start_network start_network
