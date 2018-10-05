@@ -8,3 +8,7 @@ kube_list_all() {
 kube_list_pods() {
     kubectl get pods -o go-template --template '{{range.items}}{{.metadata.name}}{{"\n"}}{{end}}'
 }
+
+kube_pod_details() {
+    kubectl describe pod $1
+}
