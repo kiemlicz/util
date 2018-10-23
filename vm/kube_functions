@@ -12,3 +12,6 @@ kube_list_pods() {
 kube_pod_details() {
     kubectl describe pod $1
 }
+kube_events() {
+    kubectl get events --sort-by='{.lastTimestamp}'
+}
