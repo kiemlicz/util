@@ -20,3 +20,11 @@ show_network_xml() {
 start_network() {
     virsh -c qemu:///system net-start $1
 }
+
+show_vms() {
+    virsh -c qemu:///system list --all
+}
+
+start_vm() {
+    virsh -c qemu:///system start $1
+}
