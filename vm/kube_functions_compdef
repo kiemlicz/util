@@ -1,5 +1,6 @@
-_kube_pod_details() {
+_kube_exe() {
     _arguments \
-      "1:POD name"
+      "1:POD name" \
+      "2:command(s)"
 }
-compdef _kube_pod_details kube_pod_details
+compdef _kube_exe kube_exe
