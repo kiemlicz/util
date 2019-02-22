@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 kube_list_all() {
-    kubectl get services
     kubectl get pods --all-namespaces -o wide
 }
 
