@@ -20,3 +20,11 @@ _docker_attach_shell() {
       "1:container ID/name"
 }
 compdef _docker_attach_shell docker_attach_shell
+
+_docker_deploy_registry() {
+    _arguments \
+      "1:host directory with auth volume" \
+      "2:registry username" \
+      "3:registry password"
+}
+compdef _docker_deploy_registry docker_deploy_registry
