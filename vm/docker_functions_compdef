@@ -25,6 +25,8 @@ _docker_deploy_registry() {
     _arguments \
       "1:host directory with auth volume" \
       "2:registry username" \
-      "3:registry password"
+      "3:registry password" \
+      "4:registry volume" \
+      "5:[certificates dir]"
 }
 compdef _docker_deploy_registry docker_deploy_registry

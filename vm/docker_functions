@@ -20,27 +20,30 @@ docker_deploy_registry() {
   local auth_dir=$1
   local user=$2
   local passwd=$3
+  local registry_volume=$4
 
   htpasswd -Bbn $2 $3 > $auth_dir/htpasswd
 
-  if [ -z $4 ]; then
+  if [ -z $5 ]; then
       docker run -d \
         -p 5000:5000 \
         --restart=always \
         --name registry \
         -v "$auth_dir":/auth \
+        -v "$registry_volume":/var/lib/registry \
         -e "REGISTRY_AUTH=htpasswd" \
         -e "REGISTRY_AUTH_HTPASSWD_REALM=Registry Realm" \
         -e REGISTRY_AUTH_HTPASSWD_PATH=/auth/htpasswd \
         registry:2
   else
-      local cert_dir=$4
+      local cert_dir=$5
 
       docker run -d \
         -p 5000:5000 \
         --restart=always \
         --name registry \
         -v "$auth_dir":/auth \
+        -v "$registry_volume":/var/lib/registry \
         -e "REGISTRY_AUTH=htpasswd" \
         -e "REGISTRY_AUTH_HTPASSWD_REALM=Registry Realm" \
         -e REGISTRY_AUTH_HTPASSWD_PATH=/auth/htpasswd \
