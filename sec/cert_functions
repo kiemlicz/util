@@ -195,7 +195,7 @@ gen_csr_sign() {
     #openssl ca -extensions server_cert -days 375 -notext -md sha256 -in $1 -out $2 -cert $3 -keyfile $4
     # todo create method accepting ca files as arg
     # check if this aids -CAcreateserial for those stupid files creation
-    BASE_DIR=$4 openssl ca -config $3 -batch -extensions v3_intermediate_ca -days ${5-10000} -notext -md sha256 -in $1 -out $2
+    BASE_DIR=$4 openssl ca -config $3 -batch -days ${5-10000} -notext -md sha256 -in $1 -out $2
 }
 
 # generate certificate revocation list
