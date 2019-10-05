@@ -1,0 +1,6 @@
+_vagrant_create_box() {
+    _arguments \
+      '1:box name' \
+      '2:box img size'
+}
+compdef _vagrant_create_box vagrant_create_box

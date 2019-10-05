@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+vagrant_create_box() {
+  if [ ! -f box.img ]; then
+    echo "box.img not found"
+  else
+    cat > metadata.json <<EOF
+{
+  "provider"     : "libvirt",
+  "format"       : "qcow2",
+  "virtual_size" : $2
+}
+EOF
+    cat > Vagrantfile <<EOF
+Vagrant.configure('2') do |config|
+  config.vm.provider :libvirt do |libvirt|
+  end
+end
+
+EOF
+    tar cvfz $1.box metadata.json Vagrantfile box.img
+  fi
+}
