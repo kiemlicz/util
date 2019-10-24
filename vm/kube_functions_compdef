@@ -4,3 +4,9 @@ _kube_exe() {
       "2:command(s)"
 }
 compdef _kube_exe kube_exe
+
+_kube_debug() {
+    _arguments \
+      "1:base image"
+}
+compdef _kube_debug kube_debug

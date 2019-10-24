@@ -1,9 +1,5 @@
 #!/usr/bin/env bash
 
-kube_list_all() {
-    kubectl get pods --all-namespaces -o wide
-}
-
 kube_list_pods() {
     kubectl get pods -o go-template --template '{{range.items}}{{.metadata.name}}{{"\n"}}{{end}}'
 }
@@ -16,6 +12,6 @@ kube_export_all() {
     kubectl get all --export -o yaml
 }
 
-kube_exe() {
-    kubectl exec -it $1 -- ${@:2}
+kube_debug() {
+  kubectl run -it --rm debug --image=${1-debian} --restart=Never -- bash
 }
