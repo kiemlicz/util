@@ -31,3 +31,7 @@ gpg_import_key() {
 gpg_encrypt_string() {
     echo -n "$1" | gpg --homedir ${3-~/.gnupg} --armor --batch --trust-model always --encrypt -r $2
 }
+
+gpg_list_keys() {
+  gpg --homedir ${1-~/.gnupg} --list-keys
+}

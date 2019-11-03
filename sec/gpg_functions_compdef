@@ -1,0 +1,12 @@
+_gpg_import_key() {
+    _arguments \
+      '1:private key file' \
+      '2: GPG homedir (~/.gnupg otherwise)'
+}
+compdef _gpg_import_key gpg_import_key
+
+_gpg_list_keys() {
+    _arguments \
+      '1:gpg home dir'
+}
+compdef _gpg_list_keys gpg_list_keys
