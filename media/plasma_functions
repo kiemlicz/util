@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+# provide list of wallpapers to set for consecutive desktops
+set_wallpaper() {
+  local script="var allDesktops = desktops();"
+  local i=0
+  for img in "$@"; do
+    script=$script"
+d = allDesktops[$i];
+d.wallpaperPlugin = 'org.kde.image';
+d.currentConfigGroup = Array('Wallpaper', 'org.kde.image', 'General');
+d.writeConfig('Image', \"$img\");
+"
+    ((i++))
+  done
+  qdbus org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript "$script"
+}
