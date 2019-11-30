@@ -6,10 +6,12 @@ set_wallpaper() {
   local i=0
   for img in "$@"; do
     script=$script"
+if (allDesktops.length > $i) {
 d = allDesktops[$i];
 d.wallpaperPlugin = 'org.kde.image';
 d.currentConfigGroup = Array('Wallpaper', 'org.kde.image', 'General');
 d.writeConfig('Image', \"$img\");
+}
 "
     ((i++))
   done
