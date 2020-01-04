@@ -13,7 +13,7 @@ sniff_dhcp() {
 # remote user must have permissions to run tcpdump
 # https://peternixon.net/news/2012/01/28/configure-tcpdump-work-non-root-user-opensuse-using-file-system-capabilities/
 grab_remote_tcpdump() {
-    ssh -C $1 "tcpdump -i $2 -s0 -U -w - $3" | wireshark -k -i -
+    ssh -C $1 "/usr/sbin/tcpdump -i $2 -s0 -U -w - $3" | wireshark -k -i -
 }
 _grab_remote_tcpdump() {
     _arguments \
