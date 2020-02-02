@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 # provide list of wallpapers to set for consecutive desktops
+# broken on newer Plasma
 set_wallpaper() {
   local script="var allDesktops = desktops();"
   local i=0
