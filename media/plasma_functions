@@ -4,7 +4,12 @@
 set_wallpaper() {
   local allargs="$@"
   # build string to be pasted in JS snipped below...
-  local wallpapers="['${allargs// /', '}']"
+  local wallpapers="['"
+  for w in $@; do
+    wallpapers="$wallpapers$w', '"
+  done
+  wallpapers="${wallpapers::-3}]"
+
   local script="
 var allDesktops = desktops();
 var wallpapers = $wallpapers;
