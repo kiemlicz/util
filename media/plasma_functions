@@ -2,10 +2,10 @@
 
 # provide list of wallpapers to set for consecutive desktops
 set_wallpaper() {
-  local allargs = "$@"
+  local allargs="$@"
   # build string to be pasted in JS snipped below...
-  local wallpapers = "['${allargs// /\', \'}']"
-  local script = "
+  local wallpapers="['${allargs// /', '}']"
+  local script="
 var allDesktops = desktops();
 var wallpapers = $wallpapers;
 for (i=0;i<allDesktops.length;i++) {
