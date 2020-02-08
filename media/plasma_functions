@@ -1,20 +1,19 @@
 #!/usr/bin/env bash
 
 # provide list of wallpapers to set for consecutive desktops
-# broken on newer Plasma
 set_wallpaper() {
-  local script="var allDesktops = desktops();"
-  local i=0
-  for img in "$@"; do
-    script=$script"
-if (allDesktops.length > $i) {
-d = allDesktops[$i];
-d.wallpaperPlugin = 'org.kde.image';
-d.currentConfigGroup = Array('Wallpaper', 'org.kde.image', 'General');
-d.writeConfig('Image', \"$img\");
+  local allargs = "$@"
+  # build string to be pasted in JS snipped below...
+  local wallpapers = "['${allargs// /\', \'}']"
+  local script = "
+var allDesktops = desktops();
+var wallpapers = $wallpapers;
+for (i=0;i<allDesktops.length;i++) {
+  d = allDesktops[i];
+  d.wallpaperPlugin = 'org.kde.image';
+  d.currentConfigGroup = Array('Wallpaper', 'org.kde.image', 'General');
+  d.writeConfig('Image', wallpapers[i%wallpapers.length]);
 }
 "
-    ((i++))
-  done
   qdbus org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript "$script"
 }
