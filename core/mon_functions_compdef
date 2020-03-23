@@ -1,0 +1,5 @@
+_total_rss_vsz() {
+    _arguments \
+      '1:process name'
+}
+compdef _total_rss_vsz total_rss_vsz
