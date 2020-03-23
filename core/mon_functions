@@ -2,6 +2,6 @@
 
 total_rss_vsz() {
     echo "Returning total RSS and VSZ of process(es): $1 (processes count: $(ps aux | grep "$1" | wc -l))"
-    echo "RSS: $(ps aux | awk -v PROCESS="$1" '$12 ~ PROCESS {sum += $6} END {print sum}')"
-    echo "VSZ: $(ps aux | awk -v PROCESS="$1" '$12 ~ PROCESS {sum += $5} END {print sum}')"
+    echo "RSS: $(ps aux | awk -v PROCESS="$1" '$11 ~ PROCESS {sum += $6} END {print sum}')"
+    echo "VSZ: $(ps aux | awk -v PROCESS="$1" '$11 ~ PROCESS {sum += $5} END {print sum}')"
 }
