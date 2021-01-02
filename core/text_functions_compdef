@@ -1,0 +1,6 @@
+_parse_yaml() {
+    _arguments \
+      '1:YAML file' \
+      '2: [prefix]'
+}
+compdef _parse_yaml parse_yaml

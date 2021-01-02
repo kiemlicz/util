@@ -35,3 +35,30 @@ string_to_hex_trimmed() {
 string_to_hex() {
     echo -n "$1" | od -A n -t x1
 }
+
+parse_yaml() {
+  # based on https://gist.github.com/briantjacobs/7753bf850ca5e39be409#file-yaml-sh
+  if [ -n "$ZSH_VERSION" ]; then
+    # for ZSH, due to complex sed expression (brackets)
+    emulate -L ksh
+  fi
+
+  local prefix=$2
+  local s='[[:space:]]*'
+  local w='[a-zA-Z0-9_]*'
+  local fs=$(echo @|tr @ '\034')
+  # print matching only and match again (essentially filter out comments)
+  sed -ne "s|^\($s\)\($w\)$s:$s\"\(.*\)\"$s\$|\1$fs\2$fs\3|p" \
+       -e "s|^\($s\)\($w\)$s[:-]$s\(.*\)$s\$|\1$fs\2$fs\3|p" "$1" |
+  awk -F"$fs" '{
+    indent = length($1)/2;
+    vname[indent] = $2;
+    # clear previous keys as already printed, new higher order key incoming
+    for (i in vname) {if (i > indent) {delete vname[i]}}
+    if (length($3) > 0) {
+        # value exists, print full key with _
+        vn=""; for (i=0; i<indent; i++) {vn=(vn)(vname[i])("_")}
+        printf("%s%s%s=(\"%s\")\n", "'"$prefix"'",vn, $2, $3);
+    }
+  }' | sed 's/_=/+=/g'
+}

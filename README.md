@@ -1,12 +1,14 @@
 # Basics
 The "project" aims to provide scripts/functions for various tasks in day-to-day work.  
-Additional rationale of this "project" is following: to encourage writing actual executable hands-on scripts/functions,
+The additional rationale of this "project" is following: to encourage writing actual executable hands-on scripts/functions
 instead of untested and lengthy wiki/confluence pages/blog posts/etc. containing various technical manuals.
 
 This project does **not** aim to duplicate the functionality of command-line completions. 
-Thus one-line functions for tools with decent completions should not be here.  
+Thus, one-line functions for tools with decent completions should not be here.  
 
 Directory layout should be self-documenting about where to find which pieces.
+
+ZSH-compliant, possibly BASH too.
 
 Contributions are welcome.
 
