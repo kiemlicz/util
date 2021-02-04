@@ -1,0 +1,5 @@
+_swap_file() {
+    _arguments \
+      '1:file name'
+}
+compdef _swap_file swap_file

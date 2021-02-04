@@ -66,3 +66,10 @@ dump_hex_one_line() {
     hexdump -e '16/1 "%02x"' $1
     #hexdump -e '16/1 "%02x " "\n"' $1
 }
+
+
+swap_file() {
+  mv $2 $2.tmp
+  mv $1 $2
+  mv $2.tmp $1
+}
