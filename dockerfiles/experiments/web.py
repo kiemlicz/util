@@ -3,6 +3,7 @@ import flask
 import time
 import signal
 import sys
+import socket
 from flask import Flask
 from flask_api import status
 from os import environ
@@ -16,7 +17,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def hello():
-    return f"Hello World!: {flask.request.remote_addr}"
+    return f"Hello World!: {flask.request.remote_addr}, handler: {socket.gethostname()}"
 
 @app.route('/health')
 def health():
