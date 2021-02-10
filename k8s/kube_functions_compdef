@@ -5,8 +5,15 @@ _kube_exe() {
 }
 compdef _kube_exe kube_exe
 
-_kube_debug() {
+_kube_debug_once() {
     _arguments \
       "1:base image"
+}
+compdef _kube_debug_once kube_debug_once
+
+_kube_debug() {
+    _arguments \
+      "1:POD name" \
+      "2:Timeout for POD readiness"
 }
 compdef _kube_debug kube_debug
