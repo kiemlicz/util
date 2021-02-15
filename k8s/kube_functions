@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
 kube_list_pods() {
-    kubectl get pods -o go-template --template '{{range.items}}{{.metadata.name}}{{"\n"}}{{end}}'
+  kubectl get pods -o go-template --template '{{range.items}}{{.metadata.name}}{{"\n"}}{{end}}'
 }
 
 kube_events() {
-    kubectl get events --sort-by='{.lastTimestamp}'
+  kubectl get events --sort-by='{.lastTimestamp}'
 }
 
 kube_debug_once() {
@@ -33,6 +33,6 @@ spec:
       securityContext:
         privileged: true
 EOF
-  kubectl wait --for condition=ready --timeout=${2-10}s pod/$1
-  kubectl exec -it $1 -- bash
+  kubectl wait --for condition=ready --timeout=${2-10}s pod/${1-debug}
+  kubectl exec -it ${1-debug} -- bash
 }
