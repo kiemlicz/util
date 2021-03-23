@@ -8,11 +8,15 @@ from flask import Flask
 from flask_api import status
 from os import environ
 
+from kubernetes import client, config
+
 log = logging.getLogger()
 log.addHandler(logging.StreamHandler())
 log.setLevel(logging.INFO)
 
 app = Flask(__name__)
+config.load_incluster_config()
+v1 = client.CoreV1Api()
 
 
 @app.route('/')
@@ -32,6 +36,14 @@ def sick():
 def broken():
     time.sleep(42)
     return "broken", status.HTTP_404_NOT_FOUND
+
+@app.route('/pody')
+def k8sapi():
+    # with open("/var/run/secrets/kubernetes.io/serviceaccount/namespace", 'r') as f:
+    #     ns = f.readline()
+    #     log.info(f"Reading PODs in ns: {ns}")
+    return [i for i in v1.list_pod_for_all_namespaces(watch=False).items]
+
 
 def sigterm_handler(signum, frame):
     log.info("SIGTERM received, stopping")

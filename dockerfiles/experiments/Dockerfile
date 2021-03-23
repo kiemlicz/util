@@ -2,7 +2,7 @@ FROM python:3-slim-buster
 
 ENV TCP_PORT="8080"
 
-RUN pip3 install flask==1.1.2 flask-api==2.0
+RUN pip3 install flask==1.1.2 flask-api==2.0 kubernetes==12.0.1
 
 COPY web.py /opt/
 WORKDIR /opt
