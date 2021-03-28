@@ -1,0 +1,83 @@
+#!/usr/bin/env bash
+
+# https://backreference.org/2014/11/12/on-the-fly-ipsec-vpn-with-iproute2/
+gen_ipsec() {
+  if [ -z "$8" ]; then
+    echo "missing args, example: $0 192.168.8.153 172.21.0.0/16 172.21.0.1 ens3 192.168.8.140 172.20.0.0/16 172.20.0.1 ens3"
+    return 1
+  fi
+
+  local gw1_public="$1"
+  local gw1_cidr="$2"
+  local gw1_private="$3"
+  local gw1_ifc="$4"
+
+  local gw2_public="$5"
+  local gw2_cidr="$6"
+  local gw2_private="$7"
+  local gw2_ifc="$8"
+
+  rand_device="/dev/urandom"
+
+  declare -a keys
+  for i in {1..4}; do
+    # keys 1 and 3 are for HMAC, keys 2 and 4 are for encryption
+    keys[i]=$(xxd -p -l 32 -c 32 "${rand_device}")
+  done
+
+  declare -a spi
+  for i in {1..2}; do
+    spi[i]=$(xxd -p -l 4 "${rand_device}")
+  done
+
+  declare -a reqid
+  for i in {1..2}; do
+    reqid[i]=$(xxd -p -l 4 "${rand_device}")
+  done
+
+  if [ "${gw2_cidr}" = "0.0.0.0/0" ]; then
+    # add a /32 route to the peer before pointing the default to the tunnel
+    local gw1_gw2_route="ip route add ${gw2_public}/32 dev ${gw1_ifc} via ${gw1_private} && ip route del ${gw2_cidr} && ip route add ${gw2_cidr} dev ${gw1_ifc} src ${gw1_private}"
+  else
+    local gw1_gw2_route="ip route add ${gw2_cidr} dev ${gw1_ifc} src ${gw1_private}"
+  fi
+
+  if [ "${gw1_cidr}" = "0.0.0.0/0" ]; then
+    local gw2_gw1_route="ip route add ${gw1_public}/32 dev ${GW2_IF} via ${gw2_public} && ip route del ${gw1_cidr} && ip route add ${gw1_cidr} dev ${gw2_ifc} src ${gw2_private}"
+  else
+    local gw2_gw1_route="ip route add ${gw1_cidr} dev ${gw2_ifc} src ${gw2_private}"
+  fi
+
+  cat << EOF
+**********************
+Commands to run on GW1
+**********************
+
+ip xfrm state flush; ip xfrm policy flush
+
+ip xfrm state add src ${gw1_public} dst ${gw2_public} proto esp spi 0x${spi[1]} reqid 0x${reqid[1]} mode tunnel auth sha256 0x${keys[1]} enc aes 0x${keys[2]}
+ip xfrm state add src ${gw2_public} dst ${gw1_public} proto esp spi 0x${spi[2]} reqid 0x${reqid[2]} mode tunnel auth sha256 0x${keys[3]} enc aes 0x${keys[4]}
+
+ip xfrm policy add src ${gw1_cidr} dst ${gw2_cidr} dir out tmpl src ${gw1_public} dst ${gw2_public} proto esp reqid 0x${reqid[1]} mode tunnel
+ip xfrm policy add src ${gw2_cidr} dst ${gw1_cidr} dir fwd tmpl src ${gw2_public} dst ${gw1_public} proto esp reqid 0x${reqid[2]} mode tunnel
+ip xfrm policy add src ${gw2_cidr} dst ${gw1_cidr} dir in tmpl src ${gw2_public} dst ${gw1_public} proto esp reqid 0x${reqid[2]} mode tunnel
+
+${gw1_gw2_route}
+
+**********************
+Commands to run on GW2
+**********************
+
+ip xfrm state flush; ip xfrm policy flush
+
+ip xfrm state add src ${gw1_public} dst ${gw2_public} proto esp spi 0x${spi[1]} reqid 0x${reqid[1]} mode tunnel auth sha256 0x${keys[1]} enc aes 0x${keys[2]}
+ip xfrm state add src ${gw2_public} dst ${gw1_public} proto esp spi 0x${spi[2]} reqid 0x${reqid[2]} mode tunnel auth sha256 0x${keys[3]} enc aes 0x${keys[4]}
+
+ip xfrm policy add src ${gw2_cidr} dst ${gw1_cidr} dir out tmpl src ${gw2_public} dst ${gw1_public} proto esp reqid 0x${reqid[2]} mode tunnel
+ip xfrm policy add src ${gw1_cidr} dst ${gw2_cidr} dir fwd tmpl src ${gw1_public} dst ${gw2_public} proto esp reqid 0x${reqid[1]} mode tunnel
+ip xfrm policy add src ${gw1_cidr} dst ${gw2_cidr} dir in tmpl src ${gw1_public} dst ${gw2_public} proto esp reqid 0x${reqid[1]} mode tunnel
+
+${gw2_gw1_route}
+EOF
+
+}
