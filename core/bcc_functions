@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+bcc_tools() {
+  docker run --rm -it --privileged --network=host --pid=host --uts=host --ipc=host \
+  -v /usr/src:/usr/src:ro \
+  -v /lib/modules:/lib/modules:ro \
+  -v /sys:/sys:ro \
+  -v /usr/src:/usr/src:ro \
+  bcc
+}
+
+bpftrace_tools() {
+  docker run --rm -it --privileged --network=host --pid=host --uts=host --ipc=host \
+  -v /usr/src:/usr/src:ro \
+  -v /lib/modules:/lib/modules:ro \
+  -v /sys:/sys:ro \
+  -v /usr/src:/usr/src:ro \
+  quay.io/iovisor/bpftrace:latest
+}
