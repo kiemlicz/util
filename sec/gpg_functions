@@ -12,10 +12,14 @@ gpg_gen_key() {
     fi
 }
 
-# $1 key homedir
-# $2 keyname
+# $1 keyname
+# $2 key homedir
 gpg_export_key() {
-    gpg --homedir ${1-~/.gnupg} --armor --export $2 > $2.gpg
+    gpg --homedir ${2-~/.gnupg} --armor --export $1 > $1.pub.gpg
+}
+
+gpg_export_secret_key() {
+  gpg --homedir ${2-~/.gnupg} --armor --export-secret-keys $1 > $1.gpg
 }
 
 # $1 key filename
