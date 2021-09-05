@@ -1,0 +1,67 @@
+site_name: Util docs
+
+nav:
+  - Home: index.md
+  - Basics:
+      - Basics: basics/basics.md
+      - Editors: basics/editing.md
+      - Scripting: basics/scripting.md
+      - GIT: basics/git.md
+      - MEM: basics/memory.md
+  - OS:
+      - PID 1: os/init.md
+      - Kernel: os/kernel.md
+      - File system:
+          - BTRFS: os/fs/btrfs.md
+          - CIFS: os/fs/cifs.md
+      - Packages: os/package-management.md
+  - Net:
+      - Configuration: net/net-cfg.md
+      - Proto:
+          - SSH: net/SSH.md
+          - SSL: net/SSL.md
+          - IPsec: net/IPsec.md
+          - LoRa: net/LoRa.md
+      - Tunneling: net/tunneling.md
+      - Debugging: net/net-debug.md
+      - L2:
+          - Link layer: net/net-link-layer.md
+      - L3:
+          - Routing: net/routing.md
+      - L7:
+          - Sockets: net/sockets.md
+  - Security:
+      - Standards: security/crypto.md
+  - Virt:
+      - Virtualization: virt/vm.md
+      - KVM: virt/KVM.md
+      - VBox: virt/virtualbox.md
+      - VFIO: virt/VFIO.md
+      - Containerization: virt/containerization.md
+      - Docker: virt/docker.md
+      - LXC: virt/LXC.md
+  - Infrastructure as a Code:
+      - Foreman: iaac/foreman.md
+      - Unattended: iaac/unattended.md
+      - Salt:
+          - Basics: iaac/salt/basics.md
+          - Configuration: iaac/salt/configuration.md
+          - Minion: iaac/salt/minion.md
+          - Master: iaac/salt/master.md
+          - Transport: iaac/salt/transport.md
+          - Scripts: iaac/salt/scripts.md
+          - Modules: iaac/salt/modules.md
+          - Events/Reactor: iaac/salt/events-and-reactor.md
+          - SSH: iaac/salt/salt-SSH.md
+      - Kubernetes:
+            - Basics: iaac/kubernetes/basics.md
+            - Admin: iaac/kubernetes/admin.md
+            - PODs: iaac/kubernetes/POD.md
+            - Service: iaac/kubernetes/service.md
+            - Volumes: iaac/kubernetes/volumes.md
+            - Controllers: iaac/kubernetes/controllers.md
+      - Helm: iaac/helm.md
+      - Vagrant: iaac/vagrant.md
+  - Uncategorized:
+      - IO benchmark: uncategorized/bench_io.md
+      - KDE: uncategorized/kde.md
