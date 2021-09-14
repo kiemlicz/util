@@ -28,3 +28,4 @@ apt-get install rsync
 
 # References
 1. https://gilmatdub.wordpress.com/2014/08/08/howto-create-a-vagrant-image-box-for-libvirt-kvm/
+2. https://github.com/vagrant-libvirt/vagrant-libvirt
