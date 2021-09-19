@@ -33,6 +33,15 @@ Dump traffic on remote (eth0) host and visualize it locally with wireshark:
 
 ## Dumping any traffic aka. sniffing
 
+## Latency
+Different sources of latencies:
+- DNS
+- ping latency, round-trip time, may not reflect actual request latency (ICMP priority may be lower)
+- connection latency, e.g. TCP three-way handshake time (retransmits if `backlog` full on the receiving side)
+- first-byte latency, time from establishing connection to receiving the first byte
+- round-trip time, signal propagation and processing times at intermediate hops
+- connection life span, keep-alive connection to reduce handshake overhead
+
 # References
 1. https://www.wains.be/pub/networking/tcpdump_advanced_filters.txt
 2. https://peternixon.net/news/2012/01/28/configure-tcpdump-work-non-root-user-opensuse-using-file-system-capabilities/
