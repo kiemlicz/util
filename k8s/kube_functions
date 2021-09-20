@@ -20,11 +20,12 @@ metadata:
   labels:
     role: debug
   name: ${1-debug}
+  namespace: ${2-default}
 spec:
   securityContext:
     runAsUser: 0
   containers:
-    - image: debian:buster
+    - image: debian:bullseye
       name: debug
       command:
         - bash
@@ -33,6 +34,6 @@ spec:
       securityContext:
         privileged: true
 EOF
-  kubectl wait --for condition=ready --timeout=${2-10}s pod/${1-debug}
-  kubectl exec -it ${1-debug} -- bash
+  kubectl wait --for condition=ready --timeout=${3-10}s pod/${1-debug} -n ${2-default}
+  kubectl exec -it ${1-debug} -n ${2-default} -- bash
 }
