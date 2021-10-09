@@ -33,4 +33,4 @@ In order to see full descriptions of functions adding:
 `zstyle ":completion:*:descriptions" format "%B%d%b"` to `.zshrc` may be needed
 
 ## Documentation
-Please visit [wiki](https://github.com/kiemlicz/util/wiki) if you want to find out more
+Please visit [GH pages](kiemlicz.github.io/util/) if you want to find out more

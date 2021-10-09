@@ -1,0 +1,7 @@
+_list_repository_packages() {
+    _arguments \
+      '1:repo file (/var/lib/apt/lists/):_files'
+}
+compdef _list_repository_packages list_repository_packages
+
+# https://github.com/zsh-users/zsh-completions/blob/master/zsh-completions-howto.org#writing-completion-functions-using-_arguments

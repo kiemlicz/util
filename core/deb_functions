@@ -24,7 +24,7 @@ show_packages_upgraded_at() {
 }
 
 # check if previous version of packages upgraded at specified date are still available in packager cache
-# $1 date formatted like in /var/log/dpkg.log
+# $1 date of upgrade (formatted like in /var/log/dpkg.log)
 # [$2] time pattern (otherwise not used) formatted HH:MM:SS
 show_previous_packages_versions() {
     if [ -z $2 ]; then
@@ -41,4 +41,9 @@ preview_deb_content() {
     aptitude download $1
     ar vx ${1}*.deb
     #this will result in three files: data.tar.xz, control.tar.gz and debian-binary
+}
+
+# list all packages from given repo
+list_repository_packages() {
+  awk '/Package:.*/ {print $2}' $1
 }
