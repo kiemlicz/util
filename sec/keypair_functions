@@ -1,0 +1,20 @@
+#!/usr/bin/env zsh
+# mind this uses `type` function available only on ZSH
+
+SEC_UTIL_LOC="$(dirname $(readlink -f $0))"
+source $SEC_UTIL_LOC/cert_functions
+
+generate_server_keypair() {(set -e  # fail early in function
+  name="$1"
+  out="$2"
+  server_config="$SEC_UTIL_LOC/openssl-server.cnf"
+  server_key="$out/$name.key"
+  server_cert="$out/$name.crt"
+  server_csr="$out/$name.csr"
+
+  echo "Generating private key to $server_key"
+  gen_ec_key $server_key
+  echo "key $server_key generated"
+
+  # todo
+)}
