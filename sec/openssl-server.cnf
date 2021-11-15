@@ -1,60 +1,3 @@
-# OpenSSL intermediate CA configuration file.
-# Copy to `/root/ca/intermediate/openssl.cnf`.
-
-[ ca ]
-# `man ca`
-default_ca = CA_default
-
-[ CA_default ]
-# Directory and file locations.
-dir               = $ENV::BASE_DIR_SERVER
-certs             = $dir/certs
-crl_dir           = $dir/crl
-new_certs_dir     = $dir/newcerts
-database          = $dir/index.txt
-serial            = $dir/serial
-RANDFILE          = $dir/private/.rand
-
-# The root key and root certificate.
-private_key       = $dir/private/intermediate.key.pem
-certificate       = $dir/certs/intermediate.cert.pem
-
-# For certificate revocation lists.
-crlnumber         = $dir/crlnumber
-crl               = $dir/crl/intermediate.crl.pem
-crl_extensions    = crl_ext
-default_crl_days  = 30
-
-# SHA-1 is deprecated, so use SHA-2 instead.
-default_md        = sha256
-
-name_opt          = ca_default
-cert_opt          = ca_default
-default_days      = 375
-preserve          = no
-policy            = policy_loose
-
-[ policy_strict ]
-# The root CA should only sign intermediate certificates that match.
-# See the POLICY FORMAT section of `man ca`.
-countryName             = match
-stateOrProvinceName     = match
-organizationName        = match
-organizationalUnitName  = optional
-commonName              = supplied
-emailAddress            = optional
-
-[ policy_loose ]
-# Allow the intermediate CA to sign a more diverse range of certificates.
-# See the POLICY FORMAT section of the `ca` man page.
-countryName             = optional
-stateOrProvinceName     = optional
-localityName            = optional
-organizationName        = optional
-organizationalUnitName  = optional
-commonName              = supplied
-emailAddress            = optional
-
 [ req ]
 # Options for the `req` tool (`man req`).
 default_bits        = 2048
@@ -65,7 +8,7 @@ string_mask         = utf8only
 default_md          = sha256
 
 # Extension to add when the -x509 option is used.
-x509_extensions     = v3_ca
+# x509_extensions     = v3_ca
 
 [ req_distinguished_name ]
 # See <https://en.wikipedia.org/wiki/Certificate_signing_request>.
@@ -78,27 +21,13 @@ commonName                      = Common Name
 emailAddress                    = Email Address
 
 # Optionally, specify some defaults.
-countryName_default             = GB
-stateOrProvinceName_default     = England
+countryName_default             = PL
+stateOrProvinceName_default     = Poland
 localityName_default            =
-0.organizationName_default      = Alice Ltd
+0.organizationName_default      =
 organizationalUnitName_default  =
-commonName_default              = $ENV::SERVER_FQDN
+commonName_default              = $ENV::UTIL_SERVER_FQDN
 emailAddress_default            =
-
-[ v3_ca ]
-# Extensions for a typical CA (`man x509v3_config`).
-subjectKeyIdentifier = hash
-authorityKeyIdentifier = keyid:always,issuer
-basicConstraints = critical, CA:true
-keyUsage = critical, digitalSignature, cRLSign, keyCertSign
-
-[ v3_intermediate_ca ]
-# Extensions for a typical intermediate CA (`man x509v3_config`).
-subjectKeyIdentifier = hash
-authorityKeyIdentifier = keyid:always,issuer
-basicConstraints = critical, CA:true, pathlen:0
-keyUsage = critical, digitalSignature, cRLSign, keyCertSign
 
 [ usr_cert ]
 # Extensions for client certificates (`man x509v3_config`).
@@ -131,3 +60,10 @@ subjectKeyIdentifier = hash
 authorityKeyIdentifier = keyid,issuer
 keyUsage = critical, digitalSignature
 extendedKeyUsage = critical, OCSPSigning
+
+#[ alternate_names ]
+#uncomment and provide if necessary
+#DNS.1  = $ENV::UTIL_SERVER_ALT_1
+#DNS.2  = $ENV::UTIL_SERVER_ALT_2
+#DNS.3  = $ENV::UTIL_SERVER_ALT_3
+#DNS.4  = $ENV::UTIL_SERVER_ALT_4

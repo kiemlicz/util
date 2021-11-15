@@ -16,8 +16,8 @@ serial            = $dir/serial
 RANDFILE          = $dir/private/.rand
 
 # The root key and root certificate.
-private_key       = $dir/private/ca.key.pem
-certificate       = $dir/certs/ca.cert.pem
+private_key       = $ENV::UTIL_CA_PRIV_KEY
+certificate       = $ENV::UTIL_CA_CERT
 
 # For certificate revocation lists.
 crlnumber         = $dir/crlnumber
@@ -78,10 +78,10 @@ commonName                      = Common Name
 emailAddress                    = Email Address
 
 # Optionally, specify some defaults.
-countryName_default             = GB
-stateOrProvinceName_default     = England
+countryName_default             = PL
+stateOrProvinceName_default     = Poland
 localityName_default            =
-0.organizationName_default      = Alice Ltd
+0.organizationName_default      =
 organizationalUnitName_default  =
 emailAddress_default            =
 

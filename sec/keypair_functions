@@ -4,17 +4,37 @@
 SEC_UTIL_LOC="$(dirname $(readlink -f $0))"
 source $SEC_UTIL_LOC/cert_functions
 
-generate_server_keypair() {(set -e  # fail early in function
+# Generate keypair signed by given CA
+generate_server_keypair_signed() {(set -e  # fail early in function
   name="$1"
   out="$2"
+  ca_key="$3"
+  ca_crt="$4"
+  export UTIL_CA_PRIV_KEY="$ca_key"
+  export UTIL_CA_CERT="$ca_crt"
+  export UTIL_SERVER_FQDN=${5-$name}
+  mkdir -p "$out/private"
+  mkdir -p "$out/certs"
+  mkdir -p "$out/newcerts"  # possibly remove
+  touch "$out/index.txt"
+  echo '01' > "$out/serial"
   server_config="$SEC_UTIL_LOC/openssl-server.cnf"
-  server_key="$out/$name.key"
-  server_cert="$out/$name.crt"
+  ca_config="$SEC_UTIL_LOC/openssl-ca.cnf"
+  server_key="$out/private/$name.key"
+  server_cert="$out/certs/$name.crt"
   server_csr="$out/$name.csr"
 
-  echo "Generating private key to $server_key"
+  echo "Generating private key: $server_key"
   gen_ec_key $server_key
-  echo "key $server_key generated"
+  echo "Key: $server_key generated"
 
-  # todo
+  echo "Generating CSR: $server_csr"
+  gen_csr "$server_key" "$server_csr" "$server_config" "$out"
+  echo "CSR: $server_csr generated"
+
+  echo "Signing CSR: $server_cert"
+  gen_csr_sign "$server_csr" "$server_cert" "$ca_config" "$out"
+  echo "Cert: $server_cert generated"
+
+  # todo fix field matches (CA config)
 )}
