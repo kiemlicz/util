@@ -229,6 +229,10 @@ gen_csr() {
     BASE_DIR_SERVER=$4 openssl req -config $3 -new -batch -sha256 -key $1 -out $2
 }
 
+gen_csr_interactive() {
+  BASE_DIR_SERVER=$4 openssl req -config $3 -new -sha256 -key $1 -out $2
+}
+
 # generate CA (RSA based)
 # $1 private key that will be generated
 # $2 public (ca cert) file that will be generated

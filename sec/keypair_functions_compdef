@@ -1,0 +1,8 @@
+_generate_server_keypair_signed() {
+    _arguments \
+      '1:server name (fqdn)' \
+      '2:output dir:_path_files -/' \
+      '3:CA key used to sign the CSR:_path_files' \
+      '4:CA cert:_path_files'
+}
+compdef _generate_server_keypair_signed generate_server_keypair_signed

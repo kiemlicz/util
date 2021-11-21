@@ -5,7 +5,8 @@ SEC_UTIL_LOC="$(dirname $(readlink -f $0))"
 source $SEC_UTIL_LOC/cert_functions
 
 # Generate keypair signed by given CA
-generate_server_keypair_signed() {(set -e  # fail early in function
+# asks for countryName, stateOrProvince, etc.
+generate_server_keypair_signed_interactive() {(set -e  # fail early in function
   name="$1"
   out="$2"
   ca_key="$3"
@@ -29,12 +30,10 @@ generate_server_keypair_signed() {(set -e  # fail early in function
   echo "Key: $server_key generated"
 
   echo "Generating CSR: $server_csr"
-  gen_csr "$server_key" "$server_csr" "$server_config" "$out"
+  gen_csr_interactive "$server_key" "$server_csr" "$server_config" "$out"
   echo "CSR: $server_csr generated"
 
   echo "Signing CSR: $server_cert"
   gen_csr_sign "$server_csr" "$server_cert" "$ca_config" "$out"
   echo "Cert: $server_cert generated"
-
-  # todo fix field matches (CA config)
 )}

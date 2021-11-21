@@ -22,7 +22,7 @@ emailAddress                    = Email Address
 
 # Optionally, specify some defaults.
 countryName_default             = PL
-stateOrProvinceName_default     = Poland
+stateOrProvinceName_default     =
 localityName_default            =
 0.organizationName_default      =
 organizationalUnitName_default  =
