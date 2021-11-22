@@ -14,6 +14,7 @@ compdef _kube_debug_once kube_debug_once
 _kube_debug() {
     _arguments \
       "1:POD name" \
-      "2:Timeout for POD readiness"
+      "2:POD namespace" \
+      "3:Timeout"
 }
 compdef _kube_debug kube_debug
