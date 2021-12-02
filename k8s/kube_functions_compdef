@@ -18,3 +18,12 @@ _kube_debug() {
       "3:Timeout"
 }
 compdef _kube_debug kube_debug
+
+_kube_jvm_jstack() {
+    _arguments \
+      "1:POD name" \
+      "2:Number of stacks to dump [20 otherwise]" \
+      "3:Interval between stacks [10 otherwise]" \
+      "4:JVM PID [1 otherwise]"
+}
+compdef _kube_jvm_jstack kube_jvm_jstack

@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 
-kube_list_pods() {
-  kubectl get pods -o go-template --template '{{range.items}}{{.metadata.name}}{{"\n"}}{{end}}'
-}
+K8S_UTIL_LOC="$(dirname $(readlink -f $0))"
 
 kube_events() {
   kubectl get events --sort-by='{.lastTimestamp}'
@@ -36,4 +34,27 @@ spec:
 EOF
   kubectl wait --for condition=ready --timeout=${3-10}s pod/${1-debug} -n ${2-default}
   kubectl exec -it ${1-debug} -n ${2-default} -- bash
+}
+
+
+kube_jvm_jstack() {
+  if [ -z "$1" ]; then
+    echo "POD name required"
+    return 1
+  fi
+  local pod=${1}
+  local stacks=${2-20}
+  local interval=${3-10}
+  local pid=${4-1}
+  echo "Assuming JVM is running as PID $pid"
+  for i in $(seq 1 $stacks); do
+    # fixme pass $pid
+    kubectl exec -it $pod -- kill -QUIT 1
+    echo "[$(date)] Signal sent ($i times)"
+    sleep $interval  # so that lengthy dump surely finishes
+    # otherwise k8s may cut the stdout
+    echo "Analyzing logs"
+    kubectl logs "$1" | python3 $K8S_UTIL_LOC/extract_jvm_thread_dump.py
+  done
+  echo "Analyzing logs completed"
 }
