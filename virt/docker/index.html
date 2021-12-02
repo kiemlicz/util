@@ -1,0 +1,2154 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.0.2">
+    
+    
+      
+        <title>Docker - Util docs</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.816931ca.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.9204c3b2.min.css">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>function __md_scope(e,t,_){return new URL(_||(t===localStorage?"../..":"../.."),location).pathname+"."+e}function __md_get(e,t=localStorage,_){return JSON.parse(t.getItem(__md_scope(e,t,_)))}function __md_set(e,t,_=localStorage,o){try{_.setItem(__md_scope(e,_,o),JSON.stringify(t))}catch(e){}}</script>
+    
+      
+
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#basics" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Util docs" class="md-header__button md-logo" aria-label="Util docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Util docs
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Docker
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Util docs" class="md-nav__button md-logo" aria-label="Util docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    Util docs
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2">
+          Basics
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Basics" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          Basics
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../basics/basics/" class="md-nav__link">
+        Basics
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../basics/editing/" class="md-nav__link">
+        Editors
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../basics/scripting/" class="md-nav__link">
+        Scripting
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../basics/git/" class="md-nav__link">
+        GIT
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../basics/memory/" class="md-nav__link">
+        MEM
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3">
+          OS
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="OS" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          OS
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../os/init/" class="md-nav__link">
+        PID 1
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../os/kernel/" class="md-nav__link">
+        Kernel
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_3" type="checkbox" id="__nav_3_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_3">
+          File system
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="File system" data-md-level="2">
+        <label class="md-nav__title" for="__nav_3_3">
+          <span class="md-nav__icon md-icon"></span>
+          File system
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../os/fs/btrfs/" class="md-nav__link">
+        BTRFS
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../os/fs/cifs/" class="md-nav__link">
+        CIFS
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../os/package-management/" class="md-nav__link">
+        Packages
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4">
+          Net
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Net" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          Net
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../net/net-cfg/" class="md-nav__link">
+        Configuration
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_2" type="checkbox" id="__nav_4_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4_2">
+          Proto
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Proto" data-md-level="2">
+        <label class="md-nav__title" for="__nav_4_2">
+          <span class="md-nav__icon md-icon"></span>
+          Proto
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../net/SSH/" class="md-nav__link">
+        SSH
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../net/SSL/" class="md-nav__link">
+        SSL
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../net/IPsec/" class="md-nav__link">
+        IPsec
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../net/LoRa/" class="md-nav__link">
+        LoRa
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../net/tunneling/" class="md-nav__link">
+        Tunneling
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../net/net-debug/" class="md-nav__link">
+        Debugging
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_5" type="checkbox" id="__nav_4_5" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4_5">
+          L2
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="L2" data-md-level="2">
+        <label class="md-nav__title" for="__nav_4_5">
+          <span class="md-nav__icon md-icon"></span>
+          L2
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../net/net-link-layer/" class="md-nav__link">
+        Link layer
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_6" type="checkbox" id="__nav_4_6" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4_6">
+          L3
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="L3" data-md-level="2">
+        <label class="md-nav__title" for="__nav_4_6">
+          <span class="md-nav__icon md-icon"></span>
+          L3
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../net/routing/" class="md-nav__link">
+        Routing
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_7" type="checkbox" id="__nav_4_7" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4_7">
+          L7
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="L7" data-md-level="2">
+        <label class="md-nav__title" for="__nav_4_7">
+          <span class="md-nav__icon md-icon"></span>
+          L7
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../net/sockets/" class="md-nav__link">
+        Sockets
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5">
+          Security
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Security" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          Security
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../security/crypto/" class="md-nav__link">
+        Standards
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6">
+          Virt
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Virt" data-md-level="1">
+        <label class="md-nav__title" for="__nav_6">
+          <span class="md-nav__icon md-icon"></span>
+          Virt
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../vm/" class="md-nav__link">
+        Virtualization
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../KVM/" class="md-nav__link">
+        KVM
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../virtualbox/" class="md-nav__link">
+        VBox
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../VFIO/" class="md-nav__link">
+        VFIO
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../containerization/" class="md-nav__link">
+        Containerization
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Docker
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Docker
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#basics" class="md-nav__link">
+    Basics
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    Usage
+  </a>
+  
+    <nav class="md-nav" aria-label="Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#building-images" class="md-nav__link">
+    Building images
+  </a>
+  
+    <nav class="md-nav" aria-label="Building images">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#design-goals-when-building-images" class="md-nav__link">
+    Design goals when building images
+  </a>
+  
+    <nav class="md-nav" aria-label="Design goals when building images">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#image-size" class="md-nav__link">
+    image size
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#one-application-in-container" class="md-nav__link">
+    one application in container
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#process-reaping" class="md-nav__link">
+    process reaping
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#image-types" class="md-nav__link">
+    Image types
+  </a>
+  
+    <nav class="md-nav" aria-label="Image types">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#building-base-images" class="md-nav__link">
+    Building base images
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#debugging" class="md-nav__link">
+    Debugging
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#networking" class="md-nav__link">
+    Networking
+  </a>
+  
+    <nav class="md-nav" aria-label="Networking">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#bridge" class="md-nav__link">
+    bridge
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#host" class="md-nav__link">
+    host
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#overlay" class="md-nav__link">
+    overlay
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#macvlan" class="md-nav__link">
+    macvlan
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#none" class="md-nav__link">
+    none
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#custom" class="md-nav__link">
+    custom
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#volumes" class="md-nav__link">
+    Volumes
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration" class="md-nav__link">
+    Configuration
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#change-storage-driver" class="md-nav__link">
+    Change storage-driver:
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#change-dockerd-sockets" class="md-nav__link">
+    Change dockerd sockets:
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#underlying-technology" class="md-nav__link">
+    Underlying technology
+  </a>
+  
+    <nav class="md-nav" aria-label="Underlying technology">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#namespaces" class="md-nav__link">
+    Namespaces
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#control-groups-cgroups" class="md-nav__link">
+    Control groups (cgroups)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#union-file-systems" class="md-nav__link">
+    Union file systems
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#container-format" class="md-nav__link">
+    Container format
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    References
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../LXC/" class="md-nav__link">
+        LXC
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7" type="checkbox" id="__nav_7" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_7">
+          Infrastructure as a Code
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Infrastructure as a Code" data-md-level="1">
+        <label class="md-nav__title" for="__nav_7">
+          <span class="md-nav__icon md-icon"></span>
+          Infrastructure as a Code
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../iaac/foreman/" class="md-nav__link">
+        Foreman
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../iaac/unattended/" class="md-nav__link">
+        Unattended
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_3" type="checkbox" id="__nav_7_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_7_3">
+          Salt
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Salt" data-md-level="2">
+        <label class="md-nav__title" for="__nav_7_3">
+          <span class="md-nav__icon md-icon"></span>
+          Salt
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../iaac/salt/basics/" class="md-nav__link">
+        Basics
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../iaac/salt/configuration/" class="md-nav__link">
+        Configuration
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../iaac/salt/minion/" class="md-nav__link">
+        Minion
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../iaac/salt/master/" class="md-nav__link">
+        Master
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../iaac/salt/transport/" class="md-nav__link">
+        Transport
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../iaac/salt/scripts/" class="md-nav__link">
+        Scripts
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../iaac/salt/modules/" class="md-nav__link">
+        Modules
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../iaac/salt/events-and-reactor/" class="md-nav__link">
+        Events/Reactor
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../iaac/salt/salt-SSH/" class="md-nav__link">
+        SSH
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_4" type="checkbox" id="__nav_7_4" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_7_4">
+          Kubernetes
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Kubernetes" data-md-level="2">
+        <label class="md-nav__title" for="__nav_7_4">
+          <span class="md-nav__icon md-icon"></span>
+          Kubernetes
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../iaac/kubernetes/basics/" class="md-nav__link">
+        Basics
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../iaac/kubernetes/admin/" class="md-nav__link">
+        Admin
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../iaac/kubernetes/POD/" class="md-nav__link">
+        PODs
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../iaac/kubernetes/service/" class="md-nav__link">
+        Service
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../iaac/kubernetes/volumes/" class="md-nav__link">
+        Volumes
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../iaac/kubernetes/controllers/" class="md-nav__link">
+        Controllers
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../iaac/helm/" class="md-nav__link">
+        Helm
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../iaac/vagrant/" class="md-nav__link">
+        Vagrant
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8" type="checkbox" id="__nav_8" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8">
+          Uncategorized
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Uncategorized" data-md-level="1">
+        <label class="md-nav__title" for="__nav_8">
+          <span class="md-nav__icon md-icon"></span>
+          Uncategorized
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../uncategorized/bench_io/" class="md-nav__link">
+        IO benchmark
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../uncategorized/kde/" class="md-nav__link">
+        KDE
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#basics" class="md-nav__link">
+    Basics
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    Usage
+  </a>
+  
+    <nav class="md-nav" aria-label="Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#building-images" class="md-nav__link">
+    Building images
+  </a>
+  
+    <nav class="md-nav" aria-label="Building images">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#design-goals-when-building-images" class="md-nav__link">
+    Design goals when building images
+  </a>
+  
+    <nav class="md-nav" aria-label="Design goals when building images">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#image-size" class="md-nav__link">
+    image size
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#one-application-in-container" class="md-nav__link">
+    one application in container
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#process-reaping" class="md-nav__link">
+    process reaping
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#image-types" class="md-nav__link">
+    Image types
+  </a>
+  
+    <nav class="md-nav" aria-label="Image types">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#building-base-images" class="md-nav__link">
+    Building base images
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#debugging" class="md-nav__link">
+    Debugging
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#networking" class="md-nav__link">
+    Networking
+  </a>
+  
+    <nav class="md-nav" aria-label="Networking">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#bridge" class="md-nav__link">
+    bridge
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#host" class="md-nav__link">
+    host
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#overlay" class="md-nav__link">
+    overlay
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#macvlan" class="md-nav__link">
+    macvlan
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#none" class="md-nav__link">
+    none
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#custom" class="md-nav__link">
+    custom
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#volumes" class="md-nav__link">
+    Volumes
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration" class="md-nav__link">
+    Configuration
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#change-storage-driver" class="md-nav__link">
+    Change storage-driver:
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#change-dockerd-sockets" class="md-nav__link">
+    Change dockerd sockets:
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#underlying-technology" class="md-nav__link">
+    Underlying technology
+  </a>
+  
+    <nav class="md-nav" aria-label="Underlying technology">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#namespaces" class="md-nav__link">
+    Namespaces
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#control-groups-cgroups" class="md-nav__link">
+    Control groups (cgroups)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#union-file-systems" class="md-nav__link">
+    Union file systems
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#container-format" class="md-nav__link">
+    Container format
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    References
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+
+<p>Originally LXC-based, widespread. Created for shipping and running applications. Encourages running <strong>one process per container</strong>.</p>
+<h2 id="basics">Basics</h2>
+<table>
+<thead>
+<tr>
+<th>term</th>
+<th>meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>image</td>
+<td>Packaged application along with environment. Product of <code>docker build</code> command. Snapshot of a container. Analogous to the concept from <em>Object Oriented Programming</em>: <code>class</code></td>
+</tr>
+<tr>
+<td>container</td>
+<td>Running instance of image. Analogous to the concept from <em>Object Oriented Programming</em>: <code>class</code> instance</td>
+</tr>
+<tr>
+<td>tag</td>
+<td>Extra information appended to image name. Helpful for enclosing image version information, if omitted: <code>latest</code> is assumed</td>
+</tr>
+<tr>
+<td>registry</td>
+<td>Repository that stores Docker Images, can be public or private</td>
+</tr>
+<tr>
+<td>Dockerfile</td>
+<td>Text file, contains <a href="https://docs.docker.com/engine/reference/builder/">commands</a> that assemble image</td>
+</tr>
+</tbody>
+</table>
+<p>Each image is identified by ID, can contain different names and tags.<br />
+Image name contains of slash delimited name components, with optionally repository name prefixed. If the name doesn't contain 
+registry name, then the public <code>docker.io</code> is assumed.</p>
+<p>The process specified as <code>ENTRYPOINT</code> in Dockerfile becomes PID 1 process, it means that it will not handle SIGKILL signal.</p>
+<p>The container lifetime is equal to the encapsulating (<code>ENTRYPOINT</code>s) process lifetime. The process dies, the container dies too.</p>
+<h2 id="usage">Usage</h2>
+<p>Common commands:</p>
+<table>
+<thead>
+<tr>
+<th>operation</th>
+<th>command</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Build image from <code>Dockerfile</code>. Invoke passing directory containing <code>Dockerfile</code> or pass the dockerfile with <code>-f</code>. The mandatory argument is called <em>build context</em> - all dockerfile instructions are relative to that path and all non-ignored files from that directory are send to Docker engine</td>
+<td><code>docker build -t my-tag .</code> <a href="#Building-images">Read more</a></td>
+</tr>
+<tr>
+<td>Create and start container (simplest form)</td>
+<td><code>docker run --name &lt;some_name&gt; &lt;image tag or name&gt; [args]</code></td>
+</tr>
+<tr>
+<td>Stop container</td>
+<td><code>docker stop &lt;container name or id&gt;</code></td>
+</tr>
+<tr>
+<td>Remove container</td>
+<td><code>docker rm &lt;container name or id&gt;</code></td>
+</tr>
+<tr>
+<td>Remove image</td>
+<td><code>docker rmi &lt;image name or id&gt;</code></td>
+</tr>
+<tr>
+<td>Push image to registry</td>
+<td><ol><li>Tag image with repository URL first. Mind that repo may support the <code>v1</code> and/or <code>v2</code> 'naming' format. Briefly speaking: <code>v1</code> format doesn't support multiple path segments in image name, thus image: <code>rootName/subName</code> is invalid. For <code>v2</code> it is fine: <code>docker tag &lt;image&gt; &lt;repourl&gt;/&lt;name&gt;:&lt;tag&gt;</code></li><li>Login to desired repository, <code>docker.io</code> is the default <code>docker login &lt;repourl&gt;</code> <li> <code>docker push &lt;repourl&gt;/&lt;name&gt;:&lt;tag&gt;</code> </li> </ol></td>
+</tr>
+<tr>
+<td>Show running containers</td>
+<td><code>docker ps</code></td>
+</tr>
+<tr>
+<td>Show container/image details</td>
+<td><code>docker inspect container_or_image_name</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="building-images">Building images</h3>
+<p><a href="https://docs.docker.com/engine/reference/builder/"><code>Dockerfile</code></a> contains all of the needed instructions to build the image with given application.<br />
+Each instruction corresponds to filesystem layer. 
+Image is built within <em>build context</em> (the directory passed to <code>docker build</code> command - simply speaking).
+All <code>COPY</code>-kind instructions are relative to that <em>build context</em>.<br />
+The bigger the <em>build context</em> (directory contents and size) the longer it takes to send them to Docker engine. </p>
+<h4 id="design-goals-when-building-images">Design goals when building images</h4>
+<p>There is a lot of things to keep in mind when building images. 
+Many of them will be containerized-application specific: different set of guidelies for JVM application, python application, etc.</p>
+<p>However there are some fundamental, containerized-application agnostic set of rules:</p>
+<h5 id="image-size">image size</h5>
+<p>The image is never downloaded once and there is a difference when downloading over 1GB image vs 100MB. </p>
+<p>Storage is also limited especially when images doesn't re-use the layers.</p>
+<p>Huge images impact the downtime of your application, the bigger the image, the longer it takes to download it, the longer the downtime.
+When the Kubernetes reschedules the POD to another Node which doesn't contain the image (or the image has changed), the time user waits for application is also longer </p>
+<p>Security the fewer the libraries in container the better,</p>
+<p>The main goal when building the image should be: 
+ - minimize the number of layers, the new layer is created only with: <code>COPY</code>, <code>RUN</code> and <code>ADD</code> commands.
+ - use cache as much as possible. When the <code>Dockerfile</code> processed, each instruction is examined if its outcome is present in the cache already. 
+ The <code>ADD</code> and <code>COPY</code> will check if the underlying file has changed, the <code>RUN</code> commands will check only if the command string has not changed.
+ Thus building the image with <code>RUN apt-get update</code> second time won't update the latest packages.
+ - once the cache is invalidated (instruction that misses cache occurred), all subsequent instructions won't check the cache</p>
+<p>The verify layer re-use: <code>docker system df -v</code></p>
+<h5 id="one-application-in-container">one application in container</h5>
+<ul>
+<li>management of the image that ships one application is easier: one log source, one application to monitor. Usage is easier too, 
+ as there is no need for <code>supervisord</code>-like tools that govern multiple applications inside one container.</li>
+<li>decoupled dependencies, easier to re-deploy</li>
+</ul>
+<h5 id="process-reaping">process reaping</h5>
+<p>When the (main) application spawns processes inside of container it's the application's responsibility to cleanup process after it completes.
+Usually it was done by <code>PID 1 init</code> process, but the docker lacks one (by default at least)<br />
+Since container uses its own <code>pid</code> namespace, as long as the container lives, the host's <code>init</code> process cannot clean orphaned processes.</p>
+<h4 id="image-types">Image types</h4>
+<p>There are two types of images in docker terminology:
+ - <em>parent image</em> - the image that is specified in <code>FROM</code> clause. Your image is based on <em>parent image</em>. Your image after build becomes parent image.<br />
+ - <em>base image</em> - the image that has no <code>FROM</code> or <code>FROM scratch</code></p>
+<p>Most <code>Dockerfile</code>s use <em>parent images</em> in their <code>FROM</code> clause.</p>
+<h5 id="building-base-images"><a href="https://docs.docker.com/develop/develop-images/baseimages/">Building base images</a></h5>
+<p>In order to build base image:
+ - use debootstrap for Debian-based distributions (tool that installs Debian-based distributions into given filesystem) 
+ - archive it and <code>docker import image.tar name</code> </p>
+<p>It is also possible to build base image from <code>Dockerfile</code>:  </p>
+<pre><code>FROM scratch
+ADD some_binary /
+CMD [&quot;/some_binary&quot;]
+</code></pre>
+<p>Such image will be able to execute the specified binary only.</p>
+<h3 id="debugging">Debugging</h3>
+<p>Failed container can be pretty easily debugged
+1. Grab exited container ID<br />
+<code>docker ps -a</code>
+2. Create image<br />
+<code>docker commit &lt;container id&gt;</code>
+3. Run image corresponding to failed container, overriding its potential <code>ENTRYPOINT</code><br />
+<code>docker run -it --entrypoint /bin/bash &lt;image id&gt;</code></p>
+<p>Live container can be debugged as well:
+1. Grab the container name or ID: <code>docker ps</code>
+2. Attach to the container with: <code>docker exec -it &lt;container id&gt; /bin/bash</code></p>
+<h2 id="networking">Networking</h2>
+<p>Networking system in Docker is configurable. It is possible to set different networking driver for containers using:
+<code>docker run --network=host ...</code></p>
+<h3 id="bridge">bridge</h3>
+<p>Default driver, creates the bridge that connects all containers withing Docker host. Docker host manages IP addresses and <code>iptables</code> rules
+governing inbound/outbound traffic. From Docker host it should be possible to reach any port on the running container (host has routing configured for containers subnet: <code>ip r s</code>)
+However by default containers will be unreachable from outside (outside of Docker host). In order to tell Docker host, 
+that it should add <code>iptables</code> rules allows access to containers the port publish option must be used: <code>docker run... -p 8080:80 ...</code>.<br />
+The <code>-p hostPort:containerPort</code> maps (TCP by default) port 8080 on the host to the container port 80.   </p>
+<h3 id="host">host</h3>
+<p>Uses the host networking interfaces. No network isolation. The <code>ip a</code> output from within the container will print same
+entries as <code>ip a</code> on the Docker host</p>
+<h3 id="overlay">overlay</h3>
+<p>Use when multiple containers need to communicate with each other and containers are scattered among different Docker hosts</p>
+<h3 id="macvlan">macvlan</h3>
+<p>TODO</p>
+<h3 id="none">none</h3>
+<p>Disables networking</p>
+<h3 id="custom">custom</h3>
+<p>TODO</p>
+<h2 id="volumes">Volumes</h2>
+<p>TODO</p>
+<h2 id="configuration">Configuration</h2>
+<p><code>dockerd</code> uses following configuration files:</p>
+<p><code>/etc/docker/daemon.json</code></p>
+<p><code>/etc/default/docker</code> (for Debian based OSes)</p>
+<h3 id="change-storage-driver">Change storage-driver:</h3>
+<pre><code>&gt; cat /etc/docker/daemon.json
+{
+  &quot;storage-driver&quot;: &quot;btrfs&quot;
+}
+</code></pre>
+<p>For full list of supported drivers refer to <a href="https://docs.docker.com/engine/userguide/storagedriver/selectadriver/">storage drivers</a></p>
+<h3 id="change-dockerd-sockets">Change dockerd sockets:</h3>
+<pre><code>&gt; cat /etc/docker/daemon.json
+{
+        &quot;hosts&quot;: [&quot;unix:///var/run/docker.sock&quot;, &quot;tcp://0.0.0.0:2376&quot;]
+}
+</code></pre>
+<p>It is possible that run init/upstart/service script specifies <code>-H</code> flag for startup command.<br />
+This must be removed from script itself, otherwise <code>dockerd</code> will fail to start</p>
+<h2 id="underlying-technology">Underlying technology</h2>
+<p>Several linux kernel features are used by Docker.</p>
+<h3 id="namespaces">Namespaces</h3>
+<p>5 Linux <a href="https://github.com/kiemlicz/util/wiki/Containerization#namespaces">namespaces</a> are used in Docker implementation</p>
+<ol>
+<li><code>pid</code></li>
+<li><code>net</code></li>
+<li><code>ipc</code></li>
+<li><code>mnt</code></li>
+<li><code>uts</code></li>
+</ol>
+<p>The <code>cgoup</code> namespace is not used.</p>
+<h3 id="control-groups-cgroups">Control groups (<code>cgroups</code>)</h3>
+<p>Allows limiting available resources (e.g. hardware resources) for containers. For instance allows to specify available amount of memory</p>
+<h3 id="union-file-systems">Union file systems</h3>
+<p>UnionFS</p>
+<h3 id="container-format">Container format</h3>
+<p>The mix of aforementioned three (namespaces, cgroups and union fs) is called the container format. The current default: <code>libcontainer</code>. This abstractions will allow other formats like BSD Jalis to be used interchangeably </p>
+<h1 id="references">References</h1>
+<ol>
+<li>https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#label</li>
+<li>https://lwn.net/Articles/621006/</li>
+<li>https://www.slideshare.net/kerneltlv/namespaces-and-cgroups-the-basis-of-linux-containers</li>
+<li>https://codefresh.io/docker-tutorial/java_docker_pipeline/</li>
+<li>https://docs.docker.com/get-started/overview/</li>
+<li>https://stackoverflow.com/questions/49162358/docker-init-zombies-why-does-it-matter</li>
+</ol>
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        
+        <a href="../containerization/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Containerization" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              Containerization
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../LXC/" class="md-footer__link md-footer__link--next" aria-label="Next: LXC" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              LXC
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.01824240.min.js"}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.ff0eccb3.min.js"></script>
+      
+    
+  </body>
+</html>

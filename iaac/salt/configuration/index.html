@@ -1,0 +1,2018 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.0.2">
+    
+    
+      
+        <title>Configuration - Util docs</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.816931ca.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.9204c3b2.min.css">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>function __md_scope(e,t,_){return new URL(_||(t===localStorage?"../../..":"../../.."),location).pathname+"."+e}function __md_get(e,t=localStorage,_){return JSON.parse(t.getItem(__md_scope(e,t,_)))}function __md_set(e,t,_=localStorage,o){try{_.setItem(__md_scope(e,_,o),JSON.stringify(t))}catch(e){}}</script>
+    
+      
+
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#configuration" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="Util docs" class="md-header__button md-logo" aria-label="Util docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Util docs
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Configuration
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Util docs" class="md-nav__button md-logo" aria-label="Util docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    Util docs
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2">
+          Basics
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Basics" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          Basics
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../basics/basics/" class="md-nav__link">
+        Basics
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../basics/editing/" class="md-nav__link">
+        Editors
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../basics/scripting/" class="md-nav__link">
+        Scripting
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../basics/git/" class="md-nav__link">
+        GIT
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../basics/memory/" class="md-nav__link">
+        MEM
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3">
+          OS
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="OS" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          OS
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../os/init/" class="md-nav__link">
+        PID 1
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../os/kernel/" class="md-nav__link">
+        Kernel
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_3" type="checkbox" id="__nav_3_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_3">
+          File system
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="File system" data-md-level="2">
+        <label class="md-nav__title" for="__nav_3_3">
+          <span class="md-nav__icon md-icon"></span>
+          File system
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../os/fs/btrfs/" class="md-nav__link">
+        BTRFS
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../os/fs/cifs/" class="md-nav__link">
+        CIFS
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../os/package-management/" class="md-nav__link">
+        Packages
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4">
+          Net
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Net" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          Net
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../net/net-cfg/" class="md-nav__link">
+        Configuration
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_2" type="checkbox" id="__nav_4_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4_2">
+          Proto
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Proto" data-md-level="2">
+        <label class="md-nav__title" for="__nav_4_2">
+          <span class="md-nav__icon md-icon"></span>
+          Proto
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../net/SSH/" class="md-nav__link">
+        SSH
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../net/SSL/" class="md-nav__link">
+        SSL
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../net/IPsec/" class="md-nav__link">
+        IPsec
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../net/LoRa/" class="md-nav__link">
+        LoRa
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../net/tunneling/" class="md-nav__link">
+        Tunneling
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../net/net-debug/" class="md-nav__link">
+        Debugging
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_5" type="checkbox" id="__nav_4_5" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4_5">
+          L2
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="L2" data-md-level="2">
+        <label class="md-nav__title" for="__nav_4_5">
+          <span class="md-nav__icon md-icon"></span>
+          L2
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../net/net-link-layer/" class="md-nav__link">
+        Link layer
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_6" type="checkbox" id="__nav_4_6" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4_6">
+          L3
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="L3" data-md-level="2">
+        <label class="md-nav__title" for="__nav_4_6">
+          <span class="md-nav__icon md-icon"></span>
+          L3
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../net/routing/" class="md-nav__link">
+        Routing
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_7" type="checkbox" id="__nav_4_7" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4_7">
+          L7
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="L7" data-md-level="2">
+        <label class="md-nav__title" for="__nav_4_7">
+          <span class="md-nav__icon md-icon"></span>
+          L7
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../net/sockets/" class="md-nav__link">
+        Sockets
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5">
+          Security
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Security" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          Security
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../security/crypto/" class="md-nav__link">
+        Standards
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6">
+          Virt
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Virt" data-md-level="1">
+        <label class="md-nav__title" for="__nav_6">
+          <span class="md-nav__icon md-icon"></span>
+          Virt
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../virt/vm/" class="md-nav__link">
+        Virtualization
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../virt/KVM/" class="md-nav__link">
+        KVM
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../virt/virtualbox/" class="md-nav__link">
+        VBox
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../virt/VFIO/" class="md-nav__link">
+        VFIO
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../virt/containerization/" class="md-nav__link">
+        Containerization
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../virt/docker/" class="md-nav__link">
+        Docker
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../virt/LXC/" class="md-nav__link">
+        LXC
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7" type="checkbox" id="__nav_7" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_7">
+          Infrastructure as a Code
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Infrastructure as a Code" data-md-level="1">
+        <label class="md-nav__title" for="__nav_7">
+          <span class="md-nav__icon md-icon"></span>
+          Infrastructure as a Code
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../foreman/" class="md-nav__link">
+        Foreman
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../unattended/" class="md-nav__link">
+        Unattended
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_3" type="checkbox" id="__nav_7_3" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_7_3">
+          Salt
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Salt" data-md-level="2">
+        <label class="md-nav__title" for="__nav_7_3">
+          <span class="md-nav__icon md-icon"></span>
+          Salt
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../basics/" class="md-nav__link">
+        Basics
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Configuration
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Configuration
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#states" class="md-nav__link">
+    States
+  </a>
+  
+    <nav class="md-nav" aria-label="States">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#saltenv" class="md-nav__link">
+    saltenv
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#custom-states" class="md-nav__link">
+    Custom states
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pillar" class="md-nav__link">
+    Pillar
+  </a>
+  
+    <nav class="md-nav" aria-label="Pillar">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#custom-pillar" class="md-nav__link">
+    Custom pillar
+  </a>
+  
+    <nav class="md-nav" aria-label="Custom pillar">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#git_pillar" class="md-nav__link">
+    git_pillar
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#file_tree" class="md-nav__link">
+    file_tree
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gpg-renderer" class="md-nav__link">
+    gpg renderer
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dunder-dictionaries" class="md-nav__link">
+    Dunder dictionaries
+  </a>
+  
+    <nav class="md-nav" aria-label="Dunder dictionaries">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#using-dunder-dictionaries" class="md-nav__link">
+    Using dunder dictionaries
+  </a>
+  
+    <nav class="md-nav" aria-label="Using dunder dictionaries">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#jinja2yaml" class="md-nav__link">
+    Jinja2+YAML
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py" class="md-nav__link">
+    py
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fileserver" class="md-nav__link">
+    Fileserver
+  </a>
+  
+    <nav class="md-nav" aria-label="Fileserver">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gitfs" class="md-nav__link">
+    gitfs
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reactor" class="md-nav__link">
+    Reactor
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#thorium" class="md-nav__link">
+    Thorium
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cloud" class="md-nav__link">
+    Cloud
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../minion/" class="md-nav__link">
+        Minion
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../master/" class="md-nav__link">
+        Master
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../transport/" class="md-nav__link">
+        Transport
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../scripts/" class="md-nav__link">
+        Scripts
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../modules/" class="md-nav__link">
+        Modules
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../events-and-reactor/" class="md-nav__link">
+        Events/Reactor
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../salt-SSH/" class="md-nav__link">
+        SSH
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_4" type="checkbox" id="__nav_7_4" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_7_4">
+          Kubernetes
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Kubernetes" data-md-level="2">
+        <label class="md-nav__title" for="__nav_7_4">
+          <span class="md-nav__icon md-icon"></span>
+          Kubernetes
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../kubernetes/basics/" class="md-nav__link">
+        Basics
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../kubernetes/admin/" class="md-nav__link">
+        Admin
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../kubernetes/POD/" class="md-nav__link">
+        PODs
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../kubernetes/service/" class="md-nav__link">
+        Service
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../kubernetes/volumes/" class="md-nav__link">
+        Volumes
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../kubernetes/controllers/" class="md-nav__link">
+        Controllers
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../helm/" class="md-nav__link">
+        Helm
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../vagrant/" class="md-nav__link">
+        Vagrant
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8" type="checkbox" id="__nav_8" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8">
+          Uncategorized
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Uncategorized" data-md-level="1">
+        <label class="md-nav__title" for="__nav_8">
+          <span class="md-nav__icon md-icon"></span>
+          Uncategorized
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../uncategorized/bench_io/" class="md-nav__link">
+        IO benchmark
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../uncategorized/kde/" class="md-nav__link">
+        KDE
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#states" class="md-nav__link">
+    States
+  </a>
+  
+    <nav class="md-nav" aria-label="States">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#saltenv" class="md-nav__link">
+    saltenv
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#custom-states" class="md-nav__link">
+    Custom states
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pillar" class="md-nav__link">
+    Pillar
+  </a>
+  
+    <nav class="md-nav" aria-label="Pillar">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#custom-pillar" class="md-nav__link">
+    Custom pillar
+  </a>
+  
+    <nav class="md-nav" aria-label="Custom pillar">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#git_pillar" class="md-nav__link">
+    git_pillar
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#file_tree" class="md-nav__link">
+    file_tree
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gpg-renderer" class="md-nav__link">
+    gpg renderer
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dunder-dictionaries" class="md-nav__link">
+    Dunder dictionaries
+  </a>
+  
+    <nav class="md-nav" aria-label="Dunder dictionaries">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#using-dunder-dictionaries" class="md-nav__link">
+    Using dunder dictionaries
+  </a>
+  
+    <nav class="md-nav" aria-label="Using dunder dictionaries">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#jinja2yaml" class="md-nav__link">
+    Jinja2+YAML
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#py" class="md-nav__link">
+    py
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fileserver" class="md-nav__link">
+    Fileserver
+  </a>
+  
+    <nav class="md-nav" aria-label="Fileserver">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gitfs" class="md-nav__link">
+    gitfs
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reactor" class="md-nav__link">
+    Reactor
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#thorium" class="md-nav__link">
+    Thorium
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cloud" class="md-nav__link">
+    Cloud
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+
+<h1 id="configuration">Configuration</h1>
+<p>Written in YAML files, located in <code>/etc/salt/master</code> and <code>/etc/salt/master.d/</code><br />
+Master configuration: <code>/etc/salt/master</code><br />
+Master configuration overrides: <code>/etc/salt/master.d/myoverrides.conf</code><br />
+Minion configuration: <code>/etc/salt/minion</code><br />
+Minion configuration overrides: <code>/etc/salt/minion.d/myoverrides.conf</code><br />
+Overrides <strong>require</strong> <code>.conf</code> suffix, otherwise they are not included and nothing is logged.  </p>
+<h2 id="states">States</h2>
+<p>Defined using <code>*.sls</code> files, located in state directories listed in <code>file_roots</code> configuration option (<code>/srv/salt/</code> by default).<br />
+The state directories are also called <em>State Tree</em><br />
+Example of state file contents:</p>
+<pre><code>funny_user_setup:                 # state ID
+  user.present:                   # &lt;state module&gt;.&lt;function&gt;
+    - name: cool_guy              # &lt;function's&gt; arguments
+    - fullname: Cool Guy Jr
+    - shell: /bin/bash
+    - home: /home/cool_guy
+</code></pre>
+<p>Given the above <code>file_roots</code> configuration this state file must be located in <code>/srv/salt/the_state.sls</code> or <code>/srv/salt/the_state/init.sls</code>, 
+(the <code>init.sls</code> is treated as parent directory).<br />
+The sls filename cannot contain dots (other than suffix <code>.sls</code>). Filename with dots is expanded by salt as directories, e.g.,
+<code>the_state.something.sls</code> will be understood as <code>/srv/salt/the_state/something.sls</code>.<br />
+When both <code>/srv/salt/the_state.sls</code> or <code>/srv/salt/the_state/init.sls</code> exist, the <code>the_state/init.sls</code> is ignored. <br />
+By default the sls file represents python dictionaries, lists, strings and numbers only.</p>
+<p>Salt also requires special file to exist in top level of <em>State Tree</em>. This special file is responsible for matching states to actual machines.
+It is called <code>top.sls</code>, example:</p>
+<pre><code>base:
+  'machine':
+    - the_state
+</code></pre>
+<p>For more information about Top File structure and state definition refer to <a href="https://github.com/kiemlicz/util/wiki/Salt-Master#targeting-and-top-file">Targeting and Top file</a></p>
+<h3 id="saltenv">saltenv</h3>
+<p><code>file_roots</code> configuration contains environment specification. In order to specify multiple environments list them along with their directories containing states:</p>
+<pre><code>file_roots:
+  base:
+    - /srv/salt/base
+  dev:
+    - /srv/salt/dev
+</code></pre>
+<p>It is possible to specify directories multiple times in order to 'reuse' some states from other environments:</p>
+<pre><code>file_roots:
+  base:
+    - /srv/salt/base
+  dev:
+    - /srv/salt/dev
+    - /srv/salt/base
+</code></pre>
+<h3 id="custom-states">Custom states</h3>
+<p>In order to create your own states, put them in <code>_states</code> under <em>State Tree</em> root. This directory is configured to be synchronized
+to minions upon <code>state.highstate</code> or <code>saltutil.sync_all</code> calls.</p>
+<h2 id="pillar">Pillar</h2>
+<p>Defined in similar way as state files, located in directories listed in <code>pillar_roots</code> configuration option.
+There is no enforced pillar data syntax, given default renderer the pillar must be just provided as YAML file.<br />
+Example pillar data file:</p>
+<pre><code>some_user_data:
+  mail: cool_guy@o2.io
+  home_dir: /home/cool_guy
+</code></pre>
+<p>The <code>top.sls</code> file is also expected to exist in <code>pillar_roots</code> top directory.</p>
+<h3 id="custom-pillar">Custom pillar</h3>
+<p>Documentation refers to custom pillars as <a href="https://docs.saltstack.com/en/latest/topics/development/external_pillars.html">external pillars</a>.<br />
+It is possible to extend Pillar subsystem to fetch data from arbitrary sources. The requirement is to implement: </p>
+<pre><code>def ext_pillar( minion_id, pillar, *args, **kwargs ):
+    ...
+
+    return pillar_dict 
+</code></pre>
+<p>The external pillar must be configured in <em>Salt Master</em> configuration first.
+Some already existing custom pillars deserve special mentions.</p>
+<h4 id="git_pillar">git_pillar</h4>
+<h4 id="file_tree">file_tree</h4>
+<p><code>ext pillar: file_tree</code>
+File becomes the value of key<br />
+Under the <code>root_dir</code> you must have either <code>hosts/minion_id</code> folder or <code>nodegroups/nodegroup</code> folder<br />
+Data is available to matching hosts.<br />
+Example configuration:  </p>
+<pre><code>ext_pillar:
+  - file_tree:
+      root_dir: /path/to/root/directory
+      keep_newline:
+        - files/testdir/*
+</code></pre>
+<h4 id="gpg-renderer">gpg renderer</h4>
+<p>The pillar values can be encrypted using GPG.<br />
+The keypair (without passphrase) must be either <a href="https://docs.saltstack.com/en/latest/ref/renderers/all/salt.renderers.gpg.html#setup">setup</a> or <a href="https://github.com/kiemlicz/util/blob/master/sec/gpg_functions#L23">imported</a> beforehand on the master node (or on masterless node).
+It is possible to change default location of gpgkeys using: <code>gpg_keydir</code> configuration option.<br />
+To create encrypted secret: <code>cat secret_file | gpg --armor --trust-model always -r pillargpg --encrypt --homedir ~/somewhere/the/keys</code></p>
+<h2 id="dunder-dictionaries">Dunder dictionaries</h2>
+<p>Some of the <em>Salt</em> modules are 'wrapped' within special <em>dunder</em> dictionaries. 
+These special dictionaries provide access to <em>Salt</em> <strong>different</strong> modules.</p>
+<table>
+<thead>
+<tr>
+<th>Dictionary name</th>
+<th>Available in</th>
+<th>Information</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>__opts__</td>
+<td>Loader modules</td>
+<td>configuration file contents</td>
+</tr>
+<tr>
+<td>__salt__</td>
+<td>Execution, State, Returner, Runner, SDB modules</td>
+<td><strong>execution</strong> modules</td>
+</tr>
+<tr>
+<td>__grains__</td>
+<td>Execution, State, Returner, External Pillar modules</td>
+<td>minion grains data</td>
+</tr>
+<tr>
+<td>__pillar__</td>
+<td>Execution, State, Returner modules</td>
+<td>pillar data</td>
+</tr>
+<tr>
+<td>__context__</td>
+<td>Execution, State modules</td>
+<td>all-purpose dict, that exists during all state runs</td>
+</tr>
+</tbody>
+</table>
+<h3 id="using-dunder-dictionaries">Using dunder dictionaries</h3>
+<h4 id="jinja2yaml">Jinja2+YAML</h4>
+<p>Double underscores are omitted.</p>
+<pre><code>apache:
+  pkg.installed:
+    - name: {{ salt['pillar.get']('pkgs:apache', 'httpd') }}
+</code></pre>
+<pre><code>{% for mnt in salt['cmd.run']('ls /dev/data/moose*').split() %}
+/mnt/moose{{ mnt[-1] }}:
+  mount.mounted:
+    - device: {{ mnt }}
+    - fstype: xfs
+    - mkmnt: True
+{% endfor %}
+</code></pre>
+<h4 id="py">py</h4>
+<pre><code>#!py
+
+def run():
+  states = {}
+  swaps = __salt__['mount.swaps']()
+  for swap, dev in swaps.items():
+    states[&quot;kubeadm_disable_swap_{}&quot;.format(swap)] = {
+      'module.run': [
+        { 'mount.swapoff': [
+          { 'name': swap },
+        ]},
+        { 'require_in': [
+          { 'pkg': &quot;kubeadm&quot; }
+          ]}
+      ]
+    }
+  return states
+</code></pre>
+<h2 id="fileserver">Fileserver</h2>
+<p>All of the above configuration samples assumed filesystem to be used as primary <code>sls</code> storage. 
+Actually <a href="https://docs.saltstack.com/en/latest/ref/file_server/all/index.html">fileserver is also a <em>Salt</em> module</a>.
+Thus it is possible to create your own (place it in <code>_fileserver</code> directory under <em>State Tree</em> root).
+In order to enable different fileserver, switch them on in master configuration:</p>
+<pre><code>fileserver_backend:
+  - roots
+</code></pre>
+<p>It is possible to specify multiple backends, they are merged together. The <code>sls</code> files that are same within backends
+are taken in the order of their definition (<code>fileserver_backend</code> is a list after all).  </p>
+<p>Example:</p>
+<pre><code>fileserver_backend:
+  - roots
+  - gitfs
+</code></pre>
+<p>If the <code>top.sls</code> file exists in both <em>gitfs</em> and <em>roots</em> top directories then the <code>roots</code> one will be used.</p>
+<h3 id="gitfs">gitfs</h3>
+<p>Enabled with:</p>
+<pre><code>fileserver_backend:
+  - gitfs
+</code></pre>
+<p>Allows to pull state and pillar definitions from git repositories.</p>
+<h2 id="reactor">Reactor</h2>
+<p>Part of the <em>Salt</em>, that starts different actions upon fired events. The configuration contains the list of handled events 
+with different <code>sls</code> files run as a reaction.</p>
+<pre><code>reactor:
+  - 'salt/job/*/ret/*':
+    - salt://do_something_after_job.sls
+    - /full/path/to/file.sls
+</code></pre>
+<p>By default this is configured in <code>/etc/salt/master</code> and <code>/etc/salt/master.d/reactor.conf</code>.<br />
+Reactions can be specified using <code>/full/path/notation</code> or relative to <em>State Tree</em>: <code>salt://</code></p>
+<h2 id="thorium">Thorium</h2>
+<h2 id="cloud">Cloud</h2>
+<h1 id="extending-salt">Extending Salt</h1>
+<p>It is very easy to create your own <em>Salt</em> modules or even alter existing ones. All of the module changes must be synchronized
+to minions prior to use (this happens automatically only for <code>state.highstate</code> call). By default, extensions must be placed in directories in <em>State Tree</em>
+root, following naming convention: <code>_&lt;module_type&gt;</code>.<br />
+It is also possible to define custom extensions in different places, given proper <code>extension_modules</code> configuration.
+Anything from <a href="https://docs.saltstack.com/en/latest/ref/index.html">salt module</a> can be customized.</p>
+<h1 id="salt-ssh"><a href="https://docs.saltstack.com/en/latest/topics/ssh/">Salt SSH</a></h1>
+<p>No software needs to be installed on managed host, on the Salt Master side: <code>salt-ssh</code> package is required.<br />
+Configure <code>/etc/salt/roster</code> file with remote host details, the working roster file:</p>
+<pre><code>minion:
+  host: minion.local
+  user: dev
+  passwd: password  # required even if keys are used 
+  sudo: true  
+  tty: true
+  minion_opts:
+    log_level: debug
+    log_level_logfile: debug
+    log_file: ../../salt-ssh.log  # nice trick from https://twitter.com/SaltTips/status/1146306964026253312
+</code></pre>
+<p>The remote host must have at least <code>python-minimal</code> installed, the <code>passwd</code> is always mandatory (since on the remote the <code>sudo</code> is required)
+Read more in <a href="Salt-SSH.md">Salt-SSH</a></p>
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        
+        <a href="../basics/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Basics" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              Basics
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../minion/" class="md-footer__link md-footer__link--next" aria-label="Next: Minion" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              Minion
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../../assets/javascripts/workers/search.01824240.min.js"}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.ff0eccb3.min.js"></script>
+      
+    
+  </body>
+</html>
