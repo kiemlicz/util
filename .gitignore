@@ -1,0 +1,7 @@
+.venv
+target/
+.bsp
+.idea
+.vscode
+.metals
+.local/
