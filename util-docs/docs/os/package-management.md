@@ -3,7 +3,7 @@ Typically packages are nothing more that some kind of archive. However this arch
 contains a lot of additional configuration scripts. 
 
 ## [DEB](https://github.com/kiemlicz/util/blob/master/core/deb_functions)
-_AR_ archive with following 3 top-level files included:
+_AR_ archive with following 3 top-level files included:  
  1. _control.tar.gz_ - control files. Theoretically it must contain following files:
   - _control_ kind of key-value file. Contains information about packaged data (like: author, some description, dependencies)  
     Fields (some of them):  
@@ -20,8 +20,8 @@ _AR_ archive with following 3 top-level files included:
   that changed on the filesystem  
   - `package.cron.*` e.g. `my_app.cron.hourly` will be installed as `/etc/cron.hourly/my_app` and will run every hour
   - `dirs` specifies any directories which we need but which are not created by the normal installation procedure
-  - `md5sums` used to verify if installed files have been modified
- 2. _data.tar.gz_ (since Debian 8: _data.tar.xz_) - actual files 
+  - `md5sums` used to verify if installed files have been modified  
+ 2. _data.tar.gz_ (since Debian 8: _data.tar.xz_) - actual files  
  3. _debian-binary_
 
 ## RPM
@@ -120,7 +120,7 @@ Pin-Priority: 980
 ```
 
 ##### Pin to Release file
-To get the values that it is possible **to pin to**, download the desired repository's `Release` file, e.g.:
+To get the values that it is possible **to pin to**, download the desired repository's `Release` file (just navigate to the configured URL), e.g.:
 ```
 Archive: Debian_9.0
 Codename: Debian_9.0
