@@ -4,6 +4,7 @@ contains a lot of additional configuration scripts.
 
 ## [DEB](https://github.com/kiemlicz/util/blob/master/core/deb_functions)
 _AR_ archive with following 3 top-level files included:  
+
  1. _control.tar.gz_ - control files. Theoretically it must contain following files:
   - _control_ kind of key-value file. Contains information about packaged data (like: author, some description, dependencies)  
     Fields (some of them):  
@@ -21,8 +22,10 @@ _AR_ archive with following 3 top-level files included:
   - `package.cron.*` e.g. `my_app.cron.hourly` will be installed as `/etc/cron.hourly/my_app` and will run every hour
   - `dirs` specifies any directories which we need but which are not created by the normal installation procedure
   - `md5sums` used to verify if installed files have been modified  
- 2. _data.tar.gz_ (since Debian 8: _data.tar.xz_) - actual files  
- 3. _debian-binary_
+
+ 3. _data.tar.gz_ (since Debian 8: _data.tar.xz_) - actual files  
+
+ 4. _debian-binary_
 
 ## RPM
 todo
