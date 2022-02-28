@@ -1,4 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env zsh
+
+SEC_UTIL_LOC="$(dirname $(readlink -f $0))"
 
 #todo
 # parametrize -config arg
@@ -234,13 +236,12 @@ gen_csr_interactive() {
 }
 
 # generate CA (RSA based)
-# $1 private key that will be generated
-# $2 public (ca cert) file that will be generated
-# $3 config file
-# $4 ssl base dir
 gen_ca() {
+    ca_config="$SEC_UTIL_LOC/openssl-ca.cnf"
+    export UTIL_CA_PRIV_KEY="$1"
+    export UTIL_CA_CERT="$2"
     gen_rsa_key $1
-    gen_x509_cert_self_signed $1 $2 $3 $4
+    gen_x509_cert_self_signed $1 $2 $ca_config $3
 }
 
 ####################

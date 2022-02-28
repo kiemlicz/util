@@ -1,0 +1,7 @@
+_gen_ca() {
+    _arguments \
+      '1:CA private key to output' \
+      '2:CA public key to output' \
+      '3:SSL base dir'
+}
+compdef _gen_ca gen_ca
