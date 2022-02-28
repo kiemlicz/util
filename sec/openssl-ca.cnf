@@ -34,6 +34,8 @@ default_days      = 375
 preserve          = no
 policy            = policy_strict
 
+copy_extensions   = copy
+
 [ policy_strict ]
 # The root CA should only sign intermediate certificates that match.
 # See the POLICY FORMAT section of `man ca`.

@@ -9,6 +9,7 @@ default_md          = sha256
 
 # Extension to add when the -x509 option is used.
 # x509_extensions     = v3_ca
+req_extensions     = req_ext
 
 [ req_distinguished_name ]
 # See <https://en.wikipedia.org/wiki/Certificate_signing_request>.
@@ -22,7 +23,7 @@ emailAddress                    = Email Address
 
 # Optionally, specify some defaults.
 countryName_default             = PL
-stateOrProvinceName_default     =
+stateOrProvinceName_default     = Krakow
 localityName_default            =
 0.organizationName_default      =
 organizationalUnitName_default  =
@@ -61,9 +62,14 @@ authorityKeyIdentifier = keyid,issuer
 keyUsage = critical, digitalSignature
 extendedKeyUsage = critical, OCSPSigning
 
-#[ alternate_names ]
-#uncomment and provide if necessary
+#[ req_ext ]
+#subjectAltName = @alt_names
+
+#[ alt_names ]
+# uncomment and provide if necessary
 #DNS.1  = $ENV::UTIL_SERVER_ALT_1
 #DNS.2  = $ENV::UTIL_SERVER_ALT_2
 #DNS.3  = $ENV::UTIL_SERVER_ALT_3
 #DNS.4  = $ENV::UTIL_SERVER_ALT_4
+#IP.1  = 10.96.0.1
+#IP.2  = 10...
