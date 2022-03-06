@@ -4,7 +4,7 @@ docker_run_publish_ports() {
     local host_port=${2}
     local container_port=${3}
     local host_ip=${5-127.0.0.1}
-    docker run -p $host_ip:$host_port:$container_port --name $4 $1
+    docker run -d -p $host_ip:$host_port:$container_port --name $4 $1
 }
 
 docker_run_interactive() {
