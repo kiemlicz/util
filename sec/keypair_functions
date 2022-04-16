@@ -26,7 +26,7 @@ generate_server_keypair_signed_interactive() {(set -e  # fail early in function
   server_csr="$out/$name.csr"
 
   echo "Generating private key: $server_key"
-  gen_ec_key $server_key
+  gen_rsa_key $server_key
   echo "Key: $server_key generated"
 
   echo "Generating CSR: $server_csr"
