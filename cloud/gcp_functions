@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+gssh() {
+  local OPTIND
+  while getopts "p:n:" flag ; do
+    case "$flag" in
+      p)
+        p="$OPTARG"
+        node_name=$(kubectl get pod $p -o=jsonpath="{.spec.nodeName}")
+        ;;
+      n)
+        local node_name="$OPTARG"
+        ;;
+      *)
+        echo "usage: $0 [-p podname] [-n nodename]"
+        return 4
+    esac
+  done
+  shift $((OPTIND-1))
+  local node_zone=$(kubectl get node $node_name -o=jsonpath='{.metadata.labels.failure-domain\.beta\.kubernetes\.io/zone}')
+
+  gcloud compute ssh --zone $node_zone $node_name
+}
