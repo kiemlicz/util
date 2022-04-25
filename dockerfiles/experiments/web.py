@@ -15,8 +15,11 @@ log.addHandler(logging.StreamHandler())
 log.setLevel(logging.INFO)
 
 app = Flask(__name__)
-config.load_incluster_config()
-v1 = client.CoreV1Api()
+try:
+    config.load_incluster_config()
+    v1 = client.CoreV1Api()
+except Exception as e:
+    log.exception("K8s config not loaded")
 
 
 @app.route('/')
@@ -28,16 +31,16 @@ def health():
     log.info(f"health check from: {flask.request.remote_addr}")
     return "OK"
 
-@app.route('/sick')
+@app.route('/broken')
 def sick():
     return "BAD", status.HTTP_404_NOT_FOUND
 
-@app.route('/broken')
-def broken():
-    time.sleep(42)
-    return "broken", status.HTTP_404_NOT_FOUND
+@app.route('/slow/<leng>')
+def broken(leng):
+    time.sleep(int(leng))
+    return "slow", status.HTTP_200_OK
 
-@app.route('/pody')
+@app.route('/pods')
 def k8sapi():
     # with open("/var/run/secrets/kubernetes.io/serviceaccount/namespace", 'r') as f:
     #     ns = f.readline()
