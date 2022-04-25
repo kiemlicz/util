@@ -19,8 +19,16 @@ generate_server_keypair_signed_interactive() {(set -e  # fail early in function
   mkdir -p "$out/newcerts"  # possibly remove
   touch "$out/index.txt"
   echo '01' > "$out/serial"
-  server_config="$SEC_UTIL_LOC/openssl-server.cnf"
-  ca_config="$SEC_UTIL_LOC/openssl-ca.cnf"
+  local config_override_dir=${XDG_CONFIG_HOME-"$HOME/.config/util/sec"}
+  server_config="$config_override_dir/openssl-server.cnf"
+  ca_config="$config_override_dir/openssl-ca.cnf"
+  if [ ! -f "$server_config" ]; then
+    server_config="$SEC_UTIL_LOC/openssl-server.cnf"
+  fi
+  if [ ! -f "$ca_config" ]; then
+    ca_config="$SEC_UTIL_LOC/openssl-ca.cnf"
+  fi
+  echo "Using $server_config and $ca_config"
   server_key="$out/private/$name.key"
   server_cert="$out/certs/$name.crt"
   server_csr="$out/$name.csr"

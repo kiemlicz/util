@@ -9,6 +9,7 @@ default_md          = sha256
 
 # Extension to add when the -x509 option is used.
 # x509_extensions     = v3_ca
+# uncomment for alt_names
 req_extensions     = req_ext
 
 [ req_distinguished_name ]
