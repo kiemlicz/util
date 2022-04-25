@@ -32,6 +32,7 @@ nav:
           - Sockets: net/sockets.md
   - Security:
       - Standards: security/crypto.md
+      - Istio: security/istio.md
   - Virt:
       - Virtualization: virt/vm.md
       - KVM: virt/KVM.md
