@@ -1,22 +1,12 @@
 #!/usr/bin/env bash
 
-
 capture_stdout() {
-    strace -p $1 -f -s9999 -e trace=write -e write=1,2 -o $2
+  strace -p $1 -f -s9999 -e trace=write -e write=1,2 -o $2
 }
-_capture_stdout() {
-    _arguments \
-      "1:PID" \
-      "2:log to file"
-}
-compdef _capture_stdout capture_stdout
 
 # show IO call stats
 show_io_stats() {
-    strace -fce trace=open,read,write -p $1
+  strace -fce trace=open,read,write -p $1
 }
-_show_io_stats() {
-    _arguments \
-      "1:pid"
-}
-compdef _show_io_stats show_io_stats
+
+# to strace process with its children use strace -f
