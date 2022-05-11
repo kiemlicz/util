@@ -18,6 +18,6 @@ gssh() {
   done
   shift $((OPTIND-1))
   local node_zone=$(kubectl get node $node_name -o=jsonpath='{.metadata.labels.failure-domain\.beta\.kubernetes\.io/zone}')
-
+  echo "gcloud compute ssh --zone $node_zone $node_name"
   gcloud compute ssh --zone $node_zone $node_name
 }
