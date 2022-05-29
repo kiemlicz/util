@@ -10,3 +10,17 @@ _gpg_list_keys() {
       '1:gpg home dir'
 }
 compdef _gpg_list_keys gpg_list_keys
+
+# compdef to be used for description?
+_gpg_decrypt_file() {
+    _arguments \
+      '1:file with encrypted parts:_path_files'
+}
+compdef _gpg_decrypt_file gpg_decrypt_file
+
+# compdef to be used for description?
+_gpg_encrypt_file() {
+    _arguments \
+      '1:file with decrypted and marked parts:_path_files'
+}
+compdef _gpg_encrypt_file gpg_encrypt_file

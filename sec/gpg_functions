@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+SEC_UTIL_LOC="$(dirname $(readlink -f $0))"
+
 # Generate keypair, creates homedir if not exists
 # [$1] key homedir (~/.gnupg otherwise)
 gpg_gen_key() {
@@ -34,6 +36,15 @@ gpg_import_key() {
 # [$3] homedir (~/.gnupg otherwise)
 gpg_encrypt_string() {
     echo -n "$1" | gpg --homedir ${3-~/.gnupg} --armor --batch --trust-model always --encrypt -r $2
+}
+
+# decrypt multiple PGP-encrypted file contents
+gpg_decrypt_file() {
+  awk -f $SEC_UTIL_LOC/gpg_decrypt.awk $1
+}
+
+gpg_encrypt_file() {
+  awk -f $SEC_UTIL_LOC/gpg_encrypt.awk -v keyname="$2" $1
 }
 
 gpg_list_keys() {
