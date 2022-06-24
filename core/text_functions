@@ -36,6 +36,12 @@ string_to_hex() {
     echo -n "$1" | od -A n -t x1
 }
 
+# grep retaining first row
+# useful to print column headers
+grep1() {
+  awk "NR==1 || /$1/"
+}
+
 parse_yaml() {
   # based on https://gist.github.com/briantjacobs/7753bf850ca5e39be409#file-yaml-sh
   if [ -n "$ZSH_VERSION" ]; then
