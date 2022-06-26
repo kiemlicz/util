@@ -7,7 +7,7 @@ Multiple `init` implementations
 ## systemd
 Maintains userspace applications
 Each application is described in `unit` files. They use more declarative syntax instead of bash scripts.
-Typically located in `/etc/systemd/system`
+Typically, located in `/etc/systemd/system`
 ### unit file
 Contains information nearly about anything: a service, socket, device, mount point, etc.
 File name is used for control (via `systemctl`), though unit file can declare aliases (`Alias=`) that can be used too.
@@ -17,5 +17,15 @@ Typically `systemd` controls one service but it is possible to spawn and control
 In order to enable multi instance management:
  1. create service file with `@.service` suffix
  2. in unit file use `%i` placeholder for "some application instance"
+
+### Usage
+List all startup services
+`systemctl list-unit-files`
+
+List all mount points
+`systemctl list-units -t mount --all`
+
+Show unit status
+`systemctl status unit.name`
 
 # References
