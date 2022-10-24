@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+git_untracked() {
+  git ls-files . --exclude-standard --others
+}
