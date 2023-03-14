@@ -180,6 +180,13 @@ gen_x509_cert_self_signed() {
     BASE_DIR=$4 openssl req -config $3 -batch -key $1 -new -x509 -days ${5-10000} -sha256 -extensions v3_ca -out $2
 }
 
+gen_x509_cert_self_signed_interactive() {
+    # -x509 states that this is self-signed (when req)
+    # -batch states that this is non-interactive generation
+    # -config openssl-ca.cnf use config file
+    BASE_DIR=$4 openssl req -config $3 -key $1 -new -x509 -days ${5-10000} -sha256 -extensions v3_ca -out $2
+}
+
 # generate x509 self-signed certificate along with ec private key
 # $1 private key output file
 gen_x509_cert_and_ec_key_self_signed() {
@@ -241,7 +248,7 @@ gen_ca() {
     export UTIL_CA_PRIV_KEY="$1"
     export UTIL_CA_CERT="$2"
     gen_rsa_key $1
-    gen_x509_cert_self_signed $1 $2 $ca_config $3
+    gen_x509_cert_self_signed $1 $2 $ca_config $3  #_interactive?
 }
 
 ####################
