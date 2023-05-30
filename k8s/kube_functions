@@ -11,6 +11,7 @@ kube_debug_once() {
 }
 
 kube_debug() {
+  local active_ns=$(kubectl config view --minify -o jsonpath='{..namespace}')
   cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: Pod
@@ -18,7 +19,7 @@ metadata:
   labels:
     role: debug
   name: ${1-debug}
-  namespace: ${2-default}
+  namespace: ${2-$active_ns}
 spec:
   securityContext:
     runAsUser: 0
@@ -32,8 +33,8 @@ spec:
       securityContext:
         privileged: true
 EOF
-  kubectl wait --for condition=ready --timeout=${3-10}s pod/${1-debug} -n ${2-default}
-  kubectl exec -it ${1-debug} -n ${2-default} -- bash
+  kubectl wait --for condition=ready --timeout=${3-10}s pod/${1-debug} -n ${2-$active_ns}
+  kubectl exec -it ${1-debug} -n ${2-$active_ns} -c debug -- bash
 }
 
 
