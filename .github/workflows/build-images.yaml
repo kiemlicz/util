@@ -16,7 +16,6 @@ jobs:
     strategy:
       matrix:
         image: ["deb-utils"]
-  build:
     name: Build images
     runs-on: ubuntu-latest
     permissions:
