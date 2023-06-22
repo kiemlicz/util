@@ -4,8 +4,8 @@ on:
   push:
     branches:
       - master
-    paths:
-      - 'dockerfiles/deb-utils/**'
+#    paths:
+#      - 'dockerfiles/deb-utils/**'
 
 env:
   REGISTRY: ghcr.io
