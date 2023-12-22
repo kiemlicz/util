@@ -1,5 +1,7 @@
 FROM debian:bookworm-slim
 
+MAINTAINER kiemlicz
+
 RUN apt-get update &&  \
     apt-get install -y iproute2 dnsutils netcat-openbsd iputils-ping iperf3 curl traceroute iptables tcpdump stress-ng sysstat vim gnupg2 apt-transport-https ca-certificates
 
