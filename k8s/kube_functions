@@ -24,7 +24,7 @@ spec:
   securityContext:
     runAsUser: 0
   containers:
-    - image: debian:bullseye
+    - image: debian:bookworm
       name: debug
       command:
         - bash
