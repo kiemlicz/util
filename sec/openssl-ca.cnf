@@ -33,7 +33,8 @@ name_opt          = ca_default
 cert_opt          = ca_default
 default_days      = 375
 preserve          = no
-policy            = policy_strict
+# policy            = policy_strict
+policy            = policy_loose
 
 copy_extensions   = copy
 
