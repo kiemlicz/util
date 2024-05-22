@@ -3,7 +3,7 @@ FROM debian:bookworm-slim
 MAINTAINER kiemlicz
 
 RUN apt-get update &&  \
-    apt-get install -y iproute2 dnsutils netcat-openbsd iputils-ping iperf3 curl traceroute iptables tcpdump stress-ng sysstat vim gnupg2 apt-transport-https ca-certificates
+    apt-get install -y iproute2 dnsutils netcat-openbsd iputils-ping iperf3 curl traceroute iptables tcpdump stress-ng sysstat vim gnupg2 apt-transport-https ca-certificates socat
 
 RUN curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key | gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg &&\
     curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | tee /usr/share/keyrings/cloud.google.asc &&\
