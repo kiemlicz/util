@@ -3,3 +3,19 @@
 git_untracked() {
   git ls-files . --exclude-standard --others
 }
+
+multirepo_branch_del() {
+  local base_dir="$1"
+  local branch_to_remove="$2"
+  if [ -z "${branch_to_remove}" ]; then
+    echo "Usage: $0 <base_dir> <branch_to_remove>"
+    return 4
+  fi
+  echo "Branch: $branch_to_remove removal in all repositories under: $base_dir"
+  for dir in "$base_dir"/*/; do
+    if [ -d "$dir/.git" ]; then
+      echo "Removing branch $branch_to_remove in $dir"
+      (cd "$dir" && git branch -d "$branch_to_remove")
+    fi
+  done
+}
