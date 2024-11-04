@@ -59,3 +59,15 @@ kube_jvm_jstack() {
   done
   echo "Analyzing logs completed"
 }
+
+# helper for OpenEBS LVM volumes that don't contain PV
+dangling_lvms() {
+    local used_lvms=$(kubectl get pv -o jsonpath='{.items[*].spec.csi.volumeHandle}')
+    local all_lvms=($(kubectl get lvmvolumes.local.openebs.io -A -o jsonpath='{.items[*].metadata.name}'))
+
+    for lvm in "${all_lvms[@]}"; do
+      if echo "$used_lvms" | grep -qv "$lvm"; then
+        echo "$lvm"
+      fi
+    done
+}
