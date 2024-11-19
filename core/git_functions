@@ -4,7 +4,7 @@ git_untracked() {
   git ls-files . --exclude-standard --others
 }
 
-multirepo_branch_del() {
+mrepo_branch_del() {
   local base_dir="$1"
   local branch_to_remove="$2"
   if [ -z "${branch_to_remove}" ]; then
@@ -18,4 +18,23 @@ multirepo_branch_del() {
       (cd "$dir" && git branch -d "$branch_to_remove")
     fi
   done
+}
+
+mrepo_branch_create() {
+  local repo="$1"
+  local branch_name="$2"
+
+  if [ -z "$branch_name" ] || [ -z "$repo" ]; then
+      echo "Error: Branch name is required."
+      echo "Usage: $0 <repo> <branch_name>"
+      return 12
+  fi
+
+  pushd "$repo" || return 13
+
+  git checkout -b "$branch_name"
+
+  # todo onfailure popd
+
+  popd
 }

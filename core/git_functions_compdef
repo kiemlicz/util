@@ -1,0 +1,10 @@
+_mrepo_branch_create() {
+  local expl
+  local -a repos
+
+  # Find directories containing .git up to 3 levels deep
+  repos=($(find . -maxdepth 3 -type d -name .git -prune -exec dirname {} \;))
+
+  _describe -t repos 'git repositories' repos
+}
+compdef _mrepo_branch_create mrepo_branch_create
