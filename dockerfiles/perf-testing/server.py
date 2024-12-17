@@ -1,16 +1,16 @@
 import argparse
 import asyncio
 import logging
-import time
 
-from prometheus_client import start_http_server, Summary, Gauge
+from prometheus_client import start_http_server, Summary
 
-TCP_ACTIVE_REQUESTS = Gauge('perfserver_tcp_active_requests', 'Number of active tcp requests') # only for testing
 TCP_REQUEST_TIME = Summary('perfserver_tcp_request_processing_seconds', 'Time spent processing tcp request')
 UDP_REQUEST_TIME = Summary('perfserver_udp_request_processing_seconds', 'Time spent processing udp request')
+# increase(perfserver_tcp_request_processing_seconds_count[10s])
+# query options -> min interval
 
 parser = argparse.ArgumentParser(
-    description='Simple server'
+    description='Simple server to test network capabilities'
 )
 parser.add_argument(
     '--host',
@@ -60,7 +60,6 @@ class TcpEchoServerProtocol(asyncio.Protocol):
 
     @TCP_REQUEST_TIME.time()
     async def handle_data(self, data):
-        TCP_ACTIVE_REQUESTS.inc()
         message = data.decode()
         log.info('TCP received: {!r}'.format(message))
 
@@ -72,7 +71,6 @@ class TcpEchoServerProtocol(asyncio.Protocol):
 
         log.info('Close the client socket')
         self.transport.close()
-        TCP_ACTIVE_REQUESTS.dec()
 
 
 class UdpEchoServerProtocol(asyncio.Protocol):
