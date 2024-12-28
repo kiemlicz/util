@@ -139,12 +139,12 @@ async def create_client(src, port, message, sem):
             async with asyncio.timeout(60):
                 await on_con_lost
         except Exception as e:
-            log.exception(f"Timeout waiting for {(server_host, server_port)}")
+            # log.exception(f"Timeout waiting for {(server_host, server_port)}")
             raise e
         finally:
             transport.close()
     except Exception:
-        log.exception(f"Failed to connect from {(src, port)}")
+        # log.exception(f"Failed to connect from {(src, port)}")
         FAIL = FAIL + 1
     finally:
         TASKS_ACTIVE = TASKS_ACTIVE - 1
@@ -160,7 +160,6 @@ def display_success_count(orig_loop):
             log.info(f"Connections count: {CONNECTIONS}")
             log.info(f"Success count: {SUCCESS}")
             log.info(f"Failure count: {FAIL}")
-            log.info(f"Oversleeping count: {OVERSLEEPING}")
             if orig_loop is not None:
                 log.info(f"Loop scheduled(running): {len(orig_loop._scheduled)}, ready: {len(orig_loop._ready)}")
             log.info(f"=====")
