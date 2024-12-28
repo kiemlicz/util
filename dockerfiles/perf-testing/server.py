@@ -2,8 +2,10 @@ import argparse
 import asyncio
 import logging
 
-from prometheus_client import start_http_server, Summary
+from prometheus_client import start_http_server, Summary, Counter
 
+# split request from connection
+TCP_CONNECTION_TOTAL = Counter('perfserver_tcp_connection_total', 'Total number of TCP connections')
 TCP_REQUEST_TIME = Summary('perfserver_tcp_request_processing_seconds', 'Time spent processing tcp request')
 UDP_REQUEST_TIME = Summary('perfserver_udp_request_processing_seconds', 'Time spent processing udp request')
 # increase(perfserver_tcp_request_processing_seconds_count[10s])
@@ -30,6 +32,12 @@ parser.add_argument(
     required=False,
     default=0
 )
+# parser.add_argument(
+#     '--limit',
+#     help="handle at most N requests at a time",
+#     required=False,
+#     default=1000000
+# )
 parser.add_argument(
     '--log',
     help="log level (TRACE, DEBUG, INFO, WARN, ERROR)",
@@ -48,9 +56,12 @@ log = logging.getLogger(__name__)
 HOST = args.host
 PORT = int(args.port)
 DELAY = int(args.delay)
+# RATE_LIMIT = asyncio.Semaphore(args.limit)
 
 class TcpEchoServerProtocol(asyncio.Protocol):
+
     def connection_made(self, transport):
+        TCP_CONNECTION_TOTAL.inc()
         peername = transport.get_extra_info('peername')
         log.info('Connection from {}'.format(peername))
         self.transport = transport
@@ -91,10 +102,10 @@ async def main():
     tcp_server = await loop.create_server(
         TcpEchoServerProtocol, HOST, PORT
     )
-    udp_transport, protocol = await loop.create_datagram_endpoint(
-        UdpEchoServerProtocol,
-        local_addr=(HOST, PORT)
-    )
+    # udp_transport, protocol = await loop.create_datagram_endpoint(
+    #     UdpEchoServerProtocol,
+    #     local_addr=(HOST, PORT)
+    # )
 
     async with tcp_server:
         await tcp_server.serve_forever()
