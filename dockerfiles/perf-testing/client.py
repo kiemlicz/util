@@ -45,6 +45,12 @@ parser.add_argument(
     required=False,
     default="INFO"
 )
+parser.add_argument(
+    '--proto',
+    help="tcp | udp",
+    required=False,
+    default="TCP"
+)
 args = parser.parse_args()
 
 logging.basicConfig(
@@ -58,21 +64,21 @@ sources = args.sources
 ports = int(args.connections)
 server_host = args.host
 server_port = int(args.port)
+proto = args.proto.upper()
 port_offset = 1025  # skip low ports
 TASKS_ACTIVE = 0
 CONNECTIONS = 0
 SUCCESS = 0
 FAIL = 0
+TIMEOUT = 0
 OVERSLEEPING = 0
-THREAD_COUNT = 4
-TOTAL_RUNNING = 100000
+TOTAL_RUNNING = 100000 // 2 # fixme why 100k doesnt work? which net param blocks?
 
 
-# sem = asyncio.Semaphore(100000)
-# pool = concurrent.futures.ThreadPoolExecutor()  # not the safest
-
-class EchoClientProtocol(asyncio.Protocol):
-    def __init__(self, message, on_con_lost):
+class TCPEchoClientProtocol(asyncio.Protocol):
+    def __init__(self, message, on_con_lost, src, port):
+        self.port = port
+        self.src = src
         self.message = message
         self.on_con_lost = on_con_lost
 
@@ -85,17 +91,43 @@ class EchoClientProtocol(asyncio.Protocol):
     def data_received(self, data):
         global SUCCESS
         SUCCESS = SUCCESS + 1
-        log.debug('Data received: {!r}'.format(data.decode()))
+        log.debug('TCP Data received: {!r}'.format(data.decode()))
 
     def connection_lost(self, exc):
         global CONNECTIONS
         CONNECTIONS = CONNECTIONS - 1
-        log.debug('The server closed the connection')
+        log.debug(f'({self.src}:{self.port}) The server closed the connection: {exc}')
         self.on_con_lost.set_result(True)
 
 
-def is_port_in_use(host: str, port: int) -> bool:
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+class UDPEchoClientProtocol:  # finish client
+    def __init__(self, message, on_con_lost):
+        self.message = message
+        self.on_con_lost = on_con_lost
+        self.transport = None
+
+    def connection_made(self, transport):
+        global CONNECTIONS
+        CONNECTIONS = CONNECTIONS + 1
+        self.transport = transport
+        self.transport.sendto(self.message.encode())
+
+    def datagram_received(self, data, addr):
+        global SUCCESS
+        SUCCESS = SUCCESS + 1
+        log.debug('UDP Data received: {!r}'.format(data.decode()))
+        self.transport.close()
+
+    def error_received(self, exc):
+        log.exception('Error received:', exc)
+
+    def connection_lost(self, exc):
+        log.debug('Connection closed', exc)
+        self.on_con_lost.set_result(True)
+
+
+def is_port_in_use(host: str, port: int, tpe: socket.SocketKind = socket.SOCK_STREAM) -> bool:
+    with socket.socket(socket.AF_INET, tpe) as s:
         return s.connect_ex((host, port)) == 0
 
 
@@ -119,8 +151,8 @@ async def debug(sem):
         sem.release()
 
 
-async def create_client(src, port, message, sem):
-    global FAIL, TASKS_ACTIVE
+async def create_client(src, port, message, sem, tcp: bool = True):
+    global FAIL, TASKS_ACTIVE, TIMEOUT
     try:
         await sem.acquire()
         TASKS_ACTIVE = TASKS_ACTIVE + 1
@@ -131,15 +163,21 @@ async def create_client(src, port, message, sem):
             FAIL = FAIL + 1
             return
         on_con_lost = loop.create_future()
-        transport, protocol = await loop.create_connection(
-            lambda: EchoClientProtocol(message, on_con_lost), host=server_host, port=server_port,
-            local_addr=(src, port)
-        )
+        if tcp:
+            transport, protocol = await loop.create_connection(
+                lambda: TCPEchoClientProtocol(message, on_con_lost, src, port), host=server_host, port=server_port,
+                local_addr=(src, port)
+            )
+        else:
+            transport, protocol = await loop.create_datagram_endpoint(
+                lambda: UDPEchoClientProtocol(message, on_con_lost), remote_addr=(server_host, server_port)
+            )
         try:
             async with asyncio.timeout(60):
                 await on_con_lost
-        except Exception as e:
+        except TimeoutError as e:
             # log.exception(f"Timeout waiting for {(server_host, server_port)}")
+            TIMEOUT = TIMEOUT + 1
             raise e
         finally:
             transport.close()
@@ -151,15 +189,23 @@ async def create_client(src, port, message, sem):
         sem.release()
 
 
+def display():
+    try:
+        time.sleep(2)
+        log.info(f"Threads count: {threading.active_count()}")
+        log.info(f"Tasks active: {TASKS_ACTIVE}")
+        log.info(f"Connections count: {CONNECTIONS}")
+        log.info(f"Success count: {SUCCESS}")
+        log.info(f"Failure count: {FAIL} (timeouts: {TIMEOUT})")
+        log.info(f"=====")
+    except Exception:
+        log.exception("Failed to display success count")
+
+
 def display_success_count(orig_loop):
     while True:
         try:
-            time.sleep(2)
-            log.info(f"Threads count: {threading.active_count()}")
-            log.info(f"Tasks active: {TASKS_ACTIVE}")
-            log.info(f"Connections count: {CONNECTIONS}")
-            log.info(f"Success count: {SUCCESS}")
-            log.info(f"Failure count: {FAIL}")
+            display()
             if orig_loop is not None:
                 log.info(f"Loop scheduled(running): {len(orig_loop._scheduled)}, ready: {len(orig_loop._ready)}")
             log.info(f"=====")
@@ -167,28 +213,9 @@ def display_success_count(orig_loop):
             log.exception("Failed to display success count")
 
 
-async def distribute(loop_id):
-    tasks = []
-    sem_limit = TOTAL_RUNNING // THREAD_COUNT
-    sem = asyncio.Semaphore(sem_limit)
-    start_source = ipaddress.IPv4Address(sources[0])
-    end_source = ipaddress.IPv4Address(sources[1])
-    for src in range(int(start_source), int(end_source) + 1):
-        if src % THREAD_COUNT == loop_id:
-            srcip = str(ipaddress.IPv4Address(src))
-            for i in range(ports):
-                p = i + port_offset
-                message = f"client: {i}"
-                log.debug(f"Connecting from: {(srcip, p)}")
-                tasks.append(create_client(srcip, p, message, sem))
-                # tasks.append(debug(sem))
-    log.info(f"All ({len(tasks)}) connection tasks created, waiting for completion (thread limit: {sem_limit})")
-    await asyncio.gather(*tasks)
-    log.info("All connection tasks completed")
-
-
 async def main():
     tasks = []
+    sem = asyncio.Semaphore(TOTAL_RUNNING)
     loop = asyncio.get_running_loop()
     # loop.set_debug(True)
     threading.Thread(target=display_success_count, args=[loop], daemon=True).start()
@@ -196,39 +223,25 @@ async def main():
     start_source = ipaddress.IPv4Address(sources[0])
     end_source = ipaddress.IPv4Address(sources[1])
     for src in range(int(start_source), int(end_source) + 1):
-        # l = loops[src % len(loops)]
-        # l.call_soon_threadsafe(lambda: schedule(src))  # remove
-
-        src = str(ipaddress.IPv4Address(src))
+        srcip = str(ipaddress.IPv4Address(src))
         for i in range(ports):
             p = i + port_offset
             message = f"client: {i}"
             log.debug(f"Connecting from: {(src, p)}")
-            # tasks.append(create_client(src, p, message))
+            tasks.append(create_client(srcip, p, message, sem, proto == "TCP"))
             #     # t = asyncio.create_task(create_client(src, p, message))
             #     # f = await loop.run_in_executor(pool, t) # this is starved
             #     # tasks.append(f) # wrap with asyncio.create_task
             #
             #     # f = await loop.run_in_executor(None, debug) # this is starved
-            tasks.append(debug())
+            # tasks.append(debug())
 
-            # with concurrent.futures.ThreadPoolExecutor() as pool:
-            # t = asyncio.create_task(create_client(src, p, message))
-            # f = await loop.run_in_executor(pool, create_client, src, p, message)
-            # tasks.append(f)
     log.info(f"Tasks ({len(tasks)}) distributed, waiting for completion")
     await asyncio.gather(*tasks)
     log.info("All tasks completed")
 
 
-# asyncio.run(main()) # original single loop
-threading.Thread(target=display_success_count, args=[None], daemon=True).start()
-threads = [threading.Thread(name=f"t{i}", target=asyncio.run, args=(distribute(i),)) for i in range(THREAD_COUNT)]
-for t in threads:
-    t.start()
-for t in threads:
-    t.join()
+asyncio.run(main())  # original single loop
 
 log.info("The End")
-log.info(f"Success count: {SUCCESS}")
-log.info(f"Failure count: {FAIL}")
+display()

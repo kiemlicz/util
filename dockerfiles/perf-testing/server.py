@@ -6,6 +6,7 @@ from prometheus_client import start_http_server, Summary, Counter
 
 # split request from connection
 TCP_CONNECTION_TOTAL = Counter('perfserver_tcp_connection_total', 'Total number of TCP connections')
+UDP_CONNECTION_TOTAL = Counter('perfserver_udp_connection_total', 'Total number of UDP unique sources')
 TCP_REQUEST_TIME = Summary('perfserver_tcp_request_processing_seconds', 'Time spent processing tcp request')
 UDP_REQUEST_TIME = Summary('perfserver_udp_request_processing_seconds', 'Time spent processing udp request')
 # increase(perfserver_tcp_request_processing_seconds_count[10s])
@@ -47,7 +48,7 @@ parser.add_argument(
 args = parser.parse_args()
 
 logging.basicConfig(
-    format='[%(asctime)s] [%(levelname)-8s] %(message)s',
+    format='[%(threadName)s] [%(asctime)s] [%(levelname)-8s] %(message)s',
     level=logging.getLevelName(args.log.upper()),
     datefmt='%Y-%m-%d %H:%M:%S'
 )
@@ -63,7 +64,7 @@ class TcpEchoServerProtocol(asyncio.Protocol):
     def connection_made(self, transport):
         TCP_CONNECTION_TOTAL.inc()
         peername = transport.get_extra_info('peername')
-        log.info('Connection from {}'.format(peername))
+        log.debug('Connection from {}'.format(peername))
         self.transport = transport
 
     def data_received(self, data):
@@ -86,12 +87,20 @@ class TcpEchoServerProtocol(asyncio.Protocol):
 
 class UdpEchoServerProtocol(asyncio.Protocol):
     def connection_made(self, transport):
+        UDP_CONNECTION_TOTAL.inc()
         self.transport = transport
 
-    @UDP_REQUEST_TIME.time()
     def datagram_received(self, data, addr):
+        asyncio.create_task(self.handle_data(data, addr))  # delegating to simulate processing delay
+
+    @UDP_REQUEST_TIME.time()
+    async def handle_data(self, data, addr):
         message = data.decode()
         log.info('UDP received %r from %s' % (message, addr))
+
+        if DELAY > 0:
+            await asyncio.sleep(DELAY)
+
         log.debug('UDP send %r to %s' % (message, addr))
         self.transport.sendto(data, addr)
 
@@ -102,10 +111,10 @@ async def main():
     tcp_server = await loop.create_server(
         TcpEchoServerProtocol, HOST, PORT
     )
-    # udp_transport, protocol = await loop.create_datagram_endpoint(
-    #     UdpEchoServerProtocol,
-    #     local_addr=(HOST, PORT)
-    # )
+    udp_transport, protocol = await loop.create_datagram_endpoint(
+        UdpEchoServerProtocol,
+        local_addr=(HOST, PORT)
+    )
 
     async with tcp_server:
         await tcp_server.serve_forever()
