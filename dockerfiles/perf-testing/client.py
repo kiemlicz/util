@@ -5,12 +5,28 @@ import logging
 import socket
 import threading
 import time
+# import uvloop
 
-# ulimit -n 1000000
-# sysctl -w net.ipv4.ip_local_port_range="1025    60999"
-# sysctl -w net.netfilter.nf_conntrack_max=700000
-# sysctl -w net.ipv4.tcp_mem="1510566 2014094 3021132"
-# for i in {205..230}; do ip addr add 192.168.20.$i/24 dev br0; done
+
+'''
+ulimit -n 1000000
+sysctl -w net.ipv4.ip_local_port_range="1025    60999"
+sysctl -w net.netfilter.nf_conntrack_max=700000
+sysctl -w net.ipv4.tcp_mem="1510566 2014094 3021132"
+sysctl -w net.core.rmem_default=31457280
+sysctl -w net.core.rmem_max=33554432
+sysctl -w net.core.wmem_default=31457280
+sysctl -w net.core.wmem_max=33554432
+sysctl -w net.core.somaxconn=65536
+sysctl -w net.core.netdev_max_backlog=65536
+sysctl -w net.core.optmem_max=25165824
+sysctl -w net.ipv4.udp_mem="15318750 20425020 30637500"
+sysctl -w net.ipv4.udp_rmem_min=16384
+sysctl -w net.ipv4.udp_wmem_min=16384
+for i in {205..230}; do ip addr add 192.168.20.$i/24 dev br0; done
+'''
+
+# how to check buffer fullness?
 
 parser = argparse.ArgumentParser(
     description='Simple client to test network capabilities'
@@ -70,9 +86,10 @@ TASKS_ACTIVE = 0
 CONNECTIONS = 0
 SUCCESS = 0
 FAIL = 0
-TIMEOUT = 0
+TIMEOUT_CNT = 0
+TIMEOUT = 60
 OVERSLEEPING = 0
-TOTAL_RUNNING = 100000 // 2 # fixme why 100k doesnt work? which net param blocks?
+TOTAL_RUNNING = 100000
 
 
 class TCPEchoClientProtocol(asyncio.Protocol):
@@ -100,7 +117,7 @@ class TCPEchoClientProtocol(asyncio.Protocol):
         self.on_con_lost.set_result(True)
 
 
-class UDPEchoClientProtocol:  # finish client
+class UDPEchoClientProtocol(asyncio.Protocol): # dropped by ifc?
     def __init__(self, message, on_con_lost):
         self.message = message
         self.on_con_lost = on_con_lost
@@ -110,7 +127,11 @@ class UDPEchoClientProtocol:  # finish client
         global CONNECTIONS
         CONNECTIONS = CONNECTIONS + 1
         self.transport = transport
-        self.transport.sendto(self.message.encode())
+        try:
+            self.transport.sendto(self.message.encode())
+        except Exception as e:
+            log.exception("Failed to send UDP data")
+            raise e
 
     def datagram_received(self, data, addr):
         global SUCCESS
@@ -122,6 +143,8 @@ class UDPEchoClientProtocol:  # finish client
         log.exception('Error received:', exc)
 
     def connection_lost(self, exc):
+        global CONNECTIONS
+        CONNECTIONS = CONNECTIONS - 1
         log.debug('Connection closed', exc)
         self.on_con_lost.set_result(True)
 
@@ -152,13 +175,13 @@ async def debug(sem):
 
 
 async def create_client(src, port, message, sem, tcp: bool = True):
-    global FAIL, TASKS_ACTIVE, TIMEOUT
+    global FAIL, TASKS_ACTIVE, TIMEOUT_CNT
     try:
         await sem.acquire()
         TASKS_ACTIVE = TASKS_ACTIVE + 1
         loop = asyncio.get_running_loop()
 
-        if is_port_in_use(src, port):
+        if tcp and is_port_in_use(src, port, socket.SOCK_STREAM): # can't use UDP here
             log.info(f"Port {port} is in use, skipping")
             FAIL = FAIL + 1
             return
@@ -170,14 +193,17 @@ async def create_client(src, port, message, sem, tcp: bool = True):
             )
         else:
             transport, protocol = await loop.create_datagram_endpoint(
-                lambda: UDPEchoClientProtocol(message, on_con_lost), remote_addr=(server_host, server_port)
+                lambda: UDPEchoClientProtocol(message, on_con_lost),
+                local_addr=(src, port),
+                remote_addr=(server_host, server_port),
             )
+
         try:
-            async with asyncio.timeout(60):
+            async with asyncio.timeout(TIMEOUT):
                 await on_con_lost
         except TimeoutError as e:
             # log.exception(f"Timeout waiting for {(server_host, server_port)}")
-            TIMEOUT = TIMEOUT + 1
+            TIMEOUT_CNT = TIMEOUT_CNT + 1
             raise e
         finally:
             transport.close()
@@ -196,7 +222,7 @@ def display():
         log.info(f"Tasks active: {TASKS_ACTIVE}")
         log.info(f"Connections count: {CONNECTIONS}")
         log.info(f"Success count: {SUCCESS}")
-        log.info(f"Failure count: {FAIL} (timeouts: {TIMEOUT})")
+        log.info(f"Failure count: {FAIL} (timeouts: {TIMEOUT_CNT})")
         log.info(f"=====")
     except Exception:
         log.exception("Failed to display success count")

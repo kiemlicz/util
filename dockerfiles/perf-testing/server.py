@@ -9,7 +9,11 @@ TCP_CONNECTION_TOTAL = Counter('perfserver_tcp_connection_total', 'Total number 
 UDP_CONNECTION_TOTAL = Counter('perfserver_udp_connection_total', 'Total number of UDP unique sources')
 TCP_REQUEST_TIME = Summary('perfserver_tcp_request_processing_seconds', 'Time spent processing tcp request')
 UDP_REQUEST_TIME = Summary('perfserver_udp_request_processing_seconds', 'Time spent processing udp request')
-# increase(perfserver_tcp_request_processing_seconds_count[10s])
+# sum(increase(perfserver_tcp_request_processing_seconds_count[2s]))
+# sum(increase(perfserver_tcp_connection_total[2s]))
+##
+# sum(increase(perfserver_udp_request_processing_seconds_count[2s]))
+# sum(increase(perfserver_udp_connection_total[2s]))
 # query options -> min interval
 
 parser = argparse.ArgumentParser(
