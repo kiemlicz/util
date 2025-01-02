@@ -2,6 +2,7 @@ import argparse
 import asyncio
 import logging
 
+import asyncudp
 from prometheus_client import start_http_server, Summary, Counter
 
 # split request from connection
@@ -37,12 +38,6 @@ parser.add_argument(
     required=False,
     default=0
 )
-# parser.add_argument(
-#     '--limit',
-#     help="handle at most N requests at a time",
-#     required=False,
-#     default=1000000
-# )
 parser.add_argument(
     '--log',
     help="log level (TRACE, DEBUG, INFO, WARN, ERROR)",
@@ -58,10 +53,18 @@ logging.basicConfig(
 )
 log = logging.getLogger(__name__)
 
+try:
+    import uvloop
+
+    uvloop_enabled = True
+    log.info("uvloop installed, using it as default event loop")
+except ImportError:
+    log.error("uvloop not installed, falling back to default event loop")
+    uvloop_enabled = False
+
 HOST = args.host
 PORT = int(args.port)
 DELAY = int(args.delay)
-# RATE_LIMIT = asyncio.Semaphore(args.limit)
 
 class TcpEchoServerProtocol(asyncio.Protocol):
 
@@ -109,6 +112,28 @@ class UdpEchoServerProtocol(asyncio.Protocol):
         self.transport.sendto(data, addr)
 
 
+@UDP_REQUEST_TIME.time()
+def serve(sock, data, addr):
+    sock.sendto(data, addr)
+
+
+@UDP_REQUEST_TIME.time()
+async def echo_serve(sock, data, addr):
+    if DELAY > 0:
+        await asyncio.sleep(DELAY)
+    sock.sendto(data, addr)
+
+
+async def echo_server():
+    loop = asyncio.get_running_loop()
+    sock = await asyncudp.create_socket(local_addr=(HOST, PORT))
+    log.info("Simple server started")
+    while True:
+        data, addr = await sock.recvfrom()
+        # serve(sock, data, addr)
+        loop.create_task(echo_serve(sock, data, addr))  # probably garbage implementation
+
+
 async def main():
     loop = asyncio.get_running_loop()
 
@@ -128,4 +153,7 @@ if __name__ == '__main__':
     log.info("Starting prometheus server on port 8000")
     start_http_server(8000)
     log.info(f"Starting server on {HOST}:{PORT}")
-    asyncio.run(main())
+    if uvloop_enabled:
+        uvloop.run(main())
+    else:
+        asyncio.run(main())

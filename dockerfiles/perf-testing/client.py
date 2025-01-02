@@ -5,6 +5,7 @@ import logging
 import socket
 import threading
 import time
+
 # import uvloop
 
 
@@ -18,12 +19,15 @@ sysctl -w net.core.rmem_max=33554432
 sysctl -w net.core.wmem_default=31457280
 sysctl -w net.core.wmem_max=33554432
 sysctl -w net.core.somaxconn=65536
-sysctl -w net.core.netdev_max_backlog=65536
 sysctl -w net.core.optmem_max=25165824
 sysctl -w net.ipv4.udp_mem="15318750 20425020 30637500"
 sysctl -w net.ipv4.udp_rmem_min=16384
 sysctl -w net.ipv4.udp_wmem_min=16384
+sysctl -w net.core.netdev_max_backlog=65536
 for i in {205..230}; do ip addr add 192.168.20.$i/24 dev br0; done
+
+for i in {205..212}; do python dockerfiles/perf-testing/client.py --sources 192.168.20.$i 192.168.20.$i --host 192.168.30.241 --proto udp &; done
+
 '''
 
 # how to check buffer fullness?
@@ -117,7 +121,7 @@ class TCPEchoClientProtocol(asyncio.Protocol):
         self.on_con_lost.set_result(True)
 
 
-class UDPEchoClientProtocol(asyncio.Protocol): # dropped by ifc?
+class UDPEchoClientProtocol(asyncio.Protocol):  # dropped by ifc?
     def __init__(self, message, on_con_lost):
         self.message = message
         self.on_con_lost = on_con_lost
@@ -143,10 +147,17 @@ class UDPEchoClientProtocol(asyncio.Protocol): # dropped by ifc?
         log.exception('Error received:', exc)
 
     def connection_lost(self, exc):
+        '''
+        called after timeout
+        '''
         global CONNECTIONS
         CONNECTIONS = CONNECTIONS - 1
         log.debug('Connection closed', exc)
-        self.on_con_lost.set_result(True)
+        try:
+            self.on_con_lost.set_result(True)
+        except Exception as e:
+            # usually result of timeout
+            pass
 
 
 def is_port_in_use(host: str, port: int, tpe: socket.SocketKind = socket.SOCK_STREAM) -> bool:
@@ -181,7 +192,7 @@ async def create_client(src, port, message, sem, tcp: bool = True):
         TASKS_ACTIVE = TASKS_ACTIVE + 1
         loop = asyncio.get_running_loop()
 
-        if tcp and is_port_in_use(src, port, socket.SOCK_STREAM): # can't use UDP here
+        if tcp and is_port_in_use(src, port, socket.SOCK_STREAM):  # can't use UDP here
             log.info(f"Port {port} is in use, skipping")
             FAIL = FAIL + 1
             return
@@ -204,7 +215,7 @@ async def create_client(src, port, message, sem, tcp: bool = True):
         except TimeoutError as e:
             # log.exception(f"Timeout waiting for {(server_host, server_port)}")
             TIMEOUT_CNT = TIMEOUT_CNT + 1
-            raise e
+            raise e # to add fail count
         finally:
             transport.close()
     except Exception:
@@ -215,17 +226,15 @@ async def create_client(src, port, message, sem, tcp: bool = True):
         sem.release()
 
 
+# this is the implementation problems!!!!
+# why doesn't work on non-ide terminal
+
 def display():
-    try:
-        time.sleep(2)
-        log.info(f"Threads count: {threading.active_count()}")
-        log.info(f"Tasks active: {TASKS_ACTIVE}")
-        log.info(f"Connections count: {CONNECTIONS}")
-        log.info(f"Success count: {SUCCESS}")
-        log.info(f"Failure count: {FAIL} (timeouts: {TIMEOUT_CNT})")
-        log.info(f"=====")
-    except Exception:
-        log.exception("Failed to display success count")
+    time.sleep(2)
+    log.info(f"Tasks active: {TASKS_ACTIVE}")
+    log.info(f"Connections count: {CONNECTIONS}")
+    log.info(f"Success count: {SUCCESS}")
+    log.info(f"Failure count: {FAIL} (timeouts: {TIMEOUT_CNT})")
 
 
 def display_success_count(orig_loop):
@@ -255,12 +264,6 @@ async def main():
             message = f"client: {i}"
             log.debug(f"Connecting from: {(src, p)}")
             tasks.append(create_client(srcip, p, message, sem, proto == "TCP"))
-            #     # t = asyncio.create_task(create_client(src, p, message))
-            #     # f = await loop.run_in_executor(pool, t) # this is starved
-            #     # tasks.append(f) # wrap with asyncio.create_task
-            #
-            #     # f = await loop.run_in_executor(None, debug) # this is starved
-            # tasks.append(debug())
 
     log.info(f"Tasks ({len(tasks)}) distributed, waiting for completion")
     await asyncio.gather(*tasks)
