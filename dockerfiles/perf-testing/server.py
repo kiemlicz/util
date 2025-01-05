@@ -5,6 +5,10 @@ import logging
 import asyncudp
 from prometheus_client import start_http_server, Summary, Counter
 
+'''
+This simple implementation can handle 200 000 UDP clients with 10 sec delay.
+'''
+
 # split request from connection
 TCP_CONNECTION_TOTAL = Counter('perfserver_tcp_connection_total', 'Total number of TCP connections')
 UDP_CONNECTION_TOTAL = Counter('perfserver_udp_connection_total', 'Total number of UDP unique sources')

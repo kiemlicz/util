@@ -14,13 +14,13 @@ ulimit -n 1000000
 sysctl -w net.ipv4.ip_local_port_range="1025    60999"
 sysctl -w net.netfilter.nf_conntrack_max=700000
 sysctl -w net.ipv4.tcp_mem="1510566 2014094 3021132"
-sysctl -w net.core.rmem_default=31457280
-sysctl -w net.core.rmem_max=33554432
-sysctl -w net.core.wmem_default=31457280
-sysctl -w net.core.wmem_max=33554432
+sysctl -w net.core.rmem_default=314572800
+sysctl -w net.core.rmem_max=335544320
+sysctl -w net.core.wmem_default=314572800
+sysctl -w net.core.wmem_max=335544320
 sysctl -w net.core.somaxconn=65536
-sysctl -w net.core.optmem_max=25165824
-sysctl -w net.ipv4.udp_mem="15318750 20425020 30637500"
+sysctl -w net.core.optmem_max=251658240
+sysctl -w net.ipv4.udp_mem="153187500 204250200 306375000"
 sysctl -w net.ipv4.udp_rmem_min=16384
 sysctl -w net.ipv4.udp_wmem_min=16384
 sysctl -w net.core.netdev_max_backlog=65536
@@ -165,25 +165,6 @@ def is_port_in_use(host: str, port: int, tpe: socket.SocketKind = socket.SOCK_ST
         return s.connect_ex((host, port)) == 0
 
 
-async def debug(sem):
-    try:
-        await sem.acquire()
-
-        global FAIL, TASKS_ACTIVE, OVERSLEEPING
-        TASKS_ACTIVE = TASKS_ACTIVE + 1
-        s = time.perf_counter()
-        await asyncio.sleep(5)
-        elapsed = time.perf_counter() - s
-        if elapsed > 5:
-            OVERSLEEPING = OVERSLEEPING + 1
-        # log.info(f"DON: {src}:{port}")
-        TASKS_ACTIVE = TASKS_ACTIVE - 1
-
-    except Exception:
-        log.exception("Failed to acquire semaphore")
-    finally:
-        sem.release()
-
 
 async def create_client(src, port, message, sem, tcp: bool = True):
     global FAIL, TASKS_ACTIVE, TIMEOUT_CNT
@@ -261,7 +242,7 @@ async def main():
         srcip = str(ipaddress.IPv4Address(src))
         for i in range(ports):
             p = i + port_offset
-            message = f"client: {i}"
+            message = f"client: #{i}, port: {p}"
             log.debug(f"Connecting from: {(src, p)}")
             tasks.append(create_client(srcip, p, message, sem, proto == "TCP"))
 
