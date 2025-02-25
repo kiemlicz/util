@@ -24,7 +24,7 @@ spec:
   securityContext:
     runAsUser: 0
   containers:
-    - image: nicolaka/netshoot
+    - image: ghcr.io/nicolaka/netshoot:v0.13
       name: debug
       command:
         - bash
