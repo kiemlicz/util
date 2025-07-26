@@ -71,3 +71,21 @@ dangling_lvms() {
       fi
     done
 }
+
+node_pv() {
+  if [ -z "$1" ]; then
+    echo "Node name required: Usage: $0 <node_name>"
+    return 1
+  fi
+
+  local node_name="$1"
+
+  kubectl get pods --all-namespaces --field-selector spec.nodeName=$node_name -o json |
+  jq -r '
+    .items[] |
+    . as $pod |
+    .spec.volumes[]? |
+    select(.persistentVolumeClaim) |
+    "\($pod.metadata.namespace)/\($pod.metadata.name) -> PVC: \(.persistentVolumeClaim.claimName)"
+  '
+}
