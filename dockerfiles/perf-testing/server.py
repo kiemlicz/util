@@ -2,7 +2,6 @@ import argparse
 import asyncio
 import logging
 
-import asyncudp
 from prometheus_client import start_http_server, Summary, Counter
 
 '''
@@ -70,12 +69,14 @@ HOST = args.host
 PORT = int(args.port)
 DELAY = int(args.delay)
 
+
 class TcpEchoServerProtocol(asyncio.Protocol):
 
     def connection_made(self, transport):
         TCP_CONNECTION_TOTAL.inc()
-        peername = transport.get_extra_info('peername')
-        log.debug('Connection from {}'.format(peername))
+        srchost, srcport = transport.get_extra_info('peername')
+        dsthost, dstport = transport.get_extra_info('sockname')
+        log.debug(f'TCP Connection from {srchost}:{srcport} -> {dsthost}:{dstport}')
         self.transport = transport
 
     def data_received(self, data):
@@ -96,9 +97,11 @@ class TcpEchoServerProtocol(asyncio.Protocol):
         self.transport.close()
 
 
-class UdpEchoServerProtocol(asyncio.Protocol):
+class UdpEchoServerProtocol:
     def connection_made(self, transport):
-        UDP_CONNECTION_TOTAL.inc()
+        transport.get_extra_info('peername')
+        dsthost, dstport = transport.get_extra_info('sockname')
+        log.debug(f'UDP Connections -> {dsthost}:{dstport}')
         self.transport = transport
 
     def datagram_received(self, data, addr):
@@ -106,36 +109,17 @@ class UdpEchoServerProtocol(asyncio.Protocol):
 
     @UDP_REQUEST_TIME.time()
     async def handle_data(self, data, addr):
-        message = data.decode()
-        log.info('UDP received %r from %s' % (message, addr))
+        message = data.decode().rstrip()
+        srchost, srcport = addr
+        dsthost, dstport = self.transport.get_extra_info('sockname')
+        log.info(f'UDP data from {srchost}:{srcport} -> {dsthost}:{dstport}')
+        log.info(f'UDP received: {message}')
 
         if DELAY > 0:
             await asyncio.sleep(DELAY)
 
-        log.debug('UDP send %r to %s' % (message, addr))
+        log.debug(f'UDP sent {message} to {srchost}:{srcport}')
         self.transport.sendto(data, addr)
-
-
-@UDP_REQUEST_TIME.time()
-def serve(sock, data, addr):
-    sock.sendto(data, addr)
-
-
-@UDP_REQUEST_TIME.time()
-async def echo_serve(sock, data, addr):
-    if DELAY > 0:
-        await asyncio.sleep(DELAY)
-    sock.sendto(data, addr)
-
-
-async def echo_server():
-    loop = asyncio.get_running_loop()
-    sock = await asyncudp.create_socket(local_addr=(HOST, PORT))
-    log.info("Simple server started")
-    while True:
-        data, addr = await sock.recvfrom()
-        # serve(sock, data, addr)
-        loop.create_task(echo_serve(sock, data, addr))  # probably garbage implementation
 
 
 async def main():
