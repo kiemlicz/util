@@ -29,3 +29,57 @@ renegotiate_link_speed() {
         logger "Link already set for $2Mb/s"
     fi
 }
+
+detect_mtu() {
+    local target="$1"
+
+    if [[ -z "$target" ]]; then
+        echo "Usage: detect_mtu <host>"
+        return 1
+    fi
+
+    # 1. Determine OS and set Ping Flags
+    # Linux uses "-M do", macOS/BSD uses "-D" to set Don't Fragment
+    local ping_flags=""
+    if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+        ping_flags=(-c 1 -M do -W 1)
+    elif [[ "$OSTYPE" == "darwin"* ]] || [[ "$OSTYPE" == "freebsd"* ]]; then
+        ping_flags=(-c 1 -D -t 1)
+    else
+        echo "Unsupported OS for this function."
+        return 1
+    fi
+
+    # 2. Binary Search Setup
+    # IP Header (20) + ICMP Header (8) = 28 bytes overhead
+    local overhead=28
+    local min=0
+    local max=1472  # 1500 (Ethernet standard) - 28 overhead
+    local best_payload=0
+
+    echo "Calculating MTU for $target (Binary Search)..."
+
+    while (( min <= max )); do
+        local mid=$(( (min + max) / 2 ))
+        # Run ping command, suppressing output
+        # We test if we can send 'mid' bytes of payload
+        echo "ping $ping_flags -s \"$mid\" \"$target\""
+        if ping "${ping_flags[@]}" -s "$mid" "$target" >/dev/null 2>&1; then
+            # success case!
+            best_payload=$mid
+            min=$(( mid + 1 ))
+        else
+          # fail case
+          max=$(( mid - 1 ))
+        fi
+    done
+
+    # 4. Calculate Final MTU
+    local detected_mtu=$(( best_payload + overhead ))
+
+    echo "--------------------------------"
+    echo "Max Payload: $best_payload bytes"
+    echo "Packet Overhead: $overhead bytes"
+    echo "Detected MTU: **$detected_mtu**"
+    echo "--------------------------------"
+}
