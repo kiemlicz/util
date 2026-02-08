@@ -22,3 +22,21 @@ for (i=0;i<allDesktops.length;i++) {
 "
   qdbus org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript "$script"
 }
+
+run_in_activity() {
+    local activity_name="$1"
+    local cmd="${@:2}"
+    local uuid=$(qdbus6 org.kde.ActivityManager /ActivityManager/Activities ListActivities | while read id; do
+        [ "$(qdbus6 org.kde.ActivityManager /ActivityManager/Activities ActivityName $id)" = "$activity_name" ] && echo $id && break
+    done)
+
+    if [ -n "$uuid" ]; then
+        local current=$(qdbus6 org.kde.ActivityManager /ActivityManager/Activities CurrentActivity)
+        qdbus6 org.kde.ActivityManager /ActivityManager/Activities SetCurrentActivity "$uuid"
+        $cmd &
+        sleep 0.5 # Wait for window to register
+        qdbus6 org.kde.ActivityManager /ActivityManager/Activities SetCurrentActivity "$current"
+    else
+        echo "Activity '$activity_name' not found."
+    fi
+}
