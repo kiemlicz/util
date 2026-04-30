@@ -47,6 +47,10 @@ gpg_encrypt_file() {
   awk -f $SEC_UTIL_LOC/gpg_encrypt.awk -v keyname="$2" $1
 }
 
+gpg_encrypt_file_content() {
+  gpg --batch --yes --trust-model always --encrypt --recipient "$2" --armor --output - "$1"
+}
+
 gpg_list_keys() {
   gpg --homedir ${1-~/.gnupg} --list-keys
 }

@@ -23,8 +23,11 @@ metadata:
 spec:
   securityContext:
     runAsUser: 0
+  hostNetwork: false
+  #nodeSelector:
+  #  kubernetes.io/hostname: ""
   containers:
-    - image: ghcr.io/nicolaka/netshoot:v0.13
+    - image: ghcr.io/nicolaka/netshoot:v0.15
       name: debug
       command:
         - bash
