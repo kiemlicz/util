@@ -73,3 +73,8 @@ swap_file() {
   mv $1 $2
   mv $2.tmp $1
 }
+
+start() {
+  "$@" > /dev/null 2>&1 &
+  echo "$1 started in the background (PID $!)."
+}

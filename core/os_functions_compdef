@@ -3,3 +3,10 @@ _swap_file() {
       '1:file name'
 }
 compdef _swap_file swap_file
+
+_start() {
+    _arguments \
+      '1:process to run:_command_names -e'
+}
+compdef _start start
+
