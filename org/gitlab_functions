@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+
+# Creates a GitLab project via the plain REST API (glab api) -- no local
+# filesystem side effects, unlike `glab repo create`/`glab repo view`, which
+# will happily git-init/remote-add in a same-named local directory.
+_gitlab_create_project() {
+  local fullpath="$1"
+  local project_name="${fullpath##*/}"
+  local group_path="${fullpath%/*}"
+  local namespace_id=""
+
+  if [ "$group_path" != "$fullpath" ]; then
+    namespace_id="$(glab api "namespaces/${group_path//\//%2F}" 2>/dev/null | jq -r '.id')"
+    if [ -z "$namespace_id" ] || [ "$namespace_id" = "null" ]; then
+      echo "Could not resolve GitLab namespace: $group_path" >&2
+      return 1
+    fi
+  fi
+
+  glab api projects -X POST -f "path=$project_name" ${namespace_id:+-f "namespace_id=$namespace_id"} >/dev/null
+}
+
+create_project() {
+  local fullpath="$1"
+
+  if [ -z "$fullpath" ]; then
+    echo "Usage: create_project <group/subgroup/project> [clone-dir]" >&2
+    return 1
+  fi
+
+  _gitlab_create_project "$fullpath" && glab repo clone "$fullpath" ${2:+"$2"}
+}
+
+import_project() {
+  local local_dir="$1"
+  local fullpath="$2"
+  local remote_name="${3:-gitlab}"
+
+  if [ -z "$local_dir" ] || [ -z "$fullpath" ]; then
+    echo "Usage: import_project <local-git-dir> <group/subgroup/project> [remote-name]" >&2
+    return 1
+  fi
+
+  if [ ! -d "$local_dir/.git" ]; then
+    echo "$local_dir is not a git repository" >&2
+    return 1
+  fi
+
+  local encoded_path="${fullpath//\//%2F}"
+
+  if ! glab api "projects/$encoded_path" &>/dev/null; then
+    _gitlab_create_project "$fullpath" || return 1
+  fi
+
+  local protocol url_field url
+  protocol="$(glab config get git_protocol 2>/dev/null)"
+  url_field="ssh_url_to_repo"
+  [ "$protocol" = "https" ] && url_field="http_url_to_repo"
+
+  url="$(glab api "projects/$encoded_path" 2>/dev/null | jq -r ".$url_field")"
+  if [ -z "$url" ] || [ "$url" = "null" ]; then
+    echo "Could not resolve clone URL for $fullpath" >&2
+    return 1
+  fi
+
+  (
+    cd "$local_dir" || exit 1
+    if git remote get-url "$remote_name" &>/dev/null; then
+      git remote set-url "$remote_name" "$url"
+    else
+      git remote add "$remote_name" "$url"
+    fi
+    git push "$remote_name" --all && git push "$remote_name" --tags
+  )
+}

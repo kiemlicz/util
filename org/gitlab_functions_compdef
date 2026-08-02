@@ -1,0 +1,14 @@
+_create_project() {
+    _arguments \
+      "1:GitLab path e.g. group/subgroup/project (add GITLAB_HOST='gitlab...' to point elsewhere)" \
+      "2:[clone dir]:_files -/"
+}
+compdef _create_project create_project
+
+_import_project() {
+    _arguments \
+      "1:local git repo dir:_files -/" \
+      "2:GitLab path e.g. group/subgroup/project (created if it doesn't exist, add GITLAB_HOST='gitlab...' to point elsewhere)" \
+      "3:[remote name] 'gitlab' by default"
+}
+compdef _import_project import_project
