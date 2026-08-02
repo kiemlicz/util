@@ -24,10 +24,14 @@ spec:
   securityContext:
     runAsUser: 0
   hostNetwork: false
+  #tolerations:
+  #  - key: "node-role.kubernetes.io/somerole"
+  #    operator: "Exists"
+  #    effect: "NoSchedule"
   #nodeSelector:
-  #  kubernetes.io/hostname: ""
+  #  kubernetes.io/hostname: "NAME"
   containers:
-    - image: ghcr.io/nicolaka/netshoot:v0.15
+    - image: ghcr.io/nicolaka/netshoot:v0.16
       name: debug
       command:
         - bash
