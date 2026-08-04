@@ -6,16 +6,89 @@ on:
       - master
     paths:
       - 'dockerfiles/**'
+    tags:
+      - '*'
 
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
+  detect-changes:
+    name: Detect changed images
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    outputs:
+      matrix: ${{ steps.changes.outputs.matrix }}
+      has_changes: ${{ steps.changes.outputs.has_changes }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Determine changed images
+        id: changes
+        run: |
+          set -euo pipefail
+
+          all_images=()
+          for f in dockerfiles/*/Dockerfile; do
+            d="${f%/Dockerfile}"
+            all_images+=("${d#dockerfiles/}")
+          done
+
+          empty_tree=$(git hash-object -t tree /dev/null)
+
+          if [ "${{ github.ref_type }}" = "tag" ]; then
+            # Tag pushes report before=0000...0000, so diff the tag's commit
+            # against its parent instead (falls back to an empty tree for a
+            # root commit).
+            if git rev-parse -q --verify HEAD^ > /dev/null; then
+              base=$(git rev-parse HEAD^)
+            else
+              base="$empty_tree"
+            fi
+          else
+            before="${{ github.event.before }}"
+            if [ -z "$before" ] || [ "$before" = "0000000000000000000000000000000000000000" ]; then
+              base="$empty_tree"
+            else
+              base="$before"
+            fi
+          fi
+
+          changed_files=$(git diff --name-only "$base" "${{ github.sha }}" -- dockerfiles/)
+
+          changed_images=()
+          for image in "${all_images[@]}"; do
+            if printf '%s\n' "$changed_files" | grep -q "^dockerfiles/${image}/"; then
+              changed_images+=("$image")
+            fi
+          done
+
+          if [ ${#changed_images[@]} -eq 0 ]; then
+            matrix='[]'
+            has_changes=false
+          else
+            matrix=$(printf '%s\n' "${changed_images[@]}" | jq -R -s -c 'split("\n") | map(select(length > 0))')
+            has_changes=true
+          fi
+
+          echo "matrix=$matrix" >> "$GITHUB_OUTPUT"
+          echo "has_changes=$has_changes" >> "$GITHUB_OUTPUT"
+          echo "Changed images: ${changed_images[*]:-none}"
+
   build-and-publish-images:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.has_changes == 'true'
+
     strategy:
       matrix:
-        image: ["deb-utils"]
+        image: ${{ fromJson(needs.detect-changes.outputs.matrix) }}
 
     name: Build images
 
