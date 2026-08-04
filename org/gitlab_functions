@@ -8,6 +8,7 @@ _gitlab_create_project() {
   local project_name="${fullpath##*/}"
   local group_path="${fullpath%/*}"
   local namespace_id=""
+  local -a namespace_args
 
   if [ "$group_path" != "$fullpath" ]; then
     namespace_id="$(glab api "namespaces/${group_path//\//%2F}" 2>/dev/null | jq -r '.id')"
@@ -15,9 +16,10 @@ _gitlab_create_project() {
       echo "Could not resolve GitLab namespace: $group_path" >&2
       return 1
     fi
+    namespace_args=(-f "namespace_id=$namespace_id")
   fi
 
-  glab api projects -X POST -f "path=$project_name" ${namespace_id:+-f "namespace_id=$namespace_id"} >/dev/null
+  glab api projects -X POST -f "path=$project_name" "${namespace_args[@]}" >/dev/null
 }
 
 create_project() {
