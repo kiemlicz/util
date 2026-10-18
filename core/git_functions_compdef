@@ -8,3 +8,10 @@ _mrepo_branch_create() {
   _describe -t repos 'git repositories' repos
 }
 compdef _mrepo_branch_create mrepo_branch_create
+
+_wt_repos_completion() {
+  local -a repos
+  repos=( "$WORKSPACE_DIR"/*/.bare(N/:h:t) )
+  _describe 'repositories' repos
+}
+compdef _wt_repos_completion wt-add wt-rm
