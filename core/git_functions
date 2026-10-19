@@ -40,30 +40,92 @@ mrepo_branch_create() {
 }
 
 # ==============================================================================
-# GIT WORKTREE & MULTI-REPO WORKSPACE SUITE ("Bare Hub + Sibling Worktrees")
+# MULTI-WORKSPACE GIT WORKTREE SUITE ("Bare Hub + Sibling Worktrees")
+# Safe to source across multiple environments. Respects external WORKSPACE_DIRS
+# (array or colon-separated string) and WORKSPACE_DIR.
 # ==============================================================================
-export WORKSPACE_DIR="${WORKSPACE_DIR:-$HOME/projects}"
 
-# Internal helper: sanitize branch names with slashes into flat directory names
-# e.g., "feat/oidc-claims" -> "feat-oidc-claims"
+_wt_get_workspaces() {
+  local -a result
+
+  if (( ${+WORKSPACE_DIRS} )); then
+    if [[ "${(t)WORKSPACE_DIRS}" == *array* ]]; then
+      result=( "${WORKSPACE_DIRS[@]}" )
+    elif [[ -n "$WORKSPACE_DIRS" ]]; then
+      result=( "${(@s/:/)WORKSPACE_DIRS}" )
+    fi
+  fi
+
+  if (( ${#result} == 0 )) && [[ -n "${WORKSPACE_DIR:-}" ]]; then
+    result=( "${(@s/:/)WORKSPACE_DIR}" )
+  fi
+
+  if (( ${#result} == 0 )); then
+    result=( "$HOME/workspace" )
+  fi
+
+  local -aU clean_result
+  for ws in "${result[@]}"; do
+    [[ -n "$ws" ]] && clean_result+=( "${ws%/}" )
+  done
+
+  reply=( "${clean_result[@]}" )
+}
+
 _wt_sanitize_dir() {
   echo "${1//\//-}"
 }
 
+_wt_find_repo_dir() {
+  local repo="$1"
+  local -a reply
+  _wt_get_workspaces
+  for ws in "${reply[@]}"; do
+    if [[ -d "$ws/$repo/.bare" ]]; then
+      echo "$ws/$repo"
+      return 0
+    fi
+  done
+  return 1
+}
+
+_wt_find_feature_dir() {
+  local feat_name="$1"
+  local -a reply
+  _wt_get_workspaces
+  for ws in "${reply[@]}"; do
+    if [[ -d "$ws/_features/$feat_name" ]]; then
+      echo "$ws/_features/$feat_name"
+      return 0
+    fi
+  done
+  return 1
+}
+
 # 1. Clone a repository into the Bare Hub layout
-# Usage: wt-clone <git-url> [custom-repo-name]
+# Usage: wt-clone [-w <workspace-dir>] <git-url> [custom-repo-name]
 wt-clone() {
+  local -a reply
+  _wt_get_workspaces
+  local target_ws="${reply[1]}"
+
+  if [[ "$1" == "-w" && -n "$2" ]]; then
+    target_ws="${2%/}"
+    shift 2
+  fi
+
   if [[ -z "$1" ]]; then
-    echo "Usage: wt-clone <git-url> [repo-name]"
+    echo "Usage: wt-clone [-w <workspace-path>] <git-url> [repo-name]"
     return 1
   fi
 
   local url="$1"
   local name="${2:-$(basename "$url" .git)}"
-  local repo_dir="$WORKSPACE_DIR/$name"
+  local repo_dir="$target_ws/$name"
 
-  if [[ -d "$repo_dir" ]]; then
-    echo "Error: $repo_dir already exists."
+  local existing
+  if existing=$(_wt_find_repo_dir "$name"); then
+    echo "Error: Repo '$name' already exists at$existing"
     return 1
   fi
 
@@ -73,14 +135,10 @@ wt-clone() {
   git clone --bare "$url" .bare || return 1
   echo "gitdir: ./.bare" > .git
 
-  # Configure standard remote tracking branches and fetch
   git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
   git fetch origin --quiet
-
-  # Set origin/HEAD explicitly so tools like lazygit and fzf work out of the box
   git remote set-head origin -a >/dev/null 2>&1
 
-  # Determine default branch from the bare repo HEAD
   local default_branch
   default_branch=$(git symbolic-ref --short HEAD)
   local wt_dir=$(_wt_sanitize_dir "$default_branch")
@@ -93,7 +151,7 @@ wt-clone() {
   echo "Ready: $(pwd)"
 }
 
-# 2. Create or open a physical worktree inside ~/workspace/<repo>/<branch-dir>
+# 2. Create or open a physical worktree
 # Usage: wt-add <repo-name> <branch-name> [base-branch]
 wt-add() {
   if [[ $# -lt 2 ]]; then
@@ -104,14 +162,17 @@ wt-add() {
   local repo="$1"
   local branch="$2"
   local base_branch="$3"
-  local repo_dir="$WORKSPACE_DIR/$repo"
+  local -a reply
+  _wt_get_workspaces
+
+  local repo_dir
+  repo_dir=$(_wt_find_repo_dir "$repo") || {
+    echo "Error: Repo '$repo' not found in configured workspaces (${reply[*]})."
+    return 1
+  }
+
   local wt_name=$(_wt_sanitize_dir "$branch")
   local wt_dir="$repo_dir/$wt_name"
-
-  if [[ ! -d "$repo_dir/.bare" ]]; then
-    echo "Error: $repo_dir is not a valid bare-hub repository."
-    return 1
-  fi
 
   if [[ -d "$wt_dir" ]]; then
     echo "-> Worktree already exists: $wt_dir"
@@ -125,17 +186,12 @@ wt-add() {
     [[ -z "$base_branch" ]] && base_branch=$(git -C "$repo_dir" symbolic-ref --short HEAD)
   fi
 
-  # Case A: Local branch already exists
   if git -C "$repo_dir" show-ref --verify --quiet "refs/heads/$branch"; then
     echo "-> Checking out existing local branch '$branch' into$wt_dir..."
     git -C "$repo_dir" worktree add "$wt_dir" "$branch"
-
-  # Case B: Remote branch exists on origin
   elif git -C "$repo_dir" show-ref --verify --quiet "refs/remotes/origin/$branch"; then
     echo "-> Tracking remote branch 'origin/$branch' in$wt_dir..."
     git -C "$repo_dir" worktree add --track -b "$branch" "$wt_dir" "origin/$branch"
-
-  # Case C: Brand new branch based on origin/<base_branch>
   else
     echo "-> Creating new branch '$branch' from 'origin/$base_branch' in$wt_dir..."
     git -C "$repo_dir" worktree add --no-track -b "$branch" "$wt_dir" "origin/$base_branch"
@@ -143,23 +199,36 @@ wt-add() {
   fi
 }
 
-# 3. Remove a single-repo physical worktree (and optionally its local branch)
+# 2b. Create/open a single-repo worktree and cd directly into it
+# Usage: wt-go <repo-name> <branch-name> [base-branch]
+wt-go() {
+  wt-add "$@" || return 1
+  local repo_dir=$(_wt_find_repo_dir "$1")
+  cd "$repo_dir/$(_wt_sanitize_dir "$2")" || return 1
+}
+
+# 3. Remove a single-repo physical worktree
 # Usage: wt-rm <repo-name> <branch-name> [-D]
 wt-rm() {
   if [[ $# -lt 2 ]]; then
-    echo "Usage: wt-rm <repo-name> <branch-name> [-D (to delete local branch)]"
+    echo "Usage: wt-rm <repo-name> <branch-name> [-D]"
     return 1
   fi
 
   local repo="$1"
   local branch="$2"
   local delete_branch="$3"
-  local repo_dir="$WORKSPACE_DIR/$repo"
+  local repo_dir
+  repo_dir=$(_wt_find_repo_dir "$repo") || {
+    echo "Error: Repo '$repo' not found."
+    return 1
+  }
+
   local wt_name=$(_wt_sanitize_dir "$branch")
   local wt_dir="$repo_dir/$wt_name"
 
   if [[ "$PWD/" == "$wt_dir/"* ]]; then
-    cd "$repo_dir" \vert{}\vert{} cd "$WORKSPACE_DIR"
+    cd "$repo_dir" \vert{}\vert{} cd "$HOME"
   fi
 
   echo "-> Removing worktree $wt_dir..."
@@ -172,7 +241,7 @@ wt-rm() {
   fi
 }
 
-# 4. Create a Multi-Repo Feature View (Physical worktrees in repos + Symlinks in _features)
+# 4. Create a Multi-Repo Feature View
 # Usage: wt-feature <branch-name> <repo1> <repo2> ...
 wt-feature() {
   if [[ $# -lt 2 ]]; then
@@ -182,18 +251,24 @@ wt-feature() {
 
   local branch="$1"; shift
   local feat_name=$(_wt_sanitize_dir "$branch")
-  local feat_dir="$WORKSPACE_DIR/_features/$feat_name"
+  local -a reply
+  _wt_get_workspaces
 
+  local first_repo_dir=$(_wt_find_repo_dir "$1")
+  local base_ws="${first_repo_dir:h}"
+  [[ -z "$base_ws" || ! -d "$base_ws" ]] && base_ws="${reply[1]}"
+
+  local feat_dir="$base_ws/_features/$feat_name"
   mkdir -p "$feat_dir"
 
   for repo in "$@"; do
     wt-add "$repo" "$branch" || continue
+    local repo_dir=$(_wt_find_repo_dir "$repo")
     local wt_name=$(_wt_sanitize_dir "$branch")
-    ln -sfn "$WORKSPACE_DIR/$repo/$wt_name" "$feat_dir/$repo"
-    echo "-> Linked $feat_dir/$repo ->$WORKSPACE_DIR/$repo/$wt_name"
+    ln -sfn "$repo_dir/$wt_name" "$feat_dir/$repo"
+    echo "-> Linked $feat_dir/$repo -> $repo_dir/$wt_name"
   done
 
-  # Scaffold a cross-repo AGENTS.md file if not present
   if [[ ! -f "$feat_dir/AGENTS.md" ]]; then
     {
       echo "# Cross-Repo Feature: $branch"
@@ -212,26 +287,27 @@ wt-feature() {
   echo "Unified feature view ready: $(pwd)"
 }
 
-# 5. Teardown a Multi-Repo Feature View and its underlying physical worktrees
+# 5. Teardown a Multi-Repo Feature View
 # Usage: wt-feature-rm <branch-name> [-D]
 wt-feature-rm() {
   if [[ -z "$1" ]]; then
-    echo "Usage: wt-feature-rm <branch-name> [-D (to delete local branches)]"
-    return 1
+    echo "Usage: wt-feature-rm <branch-name> [-D]"
+    return 12
   fi
 
   local branch="$1"
   local delete_flag="$2"
   local feat_name=$(_wt_sanitize_dir "$branch")
-  local feat_dir="$WORKSPACE_DIR/_features/$feat_name"
-
-  if [[ ! -d "$feat_dir" ]]; then
-    echo "Error: Feature view not found at $feat_dir"
+  local feat_dir
+  feat_dir=$(_wt_find_feature_dir "$feat_name") || {
+    echo "Error: Feature view '$feat_name' not found in any workspace."
     return 1
-  fi
+  }
 
+  local -a reply
+  _wt_get_workspaces
   if [[ "$PWD/" == "$feat_dir/"* ]]; then
-    cd "$WORKSPACE_DIR" || return 1
+    cd "${reply[1]}" || cd "$HOME"
   fi
 
   for link in "$feat_dir"/*(N@); do
@@ -245,47 +321,54 @@ wt-feature-rm() {
   echo "Removed feature view: $feat_dir"
 }
 
-# 6. Interactive FZF Switcher across all worktrees and multi-repo features
-# Usage: wt-cd
+# 6. Interactive FZF Switcher across all workspaces
 wt-cd() {
   if ! command -v fzf >/dev/null 2>&1; then
     echo "Error: fzf is required for wt-cd."
     return 1
   fi
 
+  local -a reply
+  _wt_get_workspaces
+
   local target
   target=$(
     {
-      # List multi-repo feature views first
-      if [[ -d "$WORKSPACE_DIR/_features" ]]; then
-        find "$WORKSPACE_DIR/_features" -mindepth 1 -maxdepth 1 -type d 2>/dev/null
-      fi
-      # List all physical worktrees across bare-hub repos
-      for bare_dir in "$WORKSPACE_DIR"/*/.bare(N/); do
-        local repo_dir="${bare_dir:h}"
-        git -C "$repo_dir" worktree list --porcelain | awk '/^worktree / {print substr($0, 10)}' \vert{} grep -v '\.bare$'
+      for ws in "${reply[@]}"; do
+        if [[ -d "$ws/_features" ]]; then
+          find "$ws/_features" -mindepth 1 -maxdepth 1 -type d 2>/dev/null
+        fi
+        for bare_dir in "$ws"/*/.bare(N/); do
+          local repo_dir="${bare_dir:h}"
+          git -C "$repo_dir" worktree list --porcelain | awk '/^worktree / {print substr($0, 10)}' \vert{} grep -v '\.bare$'
+        done
       done
-    } | sed "s|^$WORKSPACE_DIR/||" | fzf --prompt="Worktree > " --height=40% --layout=reverse --border \
-        --preview="ls -la $WORKSPACE_DIR/{}"
+    } | fzf --prompt="Worktree > " --height=40% --layout=reverse --border --preview="ls -la {}"
   )
 
   if [[ -n "$target" ]]; then
-    cd "$WORKSPACE_DIR/$target" || return 1
+    cd "$target" || return 1
   fi
 }
 
-# 7. Overview of all active worktrees across all repositories
-# Usage: wt-ls
+# 7. Overview of all active worktrees across all workspaces
 wt-ls() {
-  for bare_dir in "$WORKSPACE_DIR"/*/.bare(N/); do
-    local repo_dir="${bare_dir:h}"
-    echo "\033[1;34m=== ${repo_dir:t} ===\033[0m"
-    git -C "$repo_dir" worktree list | grep -v '\.bare '
-    echo ""
-  done
+  local -a reply
+  _wt_get_workspaces
 
-  if [[ -d "$WORKSPACE_DIR/_features" ]]; then
-    echo "\033[1;35m=== Active _features Views ===\033[0m"
-    ls -1 "$WORKSPACE_DIR/_features"
-  fi
+  for ws in "${reply[@]}"; do
+    [[ ! -d "$ws" ]] && continue
+    echo "\033[1;32m================ WORKSPACE: $ws ================\033[0m"
+    for bare_dir in "$ws"/*/.bare(N/); do
+      local repo_dir="${bare_dir:h}"
+      echo "\033[1;34m=== ${repo_dir:t} ===\033[0m"
+      git -C "$repo_dir" worktree list | grep -v '\.bare '
+      echo ""
+    done
+    if [[ -d "$ws/_features" && -n "$(ls -A "$ws/_features" 2>/dev/null)" ]]; then
+      echo "\033[1;35m=== Active _features Views ($ws) ===\033[0m"
+      ls -1 "$ws/_features"
+      echo ""
+    fi
+  done
 }
