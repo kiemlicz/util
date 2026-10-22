@@ -18,3 +18,20 @@ _wt_repos_completion() {
   _describe 'repositories' repos
 }
 compdef _wt_repos_completion wt-add wt-go wt-rm wt-feature
+
+_wt_workspaces_completion() {
+  local -a reply workspaces
+  _wt_get_workspaces
+  workspaces=( "${reply[@]}" )
+  _alternative \
+    'workspaces:configured workspaces:compadd -a workspaces' \
+    'directories:directories:_directories'
+}
+
+_wt_clone_completion() {
+  _arguments \
+    '-w[target workspace directory]:workspace:_wt_workspaces_completion' \
+    '(-w)1:git url: ' \
+    '2:repo name: '
+}
+compdef _wt_clone_completion wt-clone
