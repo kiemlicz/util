@@ -19,14 +19,62 @@ _wt_repos_completion() {
 }
 compdef _wt_repos_completion wt-add wt-go wt-rm wt-feature
 
+_wt_features_completion() {
+  local -a reply features
+  _wt_get_workspaces
+  for ws in "${reply[@]}"; do
+    features+=( "$ws"/_features/*(N/:t) )
+  done
+  _describe 'features' features
+}
+compdef _wt_features_completion wt-feature-rm
+
+_wt_feature_add_completion() {
+  if [[ "$PWD" == *"/_features/"* ]]; then
+    # Inside _features/<feat>: 1st arg is repo
+    if (( CURRENT == 2 )); then
+      _wt_repos_completion
+    fi
+  else
+    # Outside _features: 1st arg is feature (or repo), 2nd arg is repo
+    if (( CURRENT == 2 )); then
+      _alternative \
+        'features:existing features:_wt_features_completion' \
+        'repositories:repositories:_wt_repos_completion'
+    elif (( CURRENT == 3 )); then
+      _wt_repos_completion
+    fi
+  fi
+}
+compdef _wt_feature_add_completion wt-feature-add
+
 _wt_workspaces_completion() {
   local -a reply workspaces
-  _wt_get_workspaces
-  workspaces=( "${reply[@]}" )
+  if (( ${+_WT_ALL_WORKSPACES} )); then
+    workspaces=( "${_WT_ALL_WORKSPACES[@]}" )
+  else
+    _wt_get_workspaces
+    workspaces=( "${reply[@]}" )
+  fi
   _alternative \
     'workspaces:configured workspaces:compadd -a workspaces' \
     'directories:directories:_directories'
 }
+
+_wt_ws_completion() {
+  local -a reply ws_names
+  if (( ${+_WT_ALL_WORKSPACES} )); then
+    reply=( "${_WT_ALL_WORKSPACES[@]}" )
+  else
+    _wt_get_workspaces
+  fi
+  for ws in "${reply[@]}"; do
+    ws_names+=( "$ws" "${ws:t}" )
+  done
+  ws_names+=( "--all" )
+  _describe 'workspaces' ws_names
+}
+compdef _wt_ws_completion wt-ws
 
 _wt_clone_completion() {
   _arguments \
