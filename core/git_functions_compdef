@@ -1,52 +1,145 @@
 _mrepo_branch_create() {
-  local expl
-  local -a repos
-
-  # Find directories containing .git up to 3 levels deep
-  repos=($(find . -maxdepth 3 -type d -name .git -prune -exec dirname {} \;))
-
-  _describe -t repos 'git repositories' repos
+  _arguments \
+    '1:repository directory:_path_files -/' \
+    '2:new branch name: '
 }
 compdef _mrepo_branch_create mrepo_branch_create
 
-_wt_repos_completion() {
-  local -a reply repos
+_mrepo_branch_del() {
+  _arguments \
+    '1:base directory:_path_files -/' \
+    '2:branch to delete: '
+}
+compdef _mrepo_branch_del mrepo_branch_del
+
+# ------------------------------------------------------------------------------
+# wt-* helpers
+# ------------------------------------------------------------------------------
+
+# Repo names across all workspaces; extra args are excluded (already given).
+_wt__repos() {
+  local -a reply repos exclude
+  local ws
+  exclude=( "$@" )
   _wt_get_workspaces
   for ws in "${reply[@]}"; do
     repos+=( "$ws"/*/.bare(N/:h:t) )
   done
-  _describe 'repositories' repos
+  repos=( ${(u)repos:|exclude} )
+  _wanted repositories expl 'repository' compadd -a repos
 }
-compdef _wt_repos_completion wt-add wt-go wt-rm wt-feature
 
-_wt_features_completion() {
+# Branches of a repo. Usage: _wt__branches <repo> all|remote|worktree
+_wt__branches() {
+  local repo_dir
+  repo_dir=$(_wt_find_repo_dir "$1" 2>/dev/null) || {
+    _message 'branch (unknown repository)'
+    return 1
+  }
+  local -a branches
+  case "$2" in
+    worktree)
+      branches=( ${(f)"$(_wt_worktree_branches "$repo_dir")"} )
+      ;;
+    remote)
+      branches=( ${${(f)"$(git -C "$repo_dir" for-each-ref --format='%(refname:lstrip=3)' refs/remotes/origin 2>/dev/null)"}:#HEAD} )
+      ;;
+    *)
+      branches=(
+        ${(f)"$(git -C "$repo_dir" for-each-ref --format='%(refname:short)' refs/heads 2>/dev/null)"}
+        ${${(f)"$(git -C "$repo_dir" for-each-ref --format='%(refname:lstrip=3)' refs/remotes/origin 2>/dev/null)"}:#HEAD}
+      )
+      ;;
+  esac
+  branches=( ${(u)branches} )
+  _wanted branches expl 'branch' compadd -a branches
+}
+
+# Feature branch names across all workspaces.
+_wt__features() {
   local -a reply features
+  local ws feat
   _wt_get_workspaces
   for ws in "${reply[@]}"; do
-    features+=( "$ws"/_features/*(N/:t) )
+    for feat in "$ws"/_features/*(N/); do
+      features+=( "$(_wt_feature_branch "$feat")" )
+    done
   done
-  _describe 'features' features
+  _wanted features expl 'feature' compadd -a features
 }
-compdef _wt_features_completion wt-feature-rm
 
+# wt-add / wt-go <repo> <branch> [base-branch]
+_wt_add_completion() {
+  local curcontext="$curcontext" state line
+  typeset -A opt_args
+  _arguments -C \
+    '1:repository:_wt__repos' \
+    '2:branch (existing or new):->branch' \
+    '3:base branch:->base' && return 0
+  case "$state" in
+    branch) _wt__branches "${line[1]}" all ;;
+    base)   _wt__branches "${line[1]}" remote ;;
+  esac
+}
+compdef _wt_add_completion wt-add wt-go
+
+# wt-rm [-D] <repo> <branch>
+_wt_rm_completion() {
+  local curcontext="$curcontext" state line
+  typeset -A opt_args
+  _arguments -C \
+    '-D[also delete the local branch]' \
+    '1:repository:_wt__repos' \
+    '2:worktree branch:->wt' && return 0
+  [[ "$state" == wt ]] && _wt__branches "${line[1]}" worktree
+}
+compdef _wt_rm_completion wt-rm
+
+# wt-feature <feature> <repo> [repo ...]
+_wt_feature_completion() {
+  local curcontext="$curcontext" state line
+  typeset -A opt_args
+  _arguments -C \
+    '1:feature branch (existing or new):_wt__features' \
+    '*:repository:->repos' && return 0
+  [[ "$state" == repos ]] && _wt__repos "${(@)line[2,-1]}"
+}
+compdef _wt_feature_completion wt-feature
+
+# wt-feature-add [feature] <repo> [branch] [base-branch]
 _wt_feature_add_completion() {
-  if [[ "$PWD" == *"/_features/"* ]]; then
-    # Inside _features/<feat>: 1st arg is repo
-    if (( CURRENT == 2 )); then
-      _wt_repos_completion
-    fi
-  else
-    # Outside _features: 1st arg is feature (or repo), 2nd arg is repo
-    if (( CURRENT == 2 )); then
-      _alternative \
-        'features:existing features:_wt_features_completion' \
-        'repositories:repositories:_wt_repos_completion'
-    elif (( CURRENT == 3 )); then
-      _wt_repos_completion
-    fi
+  local in_feat=0
+  _wt_current_feature_dir >/dev/null && in_feat=1
+
+  if (( CURRENT == 2 )); then
+    _wt__features
+    (( in_feat )) && _wt__repos
+    return 0
   fi
+
+  # Is the 1st word an explicit feature, or (inside a feature dir) a repo?
+  local offset=0
+  if ! (( in_feat )) || _wt_find_feature_dir "${words[2]}" >/dev/null; then
+    offset=1
+  fi
+  local pos=$(( CURRENT - 1 - offset ))
+  local repo="${words[2 + offset]}"
+  case "$pos" in
+    1) _wt__repos ;;
+    2) _wt__branches "$repo" all ;;
+    3) _wt__branches "$repo" remote ;;
+    *) _message 'no more arguments' ;;
+  esac
 }
 compdef _wt_feature_add_completion wt-feature-add
+
+# wt-feature-rm [-D] [feature]
+_wt_feature_rm_completion() {
+  _arguments \
+    '-D[also delete the local branches]' \
+    '1:feature:_wt__features'
+}
+compdef _wt_feature_rm_completion wt-feature-rm
 
 _wt_workspaces_completion() {
   local -a reply workspaces
@@ -58,11 +151,13 @@ _wt_workspaces_completion() {
   fi
   _alternative \
     'workspaces:configured workspaces:compadd -a workspaces' \
-    'directories:directories:_directories'
+    'directories:directories:_path_files -/'
 }
 
+# wt-ws [workspace | --all]
 _wt_ws_completion() {
   local -a reply ws_names
+  local ws
   if (( ${+_WT_ALL_WORKSPACES} )); then
     reply=( "${_WT_ALL_WORKSPACES[@]}" )
   else
@@ -72,14 +167,15 @@ _wt_ws_completion() {
     ws_names+=( "$ws" "${ws:t}" )
   done
   ws_names+=( "--all" )
-  _describe 'workspaces' ws_names
+  (( CURRENT == 2 )) && _wanted workspaces expl 'workspace' compadd -a ws_names
 }
 compdef _wt_ws_completion wt-ws
 
+# wt-clone [-w <workspace>] <git-url> [repo]
 _wt_clone_completion() {
   _arguments \
     '-w[target workspace directory]:workspace:_wt_workspaces_completion' \
-    '(-w)1:git url: ' \
+    '1:git url: ' \
     '2:repo name: '
 }
 compdef _wt_clone_completion wt-clone
